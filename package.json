@@ -8,9 +8,9 @@
     "lint": "eslint --fix --ext .js src test",
     "build": "webpack --env dev && webpack --env build && npm run test",
     "dev": "webpack --progress --colors --watch --env dev",
-    "test": "mocha --require babel-register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-register --colors -w ./test/*.spec.js",
-    "test:debug": "mocha --require babel-register --source-maps --inspect --colors -w ./test/*.spec.js"
+    "test": "mocha --require babel-register --colors ./test/**/*.spec.js",
+    "test:watch": "mocha --require babel-register --colors -w ./test/**/*.spec.js",
+    "test:debug": "mocha --require babel-register --source-maps --inspect --colors -w ./test/**/*.spec.js"
   },
   "repository": {
     "type": "git",
