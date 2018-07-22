@@ -35,12 +35,12 @@ export default class Visualization {
   }
   createXScale(data, width) {
     return d3.scaleLinear()
-      .domain([0, this.data.x.max + this.options.padding])
+      .domain([this.data.x.min - this.options.padding, this.data.x.max + this.options.padding])
       .range([0, width]);
   }
   createYScale(data, height) {
     return d3.scaleLinear()
-      .domain([0, this.data.y.max + this.options.padding])
+      .domain([this.data.y.min - this.options.padding, this.data.y.max + this.options.padding])
       .range([0, height]);
   }
   plotData() {
