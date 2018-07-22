@@ -1,7 +1,8 @@
-import { defaultType } from './defaults';
+import { defaultType, defaultOptions } from './defaults';
 
 export default class Circle {
-  constructor(cx, cy, radius, fill, stroke, type = defaultType) {
+  constructor(cx, cy, radius = defaultOptions.circleRadius,
+              fill = defaultOptions.circleFill, stroke = defaultOptions.circleStroke, type = defaultType) {
     this.cx = cx;
     this.cy = cy;
     this.radius = radius;

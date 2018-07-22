@@ -2,7 +2,7 @@
 
 import chai from 'chai';
 import Circle from '../src/visualization/circle'
-import { defaultType } from '../src/visualization/defaults'
+import { defaultType, defaultOptions } from '../src/visualization/defaults'
 
 chai.expect();
 
@@ -33,8 +33,11 @@ describe('Circle', () => {
     });
     it('should construct circle with default values', function() {
       // when
-      const circle = new Circle(null, null, null, null, null);
+      const circle = new Circle();
       // then
+      expect(circle.radius).to.equal(defaultOptions.circleRadius);
+      expect(circle.fill).to.equal(defaultOptions.circleFill);
+      expect(circle.stroke).to.equal(defaultOptions.circleStroke);
       expect(circle.type).to.equal(defaultType);
     });
   });
