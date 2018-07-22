@@ -1,5 +1,11 @@
 import * as d3 from 'd3';
 import Circle from './circle';
+/*
+ *  TODOS:
+ *  - add validation for data format
+ *  - add flexible color mapping
+ *  - add and remove data points
+ */
 
 export default class Visualization {
   constructor(data, options) {
@@ -7,9 +13,15 @@ export default class Visualization {
       rootNode: 'body',
       width: 500,
       height: 300,
-      padding: 50
+      padding: 50,
+      backgroundColor: '#1d1e22',
+      data: {
+        radius: 5,
+        fillColor: 'yellow',
+        strokeColor: 'white',
+        type: 'None'
+      }
     }, options);
-    // todo: add validation for data format
     this.data = {
       x: {
         min: d3.min(data, function (d) { return d.x; }),
@@ -19,19 +31,29 @@ export default class Visualization {
         min: d3.min(data, function (d) { return d.y; }),
         max: d3.max(data, function (d) { return d.y; })
       },
-      circles: data.map(d => new Circle(d.x, d.y))
+      circles: this.mapDataToCircles(data)
     };
     this.svg = this.appendSVG(this.data.circles, this.options.rootNode, this.options.width, this.options.height);
     this.xScale = this.createXScale(this.data.circles, this.options.width);
     this.yScale = this.createYScale(this.data.circles, this.options.height);
   }
+  mapDataToCircles(data) {
+    return data.map(d => {
+      return new Circle(
+        d.x,
+        d.y,
+        this.options.data.radius,
+        this.options.data.fillColor,
+        this.options.data.strokeColor,
+        this.options.data.type);
+    });
+  }
   appendSVG(data, rootNode, width, height) {
     return d3.select(rootNode)
       .append('svg')
-      .attr('id', 'd3ml')
       .attr('width', width)
       .attr('height', height)
-      .style('background-color', '#1d1e22');
+      .style('background-color', this.options.backgroundColor);
   }
   createXScale(data, width) {
     return d3.scaleLinear()

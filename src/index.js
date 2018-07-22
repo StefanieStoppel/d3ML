@@ -13,7 +13,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
     { x: 346, y: 410 }
   ];
   const options = {
-    rootNode: 'body'
+    rootNode: 'body',
+    backgroundColor: 'black',
+    data: {
+      fillColor: 'green',
+      strokeColor: 'white',
+      type: 'bla'
+    }
   };
   const vis = new Visualization(data, options);
   vis.plotData();

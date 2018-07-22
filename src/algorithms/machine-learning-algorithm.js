@@ -7,4 +7,3 @@ export default class MachineLearningAlgorithm {
     this.data.push(d);
   }
 }
-// TODO: add validation
