@@ -1,26 +1,15 @@
 import * as d3 from 'd3';
 import Circle from './circle';
+import { defaultOptions } from './defaults';
 /*
  *  TODOS:
  *  - add validation for data format
- *  - add flexible color mapping
  *  - add and remove data points
  */
 
 export default class Visualization {
   constructor(data, options) {
-    this.options = Object.assign({}, {
-      rootNode: 'body',
-      width: 500,
-      height: 300,
-      padding: 50,
-      backgroundColor: '#1d1e22',
-      data: {
-        radius: 5,
-        fillColor: 'yellow',
-        strokeColor: 'white'
-      }
-    }, options);
+    this.options = Object.assign({}, defaultOptions, options);
     this.data = {
       x: {
         min: d3.min(data, function (d) { return d.x; }),
@@ -41,9 +30,9 @@ export default class Visualization {
       return new Circle(
         d.x,
         d.y,
-        this.options.data.radius,
-        this.options.data.fillColor,
-        this.options.data.strokeColor);
+        this.options.circleRadius,
+        this.options.circleFill,
+        this.options.circleStroke);
     });
   }
   appendSVG(data, rootNode, width, height) {

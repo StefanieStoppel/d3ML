@@ -15,11 +15,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
   const options = {
     rootNode: 'body',
     backgroundColor: 'black',
-    data: {
-      fillColor: 'green',
-      strokeColor: 'white',
-      type: 'bla'
-    }
+    circleFill: 'green',
+    circleStroke: 'white'
   };
   const vis = new Visualization(data, options);
   vis.plotData();
