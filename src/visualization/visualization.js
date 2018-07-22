@@ -3,7 +3,6 @@ import Circle from './circle';
 import { defaultOptions } from './defaults';
 /*
  *  TODOS:
- *  - add validation for data format
  *  - add and remove data points
  */
 
@@ -14,6 +13,23 @@ export default class Visualization {
     this.svg = this.appendSVG();
     this.xScale = this.createXScale();
     this.yScale = this.createYScale();
+  }
+  validateData(data) {
+    // isArray and contains objects with correct keys x and y while values are numeric
+    if (!!data && Array.isArray(data)) {
+      return data.reduce((res, val) => {
+        return Object.entries(val).reduce((result, entry) => {
+          const key = entry[0];
+          const val = entry[1];
+          return result
+            && ['x', 'y'].includes(key)
+            && typeof val === 'number'
+            && val !== Infinity
+            && val !== -Infinity;
+        }, true);
+      }, true)
+    }
+    return false;
   }
   initData(data, options) {
     return {

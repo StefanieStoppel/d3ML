@@ -60,7 +60,42 @@ describe('Visualization', () => {
       expect(vis.options.circleStroke).to.equal(options.circleStroke);
     });
   });
-  describe('mapToCircles', () => {
+  describe('validateData', () => {
+    it('should pass validation', () => {
+      // given
+      const givenData = [
+        { x: 13, y: 42 },
+        { x: 145, y: 144645867 },
+        { x: Math.PI, y: 53.24 }
+      ];
+      const vis = new Visualization([]);
+      // when
+      const validation = vis.validateData(givenData);
+      // then
+      expect(validation).to.be.true;
+    });
+    const failingTests = [
+      { data: [{ a: 13, b: 42 }], expected: false },
+      { data: [{ x: 145, foo: 144645867 }], expected: false },
+      { data: [{ z: Math.PI, y: 53.24 }], expected: false },
+      { data: [{ x: 'hello', y: 53.24 }], expected: false },
+      { data: [{ x: 2, y: Infinity }], expected: false },
+      { data: [{ x: 42, y: {} }], expected: false },
+      { data: [{ x: 1, y: null }], expected: false },
+      { data: [{ x: 1, y: '12' }], expected: false }
+    ];
+    failingTests.forEach(test => {
+      it(`should fail validation for data: ${Object.entries(test.data[0])}`, () => {
+        // when
+        const vis = new Visualization([]);
+        // given
+        const validationResult = vis.validateData(test.data);
+        // then
+        expect(validationResult).to.equal(test.expected);
+      });
+    });
+  });
+  describe('mapDataToCircles', () => {
     it('should return correct mapping', () => {
       // given
       const givenOptions = {
