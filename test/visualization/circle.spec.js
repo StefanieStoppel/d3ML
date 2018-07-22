@@ -1,17 +1,15 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import Circle from '../src/visualization/circle'
-import { defaultType, defaultOptions } from '../src/visualization/defaults'
-
-chai.expect();
+import Circle from '../../src/visualization/circle'
+import { defaultType, defaultOptions } from '../../src/visualization/defaults'
 
 const expect = chai.expect;
 
 
 describe('Circle', () => {
   describe('constructor', () => {
-    it('should construct circle with correct values', function() {
+    it('should construct Circle with correct values', function() {
       // given
       const params = {
         cx: 4,

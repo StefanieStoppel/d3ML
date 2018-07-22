@@ -19,5 +19,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
     circleStroke: 'white'
   };
   const vis = new Visualization(data, options);
-  vis.plotData();
+  vis.draw();
 });
