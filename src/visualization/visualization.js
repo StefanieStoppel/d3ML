@@ -18,8 +18,7 @@ export default class Visualization {
       data: {
         radius: 5,
         fillColor: 'yellow',
-        strokeColor: 'white',
-        type: 'None'
+        strokeColor: 'white'
       }
     }, options);
     this.data = {
@@ -44,8 +43,7 @@ export default class Visualization {
         d.y,
         this.options.data.radius,
         this.options.data.fillColor,
-        this.options.data.strokeColor,
-        this.options.data.type);
+        this.options.data.strokeColor);
     });
   }
   appendSVG(data, rootNode, width, height) {
