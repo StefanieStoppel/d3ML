@@ -60,6 +60,30 @@ describe('Visualization', () => {
       expect(vis.options.circleStroke).to.equal(options.circleStroke);
     });
   });
+  describe('initData', () => {
+    it('should initialize data correctly', () => {
+      // given
+      const givenData = [
+        { x: -5, y: 3 },
+        { x: 10, y: 23 },
+        { x: 42, y: 12345 },
+        { x: 1.3, y: 300 }
+      ];
+      const givenCircles = [
+        new Circle(-5, 3, options.circleRadius, options.circleFill, options.circleStroke),
+        new Circle(10, 23, options.circleRadius, options.circleFill, options.circleStroke),
+        new Circle(42, 12345, options.circleRadius, options.circleFill, options.circleStroke),
+        new Circle(1.3, 300, options.circleRadius, options.circleFill, options.circleStroke)
+      ];
+      const vis = new Visualization([], options);
+      // when
+      const data = vis.initData(givenData);
+      // then
+      expect(data.x).to.deep.equal({ min: -5, max: 42});
+      expect(data.y).to.deep.equal({ min: 3, max: 12345});
+      expect(data.circles).to.deep.equal(givenCircles);
+    });
+  });
   describe('validateData', () => {
     it('should pass validation', () => {
       // given
@@ -95,7 +119,7 @@ describe('Visualization', () => {
       });
     });
   });
-  describe('mapDataToCircles', () => {
+  describe('mapDataToCircle', () => {
     it('should return correct mapping', () => {
       // given
       const givenOptions = {
@@ -103,19 +127,24 @@ describe('Visualization', () => {
         circleFill: 'green',
         circleStroke: 'blue'
       };
-      const givenData = [
-        { x: 13, y: 42 },
-        { x: 145, y: 144645867 }
-      ];
-      const givenCircles = [
-        new Circle(13, 42, givenOptions.circleRadius, givenOptions.circleFill, givenOptions.circleStroke),
-        new Circle(145, 144645867, givenOptions.circleRadius, givenOptions.circleFill, givenOptions.circleStroke)
-      ];
-      const vis = new Visualization(givenData, givenOptions);
+      const givenData = { x: 13, y: 42 };
+      const givenCircle = new Circle(13, 42, givenOptions.circleRadius, givenOptions.circleFill, givenOptions.circleStroke);
+      const vis = new Visualization(data, givenOptions);
       // when
-      const circles = vis.mapDataToCircles(givenData, givenOptions);
+      const circle = vis.mapDataToCircle(givenData, givenOptions);
       // then
-      expect(circles).to.deep.equal(givenCircles);
+      expect(circle).to.deep.equal(givenCircle);
+    });
+  });
+  describe('addCircle', () => {
+    it('should add circle correctly', () => {
+      // given
+      const givenCircle = new Circle(1, 2, options.circleRadius, options.circleFill, options.circleStroke);
+      const vis = new Visualization(data, options);
+      // when
+      vis.addCircle(1, 2);
+      // then
+      expect(vis.data.circles.pop()).to.deep.equal(givenCircle);
     });
   });
 });

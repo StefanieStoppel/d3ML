@@ -8,8 +8,8 @@ import { defaultOptions } from './defaults';
 
 export default class Visualization {
   constructor(data, options) {
-    this.options = Object.assign({}, defaultOptions, options);// tested
-    this.data = this.initData(data, this.options);
+    this.options = Object.assign({}, defaultOptions, options);
+    this.data = this.initData(data);
     this.svg = this.appendSVG();
     this.xScale = this.createXScale();
     this.yScale = this.createYScale();
@@ -31,7 +31,7 @@ export default class Visualization {
     }
     return false;
   }
-  initData(data, options) {
+  initData(data) {
     return {
       x: {
         min: d3.min(data, function (d) { return d.x; }),
@@ -41,37 +41,38 @@ export default class Visualization {
         min: d3.min(data, function (d) { return d.y; }),
         max: d3.max(data, function (d) { return d.y; })
       },
-      circles: this.mapDataToCircles(data, options)
+      circles: data.map(d => this.mapDataToCircle(d))
     };
   }
-  mapDataToCircles(data, options) {
-    return data.map(d => {
-      return new Circle(
-        d.x,
-        d.y,
-        options.circleRadius,
-        options.circleFill,
-        options.circleStroke);
-    });
+  addCircle(x, y) {
+    this.data.circles = this.data.circles.concat(this.mapDataToCircle({x: x, y: y}));
   }
-  appendSVG() {
+  mapDataToCircle(data) {
+    return new Circle(
+      data.x,
+      data.y,
+      this.options.circleRadius,
+      this.options.circleFill,
+      this.options.circleStroke);
+  }
+  appendSVG() { // todo: test
     return d3.select(this.options.rootNode)
       .append('svg')
       .attr('width', this.options.width)
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
   }
-  createXScale() {
+  createXScale() { // todo: test
     return d3.scaleLinear()
       .domain([this.data.x.min - this.options.padding, this.data.x.max + this.options.padding])
       .range([0, this.options.width]);
   }
-  createYScale() {
+  createYScale() { // todo: test
     return d3.scaleLinear()
       .domain([this.data.y.min - this.options.padding, this.data.y.max + this.options.padding])
       .range([0, this.options.height]);
   }
-  drawCircles() {
+  drawCircles() { // todo: test
     const that = this;
     this.svg.selectAll('circle')
       .data(this.data.circles)
