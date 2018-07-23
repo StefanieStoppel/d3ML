@@ -1,9 +1,10 @@
 import * as d3 from 'd3';
 import Circle from './circle';
 import { defaultOptions } from './defaults';
+
 /*
  *  TODOS:
- *  - add and remove data points
+ *  - remove data points
  */
 
 export default class Visualization {
@@ -74,6 +75,20 @@ export default class Visualization {
       .domain([this.data.y.min - this.options.padding, this.data.y.max + this.options.padding])
       .range([0, this.options.height]);
   }
+  addEventListeners() {
+    document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
+      this.onClickSvg(e);
+    });
+  }
+  onClickSvg(e) {
+    if (e.target && e.target.id === this.svgId) {
+      this.addCircle(this.xScale.invert(e.offsetX), this.yScale.invert(e.offsetY));
+    }
+  }
+  addCircle(x, y) {
+    this.data.circles.push(this.mapDataToCircle({x: x, y: y}));
+    this.drawCircles();
+  }
   drawCircles() { // todo: test
     const that = this;
     this.svg.selectAll('circle')
@@ -87,19 +102,5 @@ export default class Visualization {
   }
   draw() {
     this.drawCircles();
-  }
-  addCircle(x, y) {
-    this.data.circles.push(this.mapDataToCircle({x: x, y: y}));
-    this.drawCircles();
-  }
-  addEventListeners() {
-    document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
-      this.onClickSvg(e);
-    });
-  }
-  onClickSvg(e) {
-    if (e.target && e.target.id === this.svgId) {
-      this.addCircle(this.xScale.invert(e.offsetX), this.yScale.invert(e.offsetY));
-    }
   }
 }

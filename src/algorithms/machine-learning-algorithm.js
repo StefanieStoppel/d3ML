@@ -1,9 +1,9 @@
 export default class MachineLearningAlgorithm {
-  constructor(data) {
-    this.data = data;
-    this.n = data.length;
+  constructor(circles) {
+    this.circles = circles;
+    this.n = circles.length;
   }
-  addDataPoint(d) {
-    this.data.push(d);
+  addCircle(c) {
+    this.circles.push(c);
   }
 }
