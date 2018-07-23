@@ -10,7 +10,14 @@ const defaultOptions = {
 };
 const defaultType = 'None';
 
+const defaultTypes = {
+  A: 'A',
+  B: 'B',
+  None: 'None'
+};
+
 export default {
   defaultOptions,
-  defaultType
+  defaultType,
+  defaultTypes
 };
