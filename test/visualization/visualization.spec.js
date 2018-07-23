@@ -1,4 +1,4 @@
-/* global describe, it, before */
+/* global describe, it, beforeEach, afterEach */
 
 import chai from 'chai';
 import chaiDom from 'chai-dom';

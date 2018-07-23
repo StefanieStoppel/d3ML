@@ -14,12 +14,12 @@ export default class Visualization {
     this.svg = this.appendSVG();
     this.xScale = this.createXScale();
     this.yScale = this.createYScale();
-    this.registerEvents();
+    this.addEventListeners();
   }
   validateData(data) {
-    // isArray and contains objects with correct keys x and y while values are numeric
+    let result = false;
     if (!!data && Array.isArray(data)) {
-      return data.reduce((res, val) => {
+      result = data.reduce((res, val) => {
         return Object.entries(val).reduce((result, entry) => {
           const key = entry[0];
           const val = entry[1];
@@ -33,7 +33,7 @@ export default class Visualization {
       }, true);
     }
 
-    return false;
+    return result;
   }
   initData(data) {
     return {
@@ -47,10 +47,6 @@ export default class Visualization {
       },
       circles: data.map(d => this.mapDataToCircle(d))
     };
-  }
-  addCircle(x, y) {
-    this.data.circles.push(this.mapDataToCircle({x: x, y: y}));
-    this.drawCircles();
   }
   mapDataToCircle(data) {
     return new Circle(
@@ -92,7 +88,11 @@ export default class Visualization {
   draw() {
     this.drawCircles();
   }
-  registerEvents() {
+  addCircle(x, y) {
+    this.data.circles.push(this.mapDataToCircle({x: x, y: y}));
+    this.drawCircles();
+  }
+  addEventListeners() {
     document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
       this.onClickSvg(e);
     });
