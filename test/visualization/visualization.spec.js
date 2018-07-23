@@ -173,5 +173,32 @@ describe('Visualization', () => {
       expect(circle).to.have.attr('cy', event.offsetY.toString());
       expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
     });
+    it('should not draw new circle if event has no target', () => {
+      // given
+      const vis = new Visualization([], options);
+      const event = {
+        offsetX: 100,
+        offsetY: 200
+      };
+      // when
+      vis.onClickSvg(event);
+      // then
+      expect(document.querySelector('svg')).to.not.contain('circle');
+    });
+    it('should not draw new circle if event target does not have same id as given svg', () => {
+      // given
+      const vis = new Visualization([], options);
+      const event = {
+        target: {
+          id: 'd3ml-' + Date.now()
+        },
+        offsetX: 100,
+        offsetY: 200
+      };
+      // when
+      vis.onClickSvg(event);
+      // then
+      expect(document.querySelector('svg')).to.not.contain('circle');
+    });
   });
 });
