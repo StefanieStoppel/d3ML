@@ -10,9 +10,11 @@ export default class Visualization {
   constructor(data, options) {
     this.options = Object.assign({}, defaultOptions, options);
     this.data = this.initData(data);
+    this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
     this.xScale = this.createXScale();
     this.yScale = this.createYScale();
+    this.registerEvents();
   }
   validateData(data) {
     // isArray and contains objects with correct keys x and y while values are numeric
@@ -21,14 +23,16 @@ export default class Visualization {
         return Object.entries(val).reduce((result, entry) => {
           const key = entry[0];
           const val = entry[1];
-          return result
-            && ['x', 'y'].includes(key)
-            && typeof val === 'number'
-            && val !== Infinity
-            && val !== -Infinity;
+
+          return result &&
+            ['x', 'y'].includes(key) &&
+            typeof val === 'number' &&
+            val !== Infinity &&
+            val !== -Infinity;
         }, true);
-      }, true)
+      }, true);
     }
+
     return false;
   }
   initData(data) {
@@ -45,7 +49,8 @@ export default class Visualization {
     };
   }
   addCircle(x, y) {
-    this.data.circles = this.data.circles.concat(this.mapDataToCircle({x: x, y: y}));
+    this.data.circles.push(this.mapDataToCircle({x: x, y: y}));
+    this.drawCircles();
   }
   mapDataToCircle(data) {
     return new Circle(
@@ -58,6 +63,7 @@ export default class Visualization {
   appendSVG() { // todo: test
     return d3.select(this.options.rootNode)
       .append('svg')
+      .attr('id', this.svgId)
       .attr('width', this.options.width)
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
@@ -85,5 +91,15 @@ export default class Visualization {
   }
   draw() {
     this.drawCircles();
+  }
+  registerEvents() {
+    document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
+      this.onClickSvg(e);
+    });
+  }
+  onClickSvg(e) {
+    if (e.target && e.target.id === this.svgId) {
+      this.addCircle(this.xScale.invert(e.offsetX), this.yScale.invert(e.offsetY));
+    }
   }
 }

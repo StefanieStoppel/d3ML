@@ -1,15 +1,14 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import Circle from '../../src/visualization/circle'
-import { defaultType, defaultOptions } from '../../src/visualization/defaults'
+import Circle from '../../src/visualization/circle';
+import { defaultType, defaultOptions } from '../../src/visualization/defaults';
 
 const expect = chai.expect;
 
-
 describe('Circle', () => {
   describe('constructor', () => {
-    it('should construct Circle with correct values', function() {
+    it('should construct Circle with correct values', () => {
       // given
       const params = {
         cx: 4,
@@ -29,7 +28,7 @@ describe('Circle', () => {
       expect(circle.stroke).to.equal(params.stroke);
       expect(circle.type).to.equal(params.type);
     });
-    it('should construct circle with default values', function() {
+    it('should construct circle with default values', () => {
       // when
       const circle = new Circle();
       // then

@@ -1,10 +1,11 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import Visualization from '../../src/visualization/visualization'
-import { defaultType, defaultOptions } from '../../src/visualization/defaults'
-import Circle from "../../src/visualization/circle";
+import chaiDom from 'chai-dom';
+import Visualization from '../../src/visualization/visualization';
+import Circle from '../../src/visualization/circle';
 
+chai.use(chaiDom);
 const expect = chai.expect;
 
 describe('Visualization', () => {
@@ -32,7 +33,11 @@ describe('Visualization', () => {
       circleRadius: 42,
       circleFill: 'black',
       circleStroke: '#14dfe2'
-    }
+    };
+  });
+  afterEach(() => {
+    const svg = document.querySelector('svg');
+    svg.remove();
   });
   describe('constructor', () => {
     it('should initialize options correctly', () => {
@@ -128,7 +133,8 @@ describe('Visualization', () => {
         circleStroke: 'blue'
       };
       const givenData = { x: 13, y: 42 };
-      const givenCircle = new Circle(13, 42, givenOptions.circleRadius, givenOptions.circleFill, givenOptions.circleStroke);
+      const givenCircle =
+        new Circle(13, 42, givenOptions.circleRadius, givenOptions.circleFill, givenOptions.circleStroke);
       const vis = new Visualization(data, givenOptions);
       // when
       const circle = vis.mapDataToCircle(givenData, givenOptions);
@@ -145,6 +151,27 @@ describe('Visualization', () => {
       vis.addCircle(1, 2);
       // then
       expect(vis.data.circles.pop()).to.deep.equal(givenCircle);
+    });
+  });
+  describe('onClickSvg', () => {
+    it('should draw new circle at correct position and with correct attributes', () => {
+      // given
+      const vis = new Visualization(data, options);
+      vis.draw();
+      const event = {
+        target: {
+          id: vis.svgId
+        },
+        offsetX: 100,
+        offsetY: 200
+      };
+      // when
+      vis.onClickSvg(event);
+      // then
+      const circle = document.querySelector('circle:last-of-type');
+      expect(circle).to.have.attr('cx', event.offsetX.toString());
+      expect(circle).to.have.attr('cy', event.offsetY.toString());
+      expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
     });
   });
 });
