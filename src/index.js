@@ -21,3 +21,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
   const vis = new Visualization(data, options);
   vis.draw();
 });
+
+export default Visualization;
