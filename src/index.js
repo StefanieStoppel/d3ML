@@ -22,4 +22,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   vis.draw();
 });
 
-export default Visualization;
+export {
+  Visualization
+};
