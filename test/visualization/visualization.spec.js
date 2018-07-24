@@ -115,14 +115,16 @@ describe('Visualization', () => {
         circleFill: 'green',
         circleStroke: 'blue'
       };
-      const givenData = { x: 13, y: 42 };
+      const givenData = { x: 13, y: 42, type: 'A' };
       const vis = new Visualization(data, givenOptions);
+      const color = vis.typeColorMap[givenData.type];
       const givenCircle = new Circle(
         vis.xScale(13),
         vis.yScale(42),
         givenOptions.circleRadius,
-        givenOptions.circleFill,
-        givenOptions.circleStroke
+        color,
+        givenOptions.circleStroke,
+        givenData.type
       );
       // when
       const circle = vis.mapDataToCircle(givenData, givenOptions);
@@ -331,10 +333,10 @@ describe('Visualization', () => {
   });
   describe('validateTypes', () => {
     const typeDataValid = [
-      ['foo', 'bar', defaultType],
+      [ 'foo', 'bar', defaultType ],
       [ 'A', 'B' ],
       [ defaultType ],
-      ['Z']
+      [ 'Z' ]
     ];
     typeDataValid.forEach(types => {
       it(`should return true for validation of ${types}`, () => {
@@ -356,8 +358,8 @@ describe('Visualization', () => {
     ];
     typeDataInvalid.forEach(types => {
       it(`should return false for validation of ${types}`, () => {
-        const vis = new Visualization(data, options);
         // given
+        const vis = new Visualization(data, options);
         // when
         const result = vis.validateTypes(types);
         // then

@@ -42,11 +42,12 @@ export default class Visualization {
     return result;
   }
   mapDataToCircle(data) {
+    const color = data.type ? this.typeColorMap[data.type] : this.options.circleFill;
     return new Circle(
       this.xScale(data.x),
       this.yScale(data.y),
       this.options.circleRadius,
-      this.options.circleFill,
+      color,
       this.options.circleStroke,
       data.type);
   }
@@ -116,5 +117,4 @@ export default class Visualization {
       return map;
     }, {});
   }
-
 }
