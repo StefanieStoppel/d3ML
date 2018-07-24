@@ -15,9 +15,10 @@ export default class KNN extends MachineLearningAlgorithm {
     return neighbors.filter(n => n !== newCircle)
       .map(n => {
         n.distance = this.calculateDistance(n, newCircle);
-        return n
+
+        return n;
       })
-      .sort((a,b) => a.distance > b.distance)
+      .sort((a, b) => a.distance > b.distance)
       .filter((n, i) => i < k);
   }
   determineCircleType(kClosestNeighbors) {
@@ -26,11 +27,13 @@ export default class KNN extends MachineLearningAlgorithm {
       .forEach(type => {
         counts[type] = counts[type] ? counts[type] + 1 : 1;
       });
-    return Object.entries(counts).sort((a,b) => a[1] < b[1])[0][0];
+
+    return Object.entries(counts).sort((a, b) => a[1] < b[1])[0][0];
   }
   classify(newCircle) { // todo: test
     this.kClosestNeighbors = this.findKClosestNeighbors(newCircle, this.circles, this.k);
     this.circles.push(newCircle);
+
     return this.determineCircleType(this.kClosestNeighbors);
   }
 }

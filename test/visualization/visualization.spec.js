@@ -167,7 +167,7 @@ describe('Visualization', () => {
     ];
     failingTests.forEach(test => {
       it(`should return false when event has invalid target: 
-      ${!!test.event.target ? Object.entries(test.event.target) : test.event.target}`, () => {
+      ${test.event.target ? Object.entries(test.event.target) : test.event.target}`, () => {
         // given
         const vis = new Visualization([], options);
         // when

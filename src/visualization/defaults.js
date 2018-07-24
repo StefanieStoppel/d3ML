@@ -16,8 +16,11 @@ const defaultTypes = {
   None: 'None'
 };
 
+const defaultK = 3;
+
 export default {
   defaultOptions,
   defaultType,
-  defaultTypes
+  defaultTypes,
+  defaultK
 };

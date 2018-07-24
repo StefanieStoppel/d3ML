@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach, afterEach */
+/* global describe, it */
 
 import chai from 'chai';
 import chaiDom from 'chai-dom';
@@ -24,7 +24,7 @@ describe('KNN', () => {
         new Circle(4, 5, 4, 'red', 'blue', givenTypes.foo),
         new Circle(1123, 53, 4, 'red', 'blue', givenTypes.bar),
         new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar),
-        new Circle(435, 42, 4, 'red', 'blue', givenTypes.None),
+        new Circle(435, 42, 4, 'red', 'blue', givenTypes.None)
       ];
       // when
       const knn = new Knn(givenCircles, givenK, givenTypes);
@@ -49,7 +49,7 @@ describe('KNN', () => {
         new Circle(2, 3, 4, 'red', 'blue', givenTypes.foo),
         new Circle(4, 5, 4, 'red', 'blue', givenTypes.foo),
         new Circle(1123, 53, 4, 'red', 'blue', givenTypes.bar),
-        new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar),
+        new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar)
       ];
       const knn = new Knn(givenCircles, givenK, givenTypes);
       const newCircle = new Circle(0, 0, 'red', 'blue', givenTypes.None);
@@ -58,8 +58,9 @@ describe('KNN', () => {
       // then
       let expected = givenCircles.map(c => {
         c.distance = knn.calculateDistance(c, newCircle);
+
         return c;
-      }).sort((a,b) => a.distance > b.distance);
+      }).sort((a, b) => a.distance > b.distance);
       expected.pop();
 
       expect(kClosestNeighbors).to.deep.equal(expected);
@@ -77,12 +78,12 @@ describe('KNN', () => {
       const givenKClosestNeighbors = [
         new Circle(1, 2, 4, 'red', 'blue', givenTypes.foo),
         new Circle(2, 3, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(4, 5, 4, 'red', 'blue', givenTypes.bar),
+        new Circle(4, 5, 4, 'red', 'blue', givenTypes.bar)
       ];
       const givenCircles = [
         ... givenKClosestNeighbors,
         new Circle(4, 8, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(6, 8, 4, 'red', 'blue', givenTypes.bar),
+        new Circle(6, 8, 4, 'red', 'blue', givenTypes.bar)
       ];
       const knn = new Knn(givenCircles, givenK, givenTypes);
       const expectedType = givenTypes.foo;
@@ -101,7 +102,7 @@ describe('KNN', () => {
       };
       const givenCircles = [
         new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar),
-        new Circle(1, 2, 4, 'red', 'blue', givenTypes.foo),
+        new Circle(1, 2, 4, 'red', 'blue', givenTypes.foo)
       ];
       const knn = new Knn([], givenK, givenTypes);
       // when
