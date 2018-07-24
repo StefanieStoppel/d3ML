@@ -1,8 +1,7 @@
 import MachineLearningAlgorithm from './machine-learning-algorithm';
-import { defaultTypes } from '../visualization/defaults';
 
 export default class KNN extends MachineLearningAlgorithm {
-  constructor(circles, k, types = defaultTypes) {
+  constructor(circles, k, types) {
     super(circles);
     this.k = k;
     this.types = types;
@@ -15,6 +14,7 @@ export default class KNN extends MachineLearningAlgorithm {
     return neighbors.filter(n => n !== newCircle)
       .map(n => {
         n.setDistance(this.calculateDistance(n, newCircle));
+
         return n;
       })
       .sort((a, b) => a.distance > b.distance)

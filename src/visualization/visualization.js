@@ -1,13 +1,13 @@
 import * as d3 from 'd3';
 import Circle from './circle';
-import { defaultOptions, defaultTypes } from './defaults';
+import { defaultOptions, defaultType } from './defaults';
 
 export default class Visualization {
-  constructor(data, options, types) {
+  constructor(data, options, types = [defaultType]) {
     this.options = Object.assign({}, defaultOptions, options);
-    this.types = Object.assign({}, defaultTypes, types);
     this.xScale = this.createXScale(data);
     this.yScale = this.createYScale(data);
+    this.typeColorMap = this.mapTypesToColors(types); // todo: validate types
     this.data = data.map(d => this.mapDataToCircle(d));
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
@@ -26,6 +26,16 @@ export default class Visualization {
             val !== Infinity &&
             val !== -Infinity;
         }, true);
+      }, true);
+    }
+
+    return result;
+  }
+  validateTypes(types) {
+    let result = false;
+    if (!!types && Array.isArray(types) && types.length > 0) {
+      result = types.reduce((res, type) => {
+        return res && !!type;
       }, true);
     }
 
@@ -97,4 +107,14 @@ export default class Visualization {
   draw() {
     this.drawCircles();
   }
+  mapTypesToColors(types) {
+    const colorScale = d3.scaleOrdinal(d3.schemeSet1);
+
+    return types.reduce((map, type) => {
+      map[type] = colorScale(type);
+
+      return map;
+    }, {});
+  }
+
 }

@@ -6,7 +6,8 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Visualization from '../../src/visualization/visualization';
 import Circle from '../../src/visualization/circle';
-import KNNVisualization from "../../src/visualization/knn-visualization";
+import { defaultType } from '../../src/visualization/defaults';
+import { scaleOrdinal, schemeSet1 } from 'd3';
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -307,6 +308,61 @@ describe('Visualization', () => {
       expect(yScale.domain()[1]).to.equal(expectedYDomain.max);
       expect(yScale.range()[0]).to.equal(expectedYRange.min);
       expect(yScale.range()[1]).to.equal(expectedYRange.max);
+    });
+  });
+  describe('mapTypeToColor', () => {
+    const typeData = [
+      ['foo', 'bar', defaultType],
+      [ 'A', 'B' ],
+      [ defaultType ]
+    ];
+    typeData.forEach(types => {
+      it(`should map types ${types} to colors correctly`, () => {
+        const vis = new Visualization(data, options, types);
+        const colorScale = scaleOrdinal(schemeSet1);
+        // when
+        const colorMapping = vis.mapTypesToColors(types);
+        // then
+        types.forEach(type => {
+          expect(colorMapping[type]).to.equal(colorScale(type));
+        });
+      });
+    });
+  });
+  describe('validateTypes', () => {
+    const typeDataValid = [
+      ['foo', 'bar', defaultType],
+      [ 'A', 'B' ],
+      [ defaultType ],
+      ['Z']
+    ];
+    typeDataValid.forEach(types => {
+      it(`should return true for validation of ${types}`, () => {
+        const vis = new Visualization(data, options, types);
+        // given
+        // when
+        const result = vis.validateTypes(types);
+        // then
+        expect(result).to.be.true;
+      });
+    });
+    const typeDataInvalid = [
+      {},
+      null,
+      [],
+      undefined,
+      'A',
+      7
+    ];
+    typeDataInvalid.forEach(types => {
+      it(`should return false for validation of ${types}`, () => {
+        const vis = new Visualization(data, options);
+        // given
+        // when
+        const result = vis.validateTypes(types);
+        // then
+        expect(result).to.be.false;
+      });
     });
   });
 });

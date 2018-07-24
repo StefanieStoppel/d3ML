@@ -4,7 +4,6 @@ import chai from 'chai';
 import chaiDom from 'chai-dom';
 import KNNVisualization from '../../src/visualization/knn-visualization';
 import Circle from '../../src/visualization/circle';
-import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 chai.use(chaiDom);
@@ -71,11 +70,11 @@ describe('KNNVisualization', () => {
         expect(line).to.have.attr('x2', connectingLines[idx].x2.toString());
         expect(line).to.have.attr('y1', connectingLines[idx].y1.toString());
         expect(line).to.have.attr('y2', connectingLines[idx].y2.toString());
-        expect(line).to.have.attr('style', `stroke: rgba(230,230,230,0.5);`);
+        expect(line).to.have.attr('style', 'stroke: rgba(230,230,230,0.5);');
         expect(line).to.have.attr('stroke-width', '2');
         expect(line).to.have.class('remove');
       });
-    })
+    });
   });
   describe('mapClosestNeighborsToConnectingLines', () => {
     it('should map closest neighbors to lines correctly', () => {
@@ -89,7 +88,7 @@ describe('KNNVisualization', () => {
       vis.knn.kClosestNeighbors = [
         new Circle(2, 2),
         new Circle(0, -2),
-        new Circle(4, 8),
+        new Circle(4, 8)
       ];
       const circle = new Circle(1, 2);
       // when
@@ -103,7 +102,7 @@ describe('KNNVisualization', () => {
         expect(line.stroke).to.equal('rgba(230,230,230,0.5)');
         expect(line.strokeWidth).to.equal(2);
       });
-    })
+    });
     describe('getBoundingCircle', () => {
       it('should return correct bounding circle', () => {
         // given
