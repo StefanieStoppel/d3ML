@@ -43,17 +43,6 @@ export default class KNNVisualization extends Visualization {
       };
     });
   }
-  drawBoundingCircle(boundingCircle) {
-    this.svg.selectAll('circle')
-      .data(boundingCircle)
-      .enter().append('circle')
-      .style('stroke', function (d) { return d.stroke; })
-      .style('fill', function (d) { return d.fill; })
-      .attr('r', function (d) { return d.radius; })
-      .attr('cx', function (d) { return d.cx; })
-      .attr('cy', function (d) { return d.cy; })
-      .attr('class', 'remove');
-  }
   drawConnectingLines(connectingLines) {
     this.svg.selectAll('line')
       .data(connectingLines)
