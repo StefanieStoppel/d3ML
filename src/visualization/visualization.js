@@ -32,8 +32,6 @@ export default class Visualization {
     return result;
   }
   mapDataToCircle(data) {
-    const type = data.type ? data.type : defaultTypes.None;
-
     return new Circle(
       this.xScale(data.x),
       this.yScale(data.y),
@@ -62,7 +60,7 @@ export default class Visualization {
     this.data.push(circle);
     this.drawCircles();
   }
-  appendSVG() { // todo: test
+  appendSVG() {
     return d3.select(this.options.rootNode)
       .append('svg')
       .attr('id', this.svgId)
@@ -86,7 +84,7 @@ export default class Visualization {
       ])
       .range([0, this.options.height]);
   }
-  drawCircles() { // todo: test
+  drawCircles() {
     this.svg.selectAll('circle')
       .data(this.data)
       .enter().append('circle')

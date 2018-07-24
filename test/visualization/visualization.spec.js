@@ -39,8 +39,10 @@ describe('Visualization', () => {
     };
   });
   afterEach(() => {
-    const svg = document.querySelector('svg');
-    svg.remove();
+    const svgs = Array.from(document.querySelectorAll('svg'));
+    svgs.forEach(svg => {
+      svg.remove();
+    });
   });
   describe('constructor', () => {
     it('should initialize options correctly', () => {
@@ -216,6 +218,27 @@ describe('Visualization', () => {
       expect(svg).to.have.attr('width', options.width.toString());
       expect(svg).to.have.attr('height', options.height.toString());
       expect(svg).to.have.attr('style', `background-color: ${options.backgroundColor};`);
+    });
+  });
+  describe('drawCircles', () => {
+    it('should draw circles with correct attributes', () => {
+      // given
+      const givenData = [
+        { x: 1, y: 3 },
+        { x: 2, y: 4 },
+        { x: 4, y: 6 },
+      ];
+      const vis = new Visualization(givenData, options);
+      // when
+      vis.drawCircles();
+      // then
+      const circles = Array.from(document.querySelectorAll('circle'));
+      circles.forEach((circle, idx) => {
+        expect(circle).to.have.attr('r', options.circleRadius.toString());
+        expect(circle).to.have.attr('cx', vis.xScale(givenData[idx].x).toString());
+        expect(circle).to.have.attr('cy', vis.yScale(givenData[idx].y).toString());
+        expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
+      });
     });
   });
 });
