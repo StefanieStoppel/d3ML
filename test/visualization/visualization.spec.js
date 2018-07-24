@@ -241,4 +241,66 @@ describe('Visualization', () => {
       });
     });
   });
+  describe('createXScale', () => {
+    it('should create xScale correctly', () => {
+      // given
+      const givenOptions = Object.assign({}, options, {
+        width: 500,
+        height: 600,
+        padding: 10
+      });
+      const givenData = [
+        { x: 1, y: 3 },
+        { x: 2, y: 4 },
+        { x: 4, y: 100 },
+      ];
+      const expectedXDomain = {
+        min: givenData[0].x - givenOptions.padding,
+        max: givenData[2].x + givenOptions.padding
+      };
+      const expectedXRange = {
+        min: 0,
+        max: givenOptions.width
+      };
+      const vis = new Visualization(givenData, givenOptions);
+      // when
+      const xScale = vis.createXScale(givenData);
+      // then
+      expect(xScale.domain()[0]).to.equal(expectedXDomain.min);
+      expect(xScale.domain()[1]).to.equal(expectedXDomain.max);
+      expect(xScale.range()[0]).to.equal(expectedXRange.min);
+      expect(xScale.range()[1]).to.equal(expectedXRange.max);
+    });
+  });
+  describe('createYScale', () => {
+    it('should create yScale correctly', () => {
+      // given
+      const givenOptions = Object.assign({}, options, {
+        width: 500,
+        height: 600,
+        padding: 10
+      });
+      const givenData = [
+        { x: 1, y: 7 },
+        { x: 2, y: 4 },
+        { x: 4, y: 100 },
+      ];
+      const expectedYDomain = {
+        min: givenData[1].y - givenOptions.padding,
+        max: givenData[2].y + givenOptions.padding
+      };
+      const expectedYRange = {
+        min: 0,
+        max: givenOptions.height
+      };
+      const vis = new Visualization(givenData, givenOptions);
+      // when
+      const yScale = vis.createYScale(givenData);
+      // then
+      expect(yScale.domain()[0]).to.equal(expectedYDomain.min);
+      expect(yScale.domain()[1]).to.equal(expectedYDomain.max);
+      expect(yScale.range()[0]).to.equal(expectedYRange.min);
+      expect(yScale.range()[1]).to.equal(expectedYRange.max);
+    });
+  });
 });

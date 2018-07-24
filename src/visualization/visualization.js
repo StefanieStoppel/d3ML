@@ -68,7 +68,7 @@ export default class Visualization {
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
   }
-  createXScale(data) { // todo:  test
+  createXScale(data) {
     return d3.scaleLinear()
       .domain([
         d3.min(data, function (d) { return d.x; }) - this.options.padding,
@@ -76,7 +76,7 @@ export default class Visualization {
       ])
       .range([0, this.options.width]);
   }
-  createYScale(data) { // todo: test
+  createYScale(data) {
     return d3.scaleLinear()
       .domain([
         d3.min(data, function (d) { return d.y; }) - this.options.padding,
