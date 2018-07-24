@@ -36,8 +36,8 @@ export default class Visualization {
     const type = data.type ? data.type : defaultTypes.None;
 
     return new Circle(
-      data.x,
-      data.y,
+      this.xScale(data.x),
+      this.yScale(data.y),
       this.options.circleRadius,
       this.options.circleFill,
       this.options.circleStroke,
@@ -91,15 +91,14 @@ export default class Visualization {
       .range([0, this.options.height]);
   }
   drawCircles() { // todo: test
-    const that = this;
     this.svg.selectAll('circle')
       .data(this.data)
       .enter().append('circle')
       .style('stroke', function (d) { return d.stroke; })
       .style('fill', function (d) { return d.fill; })
       .attr('r', function (d) { return d.radius; })
-      .attr('cx', function (d) { return that.xScale(d.cx); })
-      .attr('cy', function (d) { return that.yScale(d.cy); });
+      .attr('cx', function (d) { return d.cx; })
+      .attr('cy', function (d) { return d.cy; });
   }
   draw() {
     this.drawCircles();

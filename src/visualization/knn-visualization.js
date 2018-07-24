@@ -27,37 +27,31 @@ export default class KNNVisualization extends Visualization {
     this.drawConnectingLines(connectingLines);
   }
   getBoundingCircle(circle, furthestNeighbor) {
-    // todo: replace this with a better version
-    // todo: find out why it's not always the furthest neighbor
-    const c = { cx: this.xScale(circle.cx), cy: this.yScale(circle.cy) };
-    const fn = { cx: this.xScale(furthestNeighbor.cx), cy: this.yScale(furthestNeighbor.cy) };
-    const d = this.knn.calculateDistance(c, fn);
-    const radius = d + this.options.circleRadius;
+    const radius = furthestNeighbor.distance + this.options.circleRadius;
 
     return new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');
   }
   getConnectingLines(circle) {
     return this.knn.kClosestNeighbors.map(n => {
       return {
-        x1: this.xScale(n.cx),
-        x2: this.xScale(circle.cx),
-        y1: this.yScale(n.cy),
-        y2: this.yScale(circle.cy),
+        x1: n.cx,
+        x2: circle.cx,
+        y1: n.cy,
+        y2: circle.cy,
         strokeWidth: 2,
         stroke: 'rgba(230,230,230,0.5)'
       };
     });
   }
   drawBoundingCircle(boundingCircle) {
-    const that = this;
     this.svg.selectAll('circle')
       .data(boundingCircle)
       .enter().append('circle')
       .style('stroke', function (d) { return d.stroke; })
       .style('fill', function (d) { return d.fill; })
       .attr('r', function (d) { return d.radius; })
-      .attr('cx', function (d) { return that.xScale(d.cx); })
-      .attr('cy', function (d) { return that.yScale(d.cy); })
+      .attr('cx', function (d) { return d.cx; })
+      .attr('cy', function (d) { return d.cy; })
       .attr('class', 'remove');
   }
   drawConnectingLines(connectingLines) {
