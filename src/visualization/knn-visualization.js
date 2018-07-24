@@ -13,7 +13,7 @@ export default class KNNVisualization extends Visualization {
     this.onClickSvg([this.classifyAndAddCircle, this.addBoundingCircle, this.addConnectingLines]);
   }
   classifyAndAddCircle(circle) {
-    const circleType = this.knn.classify(circle); // this is called twice
+    const circleType = this.knn.classify(circle);
     circle.setType(circleType);
     super.addCircle(circle);
   }

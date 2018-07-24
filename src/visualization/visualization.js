@@ -11,7 +11,6 @@ export default class Visualization {
     this.data = data.map(d => this.mapDataToCircle(d));
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
-    // this.addEventListeners();
   }
   validateData(data) {
     let result = false;
@@ -42,9 +41,6 @@ export default class Visualization {
       this.options.circleFill,
       this.options.circleStroke,
       type);
-  }
-  addEventListeners() {
-    this.onClickSvg([this.addCircle]);
   }
   onClickSvg(callbacks) { // todo: test
     document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
