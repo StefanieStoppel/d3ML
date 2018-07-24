@@ -7,7 +7,11 @@ export default class Visualization {
     this.options = Object.assign({}, defaultOptions, options);
     this.xScale = this.createXScale(data);
     this.yScale = this.createYScale(data);
-    this.typeColorMap = this.mapTypesToColors(types); // todo: validate types
+    if (this.validateTypes(types)) {
+      this.typeColorMap = this.mapTypesToColors(types); // todo: validate types
+    } else {
+      this.typeColorMap = this.mapTypesToColors([defaultType]);
+    }
     this.data = data.map(d => this.mapDataToCircle(d));
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
@@ -41,13 +45,17 @@ export default class Visualization {
 
     return result;
   }
+  getFillColor(data) { // todo: test
+    return data.type ? this.typeColorMap[data.type] : this.options.circleFill;
+  }
   mapDataToCircle(data) {
-    const color = data.type ? this.typeColorMap[data.type] : this.options.circleFill;
+    const fillColor = this.getFillColor(data);
+
     return new Circle(
       this.xScale(data.x),
       this.yScale(data.y),
       this.options.circleRadius,
-      color,
+      fillColor,
       this.options.circleStroke,
       data.type);
   }
@@ -96,6 +104,7 @@ export default class Visualization {
       .range([0, this.options.height]);
   }
   drawCircles() {
+    const that = this;
     this.svg.selectAll('circle')
       .data(this.data)
       .enter().append('circle')
@@ -103,7 +112,9 @@ export default class Visualization {
       .style('fill', function (d) { return d.fill; })
       .attr('r', function (d) { return d.radius; })
       .attr('cx', function (d) { return d.cx; })
-      .attr('cy', function (d) { return d.cy; });
+      .attr('cy', function (d) { return d.cy; })
+      .transition().duration(1500)
+      .style('fill', function (d) { return d.type === defaultType ? d.fill : that.typeColorMap[d.type]; });
   }
   draw() {
     this.drawCircles();
@@ -111,10 +122,13 @@ export default class Visualization {
   mapTypesToColors(types) {
     const colorScale = d3.scaleOrdinal(d3.schemeSet1);
 
-    return types.reduce((map, type) => {
+    const colorMap = types.reduce((map, type) => {
       map[type] = colorScale(type);
 
       return map;
     }, {});
+    colorMap[defaultType] = colorScale(defaultType);
+
+    return colorMap;
   }
 }

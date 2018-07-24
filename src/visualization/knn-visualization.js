@@ -5,8 +5,6 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
- * - change color depending on type (statically pick color)
- * - add flexible color mapping with a scale
  * - add class .remove to bounding circle and lines
  * - remove them after a few seconds
  * - add transitions
@@ -14,8 +12,8 @@ import KNN from '../algorithms/knn';
  */
 
 export default class KNNVisualization extends Visualization {
-  constructor(data, options, k = defaultK, types) {
-    super(data, options);
+  constructor(data, options, types, k = defaultK) {
+    super(data, options, types);
     this.knn = new KNN(this.data, k, types);
     this.addEventListeners();
   }
@@ -25,10 +23,11 @@ export default class KNNVisualization extends Visualization {
   classifyAndAddCircle(circle) { // todo: test
     const circleType = this.knn.classify(circle);
     circle.setType(circleType);
-    super.addCircle(circle);
+    // circle.setFill(this.typeColorMap[circleType]);
+    this.data.push(circle);
   }
   addBoundingCircle(circle) { // todo: test
-    const boundingCircle = this.getBoundingCircle(circle, this.knn.kClosestNeighbors[this.knn.k - 1]);
+    const boundingCircle = this.getBoundingCircle(circle, this.knn.furthestNeighborOfKClosest);
     this.addCircle(boundingCircle);
     this.drawCircles();
   }

@@ -5,7 +5,7 @@ const defaultOptions = {
   padding: 50,
   backgroundColor: '#1d1e22',
   circleRadius: 5,
-  circleFill: 'yellow',
+  circleFill: 'grey',
   circleStroke: 'white'
 };
 const defaultType = 'None';

@@ -35,4 +35,7 @@ export default class KNN extends MachineLearningAlgorithm {
 
     return this.determineCircleType(this.kClosestNeighbors);
   }
+  get furthestNeighborOfKClosest() {
+    return this.kClosestNeighbors[this.k - 1];
+  }
 }
