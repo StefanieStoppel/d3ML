@@ -6,18 +6,11 @@ export default class Visualization {
   constructor(data, options, types) {
     this.options = Object.assign({}, defaultOptions, options);
     this.types = Object.assign({}, defaultTypes, types);
-    this.xScale = this.createXScale(
-      d3.min(data, function (d) { return d.x; }),
-      d3.max(data, function (d) { return d.x; })
-    );
-    this.yScale = this.createYScale(
-      d3.min(data, function (d) { return d.y; }),
-      d3.max(data, function (d) { return d.y; })
-    );
-    this.data = this.initData(data);
+    this.xScale = this.createXScale(data);
+    this.yScale = this.createYScale(data);
+    this.data = data.map(d => this.mapDataToCircle(d));
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
-
     // this.addEventListeners();
   }
   validateData(data) {
@@ -38,11 +31,6 @@ export default class Visualization {
     }
 
     return result;
-  }
-  initData(data) {
-    return {
-      circles: data.map(d => this.mapDataToCircle(d))
-    };
   }
   mapDataToCircle(data) {
     const type = data.type ? data.type : defaultTypes.None;
@@ -76,7 +64,7 @@ export default class Visualization {
     }
   }
   addCircle(circle) {
-    this.data.circles.push(circle);
+    this.data.push(circle);
   }
   appendSVG() { // todo: test
     return d3.select(this.options.rootNode)
@@ -86,20 +74,26 @@ export default class Visualization {
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
   }
-  createXScale(minX, maxX) { // todo: test
+  createXScale(data) { // todo: test
     return d3.scaleLinear()
-      .domain([minX - this.options.padding, maxX + this.options.padding])
+      .domain([
+        d3.min(data, function (d) { return d.x; }) - this.options.padding,
+        d3.max(data, function (d) { return d.x; }) + this.options.padding
+      ])
       .range([0, this.options.width]);
   }
-  createYScale(minY, maxY) { // todo: test
+  createYScale(data) { // todo: test
     return d3.scaleLinear()
-      .domain([minY - this.options.padding, maxY + this.options.padding])
+      .domain([
+        d3.min(data, function (d) { return d.y; }) - this.options.padding,
+        d3.max(data, function (d) { return d.y; }) + this.options.padding
+      ])
       .range([0, this.options.height]);
   }
   drawCircles() { // todo: test
     const that = this;
     this.svg.selectAll('circle')
-      .data(this.data.circles)
+      .data(this.data)
       .enter().append('circle')
       .style('stroke', function (d) { return d.stroke; })
       .style('fill', function (d) { return d.fill; })

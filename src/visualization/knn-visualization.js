@@ -6,7 +6,7 @@ import KNN from '../algorithms/knn';
 export default class KNNVisualization extends Visualization {
   constructor(data, options, k = defaultK, types) {
     super(data, options);
-    this.knn = new KNN(this.data.circles, k, types);
+    this.knn = new KNN(this.data, k, types);
     this.addEventListeners();
   }
   addEventListeners() {

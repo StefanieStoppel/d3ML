@@ -153,7 +153,7 @@ describe('Visualization', () => {
       // when
       vis.addCircle(givenCircle);
       // then
-      expect(vis.data.circles.pop()).to.deep.equal(givenCircle);
+      expect(vis.data.pop()).to.deep.equal(givenCircle);
     });
   });
   describe('isValidEventTarget', () => {
