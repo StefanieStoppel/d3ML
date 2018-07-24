@@ -2,11 +2,6 @@ import * as d3 from 'd3';
 import Circle from './circle';
 import { defaultOptions } from './defaults';
 
-/*
- *  TODOS:
- *  - remove data points
- */
-
 export default class Visualization {
   constructor(data, options) {
     this.options = Object.assign({}, defaultOptions, options);
@@ -57,6 +52,29 @@ export default class Visualization {
       this.options.circleFill,
       this.options.circleStroke);
   }
+  addEventListeners() {
+    this.onClickSvg([this.addCircle]);
+  }
+  onClickSvg(callbacks) { // todo: test
+    document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
+      this.clickCallback(e, callbacks);
+    });
+  }
+  isValidEventTarget(e) {
+    return !!e.target && e.target.id === this.svgId;
+  }
+  clickCallback(e, callbacks) {
+    if (this.isValidEventTarget(e)) {
+      const newCircle = this.mapDataToCircle({x: this.xScale.invert(e.offsetX), y: this.yScale.invert(e.offsetY)});
+      callbacks.forEach(callback => {
+        callback.call(this, newCircle);
+      });
+      this.draw();
+    }
+  }
+  addCircle(circle) {
+    this.data.circles.push(circle);
+  }
   appendSVG() { // todo: test
     return d3.select(this.options.rootNode)
       .append('svg')
@@ -74,20 +92,6 @@ export default class Visualization {
     return d3.scaleLinear()
       .domain([this.data.y.min - this.options.padding, this.data.y.max + this.options.padding])
       .range([0, this.options.height]);
-  }
-  addEventListeners() {
-    document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
-      this.onClickSvg(e);
-    });
-  }
-  onClickSvg(e) {
-    if (e.target && e.target.id === this.svgId) {
-      this.addCircle(this.xScale.invert(e.offsetX), this.yScale.invert(e.offsetY));
-    }
-  }
-  addCircle(x, y) {
-    this.data.circles.push(this.mapDataToCircle({x: x, y: y}));
-    this.drawCircles();
   }
   drawCircles() { // todo: test
     const that = this;

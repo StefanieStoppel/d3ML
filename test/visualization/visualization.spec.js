@@ -2,10 +2,13 @@
 
 import chai from 'chai';
 import chaiDom from 'chai-dom';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import Visualization from '../../src/visualization/visualization';
 import Circle from '../../src/visualization/circle';
 
 chai.use(chaiDom);
+chai.use(sinonChai);
 const expect = chai.expect;
 
 describe('Visualization', () => {
@@ -148,16 +151,50 @@ describe('Visualization', () => {
       const givenCircle = new Circle(1, 2, options.circleRadius, options.circleFill, options.circleStroke);
       const vis = new Visualization(data, options);
       // when
-      vis.addCircle(1, 2);
+      vis.addCircle(givenCircle);
       // then
       expect(vis.data.circles.pop()).to.deep.equal(givenCircle);
     });
   });
-  describe('onClickSvg', () => {
-    it('should draw new circle at correct position and with correct attributes', () => {
+  describe('isValidEventTarget', () => {
+    const failingTests = [
+      { event: { target: undefined, offsetX: 100, offsetY: 200 }},
+      { event: { target: null, offsetX: 100, offsetY: 200 }},
+      { event: { offsetX: 100, offsetY: 200 }},
+      { event: { target: {}, offsetX: 100, offsetY: 200 }},
+      { event: { target: { id: null }, offsetX: 100, offsetY: 200 }},
+      { event: { target: { id: 'd3ml-123456' }, offsetX: 100, offsetY: 200 }}
+    ];
+    failingTests.forEach(test => {
+      it(`should return false when event has invalid target: 
+      ${!!test.event.target ? Object.entries(test.event.target) : test.event.target}`, () => {
+        // given
+        const vis = new Visualization([], options);
+        // when
+        const result = vis.isValidEventTarget(test.event);
+        // then
+        expect(result).to.be.false;
+      });
+    });
+    it('should return true when event has valid target', () => {
+      // given
+      const vis = new Visualization([], options);
+      const event = {
+        target: {
+          id: vis.svgId
+        }
+      };
+      // when
+      const result = vis.isValidEventTarget(event);
+      // then
+      expect(result).to.be.true;
+    });
+  });
+  describe('clickCallback', () => {
+    it('should call passed callback', () => {
       // given
       const vis = new Visualization(data, options);
-      vis.draw();
+      const callback = sinon.spy();
       const event = {
         target: {
           id: vis.svgId
@@ -166,39 +203,28 @@ describe('Visualization', () => {
         offsetY: 200
       };
       // when
-      vis.onClickSvg(event);
+      vis.clickCallback(event, [callback]);
       // then
-      const circle = document.querySelector('circle:last-of-type');
-      expect(circle).to.have.attr('cx', event.offsetX.toString());
-      expect(circle).to.have.attr('cy', event.offsetY.toString());
-      expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
+      expect(callback).calledOnce;
     });
-    it('should not draw new circle if event has no target', () => {
+    it('should draw new circle at correct coordinates', () => {
       // given
-      const vis = new Visualization([], options);
-      const event = {
-        offsetX: 100,
-        offsetY: 200
-      };
-      // when
-      vis.onClickSvg(event);
-      // then
-      expect(document.querySelector('svg')).to.not.contain('circle');
-    });
-    it('should not draw new circle if event target does not have same id as given svg', () => {
-      // given
-      const vis = new Visualization([], options);
+      const vis = new Visualization(data, options);
+      const callbacks = [vis.addCircle];
       const event = {
         target: {
-          id: 'd3ml-' + Date.now()
+          id: vis.svgId
         },
         offsetX: 100,
         offsetY: 200
       };
       // when
-      vis.onClickSvg(event);
+      vis.clickCallback(event, callbacks);
       // then
-      expect(document.querySelector('svg')).to.not.contain('circle');
+      const circle = document.querySelector('circle:last-of-type');
+      expect(circle).to.have.attr('cx', event.offsetX.toString());
+      expect(circle).to.have.attr('cy', event.offsetY.toString());
+      expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
     });
   });
 });
