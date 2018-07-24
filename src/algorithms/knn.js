@@ -32,7 +32,7 @@ export default class KNN extends MachineLearningAlgorithm {
   }
   classify(newCircle) { // todo: test
     this.kClosestNeighbors = this.findKClosestNeighbors(newCircle, this.circles, this.k);
-    this.circles.push(newCircle);
+    this.addCircle(newCircle);
 
     return this.determineCircleType(this.kClosestNeighbors);
   }

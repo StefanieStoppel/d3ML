@@ -1,16 +1,17 @@
 import * as d3 from 'd3';
 import Circle from './circle';
-import { defaultOptions } from './defaults';
+import { defaultOptions, defaultTypes } from './defaults';
 
 export default class Visualization {
-  constructor(data, options) {
+  constructor(data, options, types) {
     this.options = Object.assign({}, defaultOptions, options);
+    this.types = Object.assign({}, defaultTypes, types);
     this.data = this.initData(data);
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
     this.xScale = this.createXScale();
     this.yScale = this.createYScale();
-    this.addEventListeners();
+    // this.addEventListeners();
   }
   validateData(data) {
     let result = false;
@@ -45,12 +46,15 @@ export default class Visualization {
     };
   }
   mapDataToCircle(data) {
+    const type = data.type ? data.type : defaultTypes.None;
+
     return new Circle(
       data.x,
       data.y,
       this.options.circleRadius,
       this.options.circleFill,
-      this.options.circleStroke);
+      this.options.circleStroke,
+      type);
   }
   addEventListeners() {
     this.onClickSvg([this.addCircle]);

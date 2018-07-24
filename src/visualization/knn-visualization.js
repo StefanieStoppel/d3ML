@@ -6,30 +6,45 @@ import KNN from '../algorithms/knn';
 export default class KNNVisualization extends Visualization {
   constructor(data, options, k = defaultK, types) {
     super(data, options);
-    this.knn = new KNN(data, k, types);
+    this.knn = new KNN(this.data.circles, k, types);
     this.addEventListeners();
   }
   addEventListeners() {
-    this.onClickSvg([this.addCircle, this.addBoundingCircleAndConnectingLines]);
+    this.onClickSvg([this.classifyAndAddCircle, this.addBoundingCircle, this.addConnectingLines]);
   }
-  addBoundingCircleAndConnectingLines(circle) {
+  classifyAndAddCircle(circle) {
+    const circleType = this.knn.classify(circle); // this is called twice
+    circle.setType(circleType);
+    super.addCircle(circle);
+  }
+  addBoundingCircle(circle) {
+    debugger // eslint-disable-line
     const boundingCircle = this.getBoundingCircle(circle, this.knn.kClosestNeighbors[this.knn.k - 1]);
+    this.addCircle(boundingCircle);
+    this.drawCircles();
+  }
+  addConnectingLines(circle) {
     const connectingLines = this.getConnectingLines(circle);
-    this.drawBoundingCircle(boundingCircle);
     this.drawConnectingLines(connectingLines);
   }
   getBoundingCircle(circle, furthestNeighbor) {
-    const radius = furthestNeighbor.distance + this.options.circleRadius;
+    // todo: replace this with a better version
+    // todo: find out why it's not always the furthest neighbor
+    const c = { cx: this.xScale(circle.cx), cy: this.yScale(circle.cy) };
+    const fn = { cx: this.xScale(furthestNeighbor.cx), cy: this.yScale(furthestNeighbor.cy) };
+    const d = this.knn.calculateDistance(c, fn);
+    const radius = d + this.options.circleRadius;
+    debugger // eslint-disable-line
 
-    return new Circle(circle.cx, circle.cy, radius, 'transparent', 'white', 'None');
+    return new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');
   }
   getConnectingLines(circle) {
     return this.knn.kClosestNeighbors.map(n => {
       return {
-        x1: n.cx,
-        x2: circle.cx,
-        y1: n.cy,
-        y2: circle.cy,
+        x1: this.xScale(n.cx),
+        x2: this.xScale(circle.cx),
+        y1: this.yScale(n.cy),
+        y2: this.yScale(circle.cy),
         strokeWidth: 2,
         stroke: 'rgba(230,230,230,0.5)'
       };
@@ -56,7 +71,7 @@ export default class KNNVisualization extends Visualization {
       .attr('x1', function (d) { return d.x1; })
       .attr('y1', function (d) { return d.y1; })
       .attr('x2', function (d) { return d.x2; })
-      .attr('y2'``, function (d) { return d.y2; })
+      .attr('y2', function (d) { return d.y2; })
       .attr('class', 'remove');
   }
 };
