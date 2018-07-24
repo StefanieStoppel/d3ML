@@ -115,8 +115,13 @@ describe('Visualization', () => {
       };
       const givenData = { x: 13, y: 42 };
       const vis = new Visualization(data, givenOptions);
-      const givenCircle =
-        new Circle(vis.xScale(13), vis.yScale(42), givenOptions.circleRadius, givenOptions.circleFill, givenOptions.circleStroke);
+      const givenCircle = new Circle(
+        vis.xScale(13),
+        vis.yScale(42),
+        givenOptions.circleRadius,
+        givenOptions.circleFill,
+        givenOptions.circleStroke
+      );
       // when
       const circle = vis.mapDataToCircle(givenData, givenOptions);
       // then
@@ -226,7 +231,7 @@ describe('Visualization', () => {
       const givenData = [
         { x: 1, y: 3 },
         { x: 2, y: 4 },
-        { x: 4, y: 6 },
+        { x: 4, y: 6 }
       ];
       const vis = new Visualization(givenData, options);
       // when
@@ -252,7 +257,7 @@ describe('Visualization', () => {
       const givenData = [
         { x: 1, y: 3 },
         { x: 2, y: 4 },
-        { x: 4, y: 100 },
+        { x: 4, y: 100 }
       ];
       const expectedXDomain = {
         min: givenData[0].x - givenOptions.padding,
@@ -283,7 +288,7 @@ describe('Visualization', () => {
       const givenData = [
         { x: 1, y: 7 },
         { x: 2, y: 4 },
-        { x: 4, y: 100 },
+        { x: 4, y: 100 }
       ];
       const expectedYDomain = {
         min: givenData[1].y - givenOptions.padding,
