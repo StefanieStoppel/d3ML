@@ -3,27 +3,37 @@ import { defaultK } from './defaults';
 import Visualization from './visualization';
 import KNN from '../algorithms/knn';
 
+/*
+ * TODO:
+ * - change color depending on type (statically pick color)
+ * - add flexible color mapping with a scale
+ * - add class .remove to bounding circle and lines
+ * - remove them after a few seconds
+ * - add transitions
+ * - add weighted
+ */
+
 export default class KNNVisualization extends Visualization {
   constructor(data, options, k = defaultK, types) {
     super(data, options);
     this.knn = new KNN(this.data, k, types);
     this.addEventListeners();
   }
-  addEventListeners() {
+  addEventListeners() { // todo: test
     this.onClickSvg([this.classifyAndAddCircle, this.addBoundingCircle, this.addConnectingLines]);
   }
-  classifyAndAddCircle(circle) {
+  classifyAndAddCircle(circle) { // todo: test
     const circleType = this.knn.classify(circle);
     circle.setType(circleType);
     super.addCircle(circle);
   }
-  addBoundingCircle(circle) {
+  addBoundingCircle(circle) { // todo: test
     const boundingCircle = this.getBoundingCircle(circle, this.knn.kClosestNeighbors[this.knn.k - 1]);
     this.addCircle(boundingCircle);
     this.drawCircles();
   }
-  addConnectingLines(circle) {
-    const connectingLines = this.getConnectingLines(circle);
+  addConnectingLines(circle) { // todo: test
+    const connectingLines = this.mapClosestNeighborsToConnectingLines(circle);
     this.drawConnectingLines(connectingLines);
   }
   getBoundingCircle(circle, furthestNeighbor) {
@@ -31,7 +41,7 @@ export default class KNNVisualization extends Visualization {
 
     return new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');
   }
-  getConnectingLines(circle) {
+  mapClosestNeighborsToConnectingLines(circle) {
     return this.knn.kClosestNeighbors.map(n => {
       return {
         x1: n.cx,

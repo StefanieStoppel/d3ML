@@ -14,8 +14,7 @@ export default class KNN extends MachineLearningAlgorithm {
   findKClosestNeighbors(newCircle, neighbors, k) {
     return neighbors.filter(n => n !== newCircle)
       .map(n => {
-        n.distance = this.calculateDistance(n, newCircle);
-
+        n.setDistance(this.calculateDistance(n, newCircle));
         return n;
       })
       .sort((a, b) => a.distance > b.distance)

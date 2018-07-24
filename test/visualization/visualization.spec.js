@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Visualization from '../../src/visualization/visualization';
 import Circle from '../../src/visualization/circle';
+import KNNVisualization from "../../src/visualization/knn-visualization";
 
 chai.use(chaiDom);
 chai.use(sinonChai);

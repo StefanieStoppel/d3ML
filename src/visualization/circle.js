@@ -14,6 +14,7 @@ export default class Circle {
     this.fill = fill;
     this.stroke = stroke;
     this.type = type;
+    this.distance = null;
   }
   setFill(fill) {
     this.fill = fill;
@@ -23,5 +24,8 @@ export default class Circle {
   }
   setType(type) {
     this.type = type;
+  }
+  setDistance(distance) {
+    this.distance = distance;
   }
 }
