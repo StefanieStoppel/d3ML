@@ -40,7 +40,7 @@ export default class Visualization {
       this.options.circleRadius,
       this.options.circleFill,
       this.options.circleStroke,
-      type);
+      data.type);
   }
   onClickSvg(callbacks) { // todo: test
     document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
@@ -56,11 +56,11 @@ export default class Visualization {
       callbacks.forEach(callback => {
         callback.call(this, newCircle);
       });
-      this.draw();
     }
   }
   addCircle(circle) {
     this.data.push(circle);
+    this.drawCircles();
   }
   appendSVG() { // todo: test
     return d3.select(this.options.rootNode)
@@ -70,7 +70,7 @@ export default class Visualization {
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
   }
-  createXScale(data) { // todo: test
+  createXScale(data) { // todo:  test
     return d3.scaleLinear()
       .domain([
         d3.min(data, function (d) { return d.x; }) - this.options.padding,

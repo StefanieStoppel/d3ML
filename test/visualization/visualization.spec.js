@@ -203,4 +203,19 @@ describe('Visualization', () => {
       expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
     });
   });
+  describe('appendSvg', () => {
+    it('should append svg with correct attributes', () => {
+      // given
+      const vis = new Visualization(data, options);
+      // when
+      vis.appendSVG();
+      // then
+      const body = document.body;
+      expect(body).to.contain(`svg#${vis.svgId}`);
+      const svg = document.querySelector(`#${vis.svgId}`);
+      expect(svg).to.have.attr('width', options.width.toString());
+      expect(svg).to.have.attr('height', options.height.toString());
+      expect(svg).to.have.attr('style', `background-color: ${options.backgroundColor};`);
+    });
+  });
 });
