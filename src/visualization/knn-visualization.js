@@ -18,7 +18,6 @@ export default class KNNVisualization extends Visualization {
     super.addCircle(circle);
   }
   addBoundingCircle(circle) {
-    debugger // eslint-disable-line
     const boundingCircle = this.getBoundingCircle(circle, this.knn.kClosestNeighbors[this.knn.k - 1]);
     this.addCircle(boundingCircle);
     this.drawCircles();
@@ -34,7 +33,6 @@ export default class KNNVisualization extends Visualization {
     const fn = { cx: this.xScale(furthestNeighbor.cx), cy: this.yScale(furthestNeighbor.cy) };
     const d = this.knn.calculateDistance(c, fn);
     const radius = d + this.options.circleRadius;
-    debugger // eslint-disable-line
 
     return new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');
   }

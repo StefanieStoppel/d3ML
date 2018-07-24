@@ -6,11 +6,18 @@ export default class Visualization {
   constructor(data, options, types) {
     this.options = Object.assign({}, defaultOptions, options);
     this.types = Object.assign({}, defaultTypes, types);
+    this.xScale = this.createXScale(
+      d3.min(data, function (d) { return d.x; }),
+      d3.max(data, function (d) { return d.x; })
+    );
+    this.yScale = this.createYScale(
+      d3.min(data, function (d) { return d.y; }),
+      d3.max(data, function (d) { return d.y; })
+    );
     this.data = this.initData(data);
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
-    this.xScale = this.createXScale();
-    this.yScale = this.createYScale();
+
     // this.addEventListeners();
   }
   validateData(data) {
@@ -34,14 +41,6 @@ export default class Visualization {
   }
   initData(data) {
     return {
-      x: {
-        min: d3.min(data, function (d) { return d.x; }),
-        max: d3.max(data, function (d) { return d.x; })
-      },
-      y: {
-        min: d3.min(data, function (d) { return d.y; }),
-        max: d3.max(data, function (d) { return d.y; })
-      },
       circles: data.map(d => this.mapDataToCircle(d))
     };
   }
@@ -87,14 +86,14 @@ export default class Visualization {
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
   }
-  createXScale() { // todo: test
+  createXScale(minX, maxX) { // todo: test
     return d3.scaleLinear()
-      .domain([this.data.x.min - this.options.padding, this.data.x.max + this.options.padding])
+      .domain([minX - this.options.padding, maxX + this.options.padding])
       .range([0, this.options.width]);
   }
-  createYScale() { // todo: test
+  createYScale(minY, maxY) { // todo: test
     return d3.scaleLinear()
-      .domain([this.data.y.min - this.options.padding, this.data.y.max + this.options.padding])
+      .domain([minY - this.options.padding, maxY + this.options.padding])
       .range([0, this.options.height]);
   }
   drawCircles() { // todo: test
