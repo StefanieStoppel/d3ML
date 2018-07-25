@@ -14,7 +14,7 @@ import KNN from '../algorithms/knn';
 export default class KNNVisualization extends Visualization {
   constructor(data, options, types, k = defaultK) {
     super(data, options, types);
-    this.knn = new KNN(this.data, k, types);
+    this.knn = new KNN(this.data, types, k);
     this.addEventListeners();
   }
   addEventListeners() { // todo: test

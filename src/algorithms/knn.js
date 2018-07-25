@@ -2,7 +2,7 @@ import MachineLearningAlgorithm from './machine-learning-algorithm';
 import {defaultK} from '../visualization/defaults';
 
 export default class KNN extends MachineLearningAlgorithm {
-  constructor(circles, k = defaultK, types) {
+  constructor(circles, types, k = defaultK) {
     super(circles);
     this.k = k;
     this.types = types;
