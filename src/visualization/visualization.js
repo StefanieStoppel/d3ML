@@ -8,7 +8,7 @@ export default class Visualization {
     this.xScale = this.createXScale(data);
     this.yScale = this.createYScale(data);
     if (this.validateTypes(types)) {
-      this.typeColorMap = this.mapTypesToColors(types); // todo: validate types
+      this.typeColorMap = this.mapTypesToColors(types);
     } else {
       this.typeColorMap = this.mapTypesToColors([defaultType]);
     }

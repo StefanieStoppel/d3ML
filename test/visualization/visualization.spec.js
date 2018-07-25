@@ -71,6 +71,23 @@ describe('Visualization', () => {
       expect(vis.options.circleFill).to.equal(options.circleFill);
       expect(vis.options.circleStroke).to.equal(options.circleStroke);
     });
+    const incorrectTypes = [
+      {},
+      null,
+      [],
+      undefined,
+      'A',
+      42
+    ];
+    incorrectTypes.forEach(type => {
+      it(`should initialize typeColorMap correctly for invalid types: ${type}`, () => {
+        // given
+        // when
+        const vis = new Visualization(data, options, type);
+        // then
+        expect(vis.typeColorMap).to.deep.equal(vis.mapTypesToColors([defaultType]));
+      });
+    });
   });
   describe('validateData', () => {
     it('should pass validation', () => {
