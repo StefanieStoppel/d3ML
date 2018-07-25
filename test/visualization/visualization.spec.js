@@ -194,25 +194,6 @@ describe('Visualization', () => {
       // then
       expect(callback).calledOnce;
     });
-    it('should draw new circle at correct coordinates', () => {
-      // given
-      const vis = new Visualization(data, options);
-      const callbacks = [vis.addCircle];
-      const event = {
-        target: {
-          id: vis.svgId
-        },
-        offsetX: 100,
-        offsetY: 200
-      };
-      // when
-      vis.clickCallback(event, callbacks);
-      // then
-      const circle = document.querySelector('circle:last-of-type');
-      expect(circle).to.have.attr('cx', event.offsetX.toString());
-      expect(circle).to.have.attr('cy', event.offsetY.toString());
-      expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
-    });
   });
   describe('appendSvg', () => {
     it('should append svg with correct attributes', () => {

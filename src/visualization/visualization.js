@@ -77,7 +77,6 @@ export default class Visualization {
   }
   addCircle(circle) {
     this.data.push(circle);
-    this.drawCircles();
   }
   appendSVG() {
     return d3.select(this.options.rootNode)

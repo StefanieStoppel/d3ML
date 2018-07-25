@@ -23,7 +23,7 @@ export default class KNNVisualization extends Visualization {
   classifyAndAddCircle(circle) {
     const circleType = this.knn.classify(circle);
     circle.setType(circleType);
-    this.data.push(circle);
+    this.addCircle(circle);
   }
   addBoundingCircle(circle) { // todo: test
     const boundingCircle = this.getBoundingCircle(circle, this.knn.furthestNeighborOfKClosest);

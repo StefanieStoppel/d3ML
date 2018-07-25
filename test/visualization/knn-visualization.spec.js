@@ -7,7 +7,6 @@ import Circle from '../../src/visualization/circle';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {createEvent} from '../test-helper';
-import Visualization from '../../src/visualization/visualization';
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -146,8 +145,7 @@ describe('KNNVisualization', () => {
       it('should register click event listener on svg and call callbacks on click', () => {
         // given
         const types = ['A', 'B'];
-        const classifyAndAddCircleStub = sinon.stub(KNNVisualization.prototype, 'classifyAndAddCircle')
-          .callsFake(() => console.log('jaaa'));
+        const classifyAndAddCircleStub = sinon.stub(KNNVisualization.prototype, 'classifyAndAddCircle');
         const addBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'addBoundingCircle');
         const addConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'addConnectingLines');
         const vis = new KNNVisualization(data, options, types, 3);
