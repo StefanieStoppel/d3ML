@@ -6,6 +6,8 @@ import KNNVisualization from '../../src/visualization/knn-visualization';
 import Circle from '../../src/visualization/circle';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import {createEvent} from '../test-helper';
+import Visualization from '../../src/visualization/visualization';
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -138,6 +140,27 @@ describe('KNNVisualization', () => {
         // then
         expect(newCircle.type).to.equal(expectedType);
         expect(vis.data).to.contain(newCircle);
+      });
+    });
+    describe('addEventListeners', () => {
+      it('should register click event listener on svg and call callbacks on click', () => {
+        // given
+        const types = ['A', 'B'];
+        const classifyAndAddCircleStub = sinon.stub(KNNVisualization.prototype, 'classifyAndAddCircle')
+          .callsFake(() => console.log('jaaa'));
+        const addBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'addBoundingCircle');
+        const addConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'addConnectingLines');
+        const vis = new KNNVisualization(data, options, types, 3);
+        const svg = document.querySelector(`svg#${vis.svgId}`);
+        // when
+        const { node, event } = createEvent(svg, 'click');
+        event.offsetX = 100;
+        event.offsetY = 200;
+        node.dispatchEvent(event, true);
+        // then
+        expect(classifyAndAddCircleStub).calledOnce;
+        expect(addBoundingCircleStub).calledOnce;
+        expect(addConnectingLinesStub).calledOnce;
       });
     });
   });

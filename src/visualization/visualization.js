@@ -59,7 +59,7 @@ export default class Visualization {
       this.options.circleStroke,
       data.type);
   }
-  onClickSvg(callbacks) { // todo: test
+  onClickSvg(callbacks) {
     document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
       this.clickCallback(e, callbacks);
     });

@@ -17,7 +17,7 @@ export default class KNNVisualization extends Visualization {
     this.knn = new KNN(this.data, types, k);
     this.addEventListeners();
   }
-  addEventListeners() { // todo: test
+  addEventListeners() {
     this.onClickSvg([this.classifyAndAddCircle, this.addBoundingCircle, this.addConnectingLines]);
   }
   classifyAndAddCircle(circle) {
