@@ -30,8 +30,8 @@ export default class KNN extends MachineLearningAlgorithm {
 
     return Object.entries(counts).sort((a, b) => a[1] < b[1])[0][0];
   }
-  classify(newCircle) { // todo: test
-    this.kClosestNeighbors = this.findKClosestNeighbors(newCircle, this.circles, this.k);
+  classify(newCircle) {
+    this.kClosestNeighbors = this.findKClosestNeighbors(newCircle, this.circles, this.k);// todo: is this a side effect?
     this.addCircle(newCircle);
 
     return this.determineCircleType(this.kClosestNeighbors);
@@ -40,6 +40,7 @@ export default class KNN extends MachineLearningAlgorithm {
     if (!!this.kClosestNeighbors && this.kClosestNeighbors.length >= this.k) {
       return this.kClosestNeighbors[this.k - 1];
     }
+
     return null;
   }
 }
