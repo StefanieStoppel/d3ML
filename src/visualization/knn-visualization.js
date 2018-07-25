@@ -1,5 +1,5 @@
 import Circle from './circle';
-import { defaultK } from './defaults';
+import {defaultK, defaultType} from './defaults';
 import Visualization from './visualization';
 import KNN from '../algorithms/knn';
 
@@ -23,7 +23,6 @@ export default class KNNVisualization extends Visualization {
   classifyAndAddCircle(circle) { // todo: test
     const circleType = this.knn.classify(circle);
     circle.setType(circleType);
-    // circle.setFill(this.typeColorMap[circleType]);
     this.data.push(circle);
   }
   addBoundingCircle(circle) { // todo: test
@@ -63,5 +62,18 @@ export default class KNNVisualization extends Visualization {
       .attr('x2', function (d) { return d.x2; })
       .attr('y2', function (d) { return d.y2; })
       .attr('class', 'remove');
+  }
+  drawCircles() {// todo: test
+    const that = this;
+    this.svg.selectAll('circle')
+      .data(this.data)
+      .enter().append('circle')
+      .style('stroke', function (d) { return d.stroke; })
+      .style('fill', function (d) { return d.fill; })
+      .attr('r', function (d) { return d.radius; })
+      .attr('cx', function (d) { return d.cx; })
+      .attr('cy', function (d) { return d.cy; })
+      .transition().duration(1500)
+      .style('fill', function (d) { return d.type === defaultType ? d.fill : that.typeColorMap[d.type]; });
   }
 };

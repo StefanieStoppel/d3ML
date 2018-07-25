@@ -104,7 +104,6 @@ export default class Visualization {
       .range([0, this.options.height]);
   }
   drawCircles() {
-    const that = this;
     this.svg.selectAll('circle')
       .data(this.data)
       .enter().append('circle')
@@ -112,9 +111,7 @@ export default class Visualization {
       .style('fill', function (d) { return d.fill; })
       .attr('r', function (d) { return d.radius; })
       .attr('cx', function (d) { return d.cx; })
-      .attr('cy', function (d) { return d.cy; })
-      .transition().duration(1500)
-      .style('fill', function (d) { return d.type === defaultType ? d.fill : that.typeColorMap[d.type]; });
+      .attr('cy', function (d) { return d.cy; });
   }
   draw() {
     this.drawCircles();
