@@ -1,7 +1,8 @@
 import MachineLearningAlgorithm from './machine-learning-algorithm';
+import {defaultK} from '../visualization/defaults';
 
 export default class KNN extends MachineLearningAlgorithm {
-  constructor(circles, k, types) {
+  constructor(circles, k = defaultK, types) {
     super(circles);
     this.k = k;
     this.types = types;
@@ -36,6 +37,9 @@ export default class KNN extends MachineLearningAlgorithm {
     return this.determineCircleType(this.kClosestNeighbors);
   }
   get furthestNeighborOfKClosest() {
-    return this.kClosestNeighbors[this.k - 1];
+    if (!!this.kClosestNeighbors && this.kClosestNeighbors.length >= this.k) {
+      return this.kClosestNeighbors[this.k - 1];
+    }
+    return null;
   }
 }
