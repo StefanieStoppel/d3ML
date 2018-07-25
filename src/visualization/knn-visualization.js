@@ -20,7 +20,7 @@ export default class KNNVisualization extends Visualization {
   addEventListeners() { // todo: test
     this.onClickSvg([this.classifyAndAddCircle, this.addBoundingCircle, this.addConnectingLines]);
   }
-  classifyAndAddCircle(circle) { // todo: test
+  classifyAndAddCircle(circle) {
     const circleType = this.knn.classify(circle);
     circle.setType(circleType);
     this.data.push(circle);

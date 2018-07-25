@@ -4,6 +4,7 @@ import chai from 'chai';
 import chaiDom from 'chai-dom';
 import KNNVisualization from '../../src/visualization/knn-visualization';
 import Circle from '../../src/visualization/circle';
+import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 chai.use(chaiDom);
@@ -122,6 +123,21 @@ describe('KNNVisualization', () => {
         expect(boundingCircle.radius).to.equal(radius);
         expect(boundingCircle.fill).to.equal('transparent');
         expect(boundingCircle.stroke).to.equal('white');
+      });
+    });
+    describe('classifyAndAddCircle', () => {
+      it('should set classified type on circle and add it to data', () => {
+        // given
+        const newCircle = new Circle(1, 2);
+        const types = ['A', 'B'];
+        const vis = new KNNVisualization(data, options, types, 3);
+        const expectedType = 'B';
+        sinon.stub(vis.knn, 'classify').callsFake((circle) => { return expectedType; });
+        // when
+        vis.classifyAndAddCircle(newCircle);
+        // then
+        expect(newCircle.type).to.equal(expectedType);
+        expect(vis.data).to.contain(newCircle);
       });
     });
   });
