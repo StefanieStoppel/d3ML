@@ -69,9 +69,9 @@ describe('KNNVisualization', () => {
       const vis = new KNNVisualization(data, options);
       const newCircle = new Circle(5,7);
       vis.knn.kClosestNeighbors = data;
-      vis.addConnectingLines(newCircle);
+      const connectingLines = vis.mapClosestNeighborsToConnectingLines(newCircle);
       // when
-      vis.drawConnectingLines();
+      vis.drawConnectingLines(connectingLines);
       // then
       const lines = Array.from(document.querySelectorAll('line'));
       lines.forEach((line, idx) => {
@@ -139,7 +139,7 @@ describe('KNNVisualization', () => {
       expect(boundingCircle.stroke).to.equal('white');
     });
   });
-  describe('classifyAndAddCircle', () => {
+  describe('getClassifiedCircle', () => {
     it('should set classified type on circle and add it to data', () => {
       // given
       const newCircle = new Circle(1, 2);
@@ -148,30 +148,30 @@ describe('KNNVisualization', () => {
       const expectedType = 'B';
       sinon.stub(vis.knn, 'classify').callsFake((circle) => { return expectedType; });
       // when
-      vis.classifyAndAddCircle(newCircle);
+      vis.getClassifiedCircle(newCircle);
       // then
       expect(newCircle.type).to.equal(expectedType);
-      expect(vis.data).to.contain(newCircle);
     });
   });
   describe('addEventListeners', () => {
-    let classifyAndAddCircleStub;
-    let addBoundingCircleStub;
-    let drawCircleStub;
-    let addConnectingLinesStub;
+    let getClassifiedCircleStub;
+    let getBoundingCircleStub;
+    let drawCirclesStub;
+    let mapClosestNeighborsToConnectingLinesStub;
     let drawConnectingLinesStub;
     beforeEach(() => {
-      classifyAndAddCircleStub = sinon.stub(KNNVisualization.prototype, 'classifyAndAddCircle');
-      addBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'addBoundingCircle');
-      drawCircleStub = sinon.stub(KNNVisualization.prototype, 'drawCircles');
-      addConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'addConnectingLines');
+      getClassifiedCircleStub = sinon.stub(KNNVisualization.prototype, 'getClassifiedCircle');
+      getBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'getBoundingCircle');
+      drawCirclesStub = sinon.stub(KNNVisualization.prototype, 'drawCircles');
+      mapClosestNeighborsToConnectingLinesStub =
+        sinon.stub(KNNVisualization.prototype, 'mapClosestNeighborsToConnectingLines');
       drawConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'drawConnectingLines');
     });
     afterEach(() => {
-      KNNVisualization.prototype.classifyAndAddCircle.restore();
-      KNNVisualization.prototype.addBoundingCircle.restore();
+      KNNVisualization.prototype.getClassifiedCircle.restore();
+      KNNVisualization.prototype.getBoundingCircle.restore();
       KNNVisualization.prototype.drawCircles.restore();
-      KNNVisualization.prototype.addConnectingLines.restore();
+      KNNVisualization.prototype.mapClosestNeighborsToConnectingLines.restore();
       KNNVisualization.prototype.drawConnectingLines.restore();
     });
     it('should register click event listener on svg and call callbacks on click', () => {
@@ -185,10 +185,10 @@ describe('KNNVisualization', () => {
       event.offsetY = 200;
       node.dispatchEvent(event, true);
       // then
-      expect(classifyAndAddCircleStub).calledOnce;
-      expect(addBoundingCircleStub).calledOnce;
-      expect(drawCircleStub).calledOnce;
-      expect(addConnectingLinesStub).calledOnce;
+      expect(getClassifiedCircleStub).calledOnce;
+      expect(getBoundingCircleStub).calledOnce;
+      expect(drawCirclesStub).calledOnce;
+      expect(mapClosestNeighborsToConnectingLinesStub).calledOnce;
       expect(drawConnectingLinesStub).calledOnce;
     });
   });
@@ -212,7 +212,7 @@ describe('KNNVisualization', () => {
       const vis = new KNNVisualization(data, options, types);
       const parentSpy = sinon.spy(Visualization.prototype, 'drawCircles');
       const newCircle = new Circle(2,2);
-      vis.classifyAndAddCircle(newCircle);
+      vis.addCircle(vis.getClassifiedCircle(newCircle));
       const expectedColor = vis.typeColorMap[types[0]];
       // when
       vis.drawCircles();

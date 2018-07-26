@@ -14,31 +14,22 @@ export default class KNNVisualization extends Visualization {
   constructor(data, options, types, k = defaultK) {
     super(data, options, types);
     this.knn = new KNN(this.data, types, k);
-    this.boundingCircle = null;
-    this.connectingLines = null;
     this.addEventListeners();
   }
   addEventListeners() {
     this.onClickSvg([this.svgClickCallback]);
   }
   svgClickCallback(circle) {
-    this.classifyAndAddCircle(circle);
-    this.addBoundingCircle(circle);
+    this.addCircle(this.getClassifiedCircle(circle));
+    this.addCircle(this.getBoundingCircle(circle));
     this.drawCircles();
-    this.addConnectingLines(circle);
-    this.drawConnectingLines();
+    this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(circle));
   }
-  classifyAndAddCircle(circle) {
+  getClassifiedCircle(circle) {
     const circleType = this.knn.classify(circle);
     circle.setType(circleType);
-    this.addCircle(circle);
-  }
-  addBoundingCircle(circle) { // todo: test
-    this.boundingCircle = this.getBoundingCircle(circle);
-    this.addCircle(this.boundingCircle);
-  }
-  addConnectingLines(circle) { // todo: test
-    this.connectingLines = this.mapClosestNeighborsToConnectingLines(circle);
+
+    return circle;
   }
   getBoundingCircle(circle) {
     const furthestNeighbor = this.knn.kClosestNeighbors[this.knn.k - 1];
@@ -58,9 +49,9 @@ export default class KNNVisualization extends Visualization {
       };
     });
   }
-  drawConnectingLines() {
+  drawConnectingLines(connectingLines) {
     this.svg.selectAll('line')
-      .data(this.connectingLines)
+      .data(connectingLines)
       .enter().append('line')
       .style('stroke', function (d) { return d.stroke; })
       .attr('stroke-width', function (d) { return d.strokeWidth; })
