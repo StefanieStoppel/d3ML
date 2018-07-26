@@ -5,8 +5,7 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
- * - fix bug with nearestNeighbors
- * - remove them after a few seconds
+ * - throw error when types and data types don't match
  * - add weighted
  */
 

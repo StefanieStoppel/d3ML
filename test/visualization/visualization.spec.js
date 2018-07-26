@@ -89,7 +89,7 @@ describe('Visualization', () => {
       });
     });
   });
-  describe('validateData', () => {
+  describe('isValidData', () => {
     it('should pass validation', () => {
       // given
       const givenData = [
@@ -99,7 +99,7 @@ describe('Visualization', () => {
       ];
       const vis = new Visualization([]);
       // when
-      const validation = vis.validateData(givenData);
+      const validation = vis.isValidData(givenData);
       // then
       expect(validation).to.be.true;
     });
@@ -118,7 +118,7 @@ describe('Visualization', () => {
         // when
         const vis = new Visualization([]);
         // given
-        const validationResult = vis.validateData(test.data);
+        const validationResult = vis.isValidData(test.data);
         // then
         expect(validationResult).to.equal(test.expected);
       });
@@ -351,7 +351,7 @@ describe('Visualization', () => {
       });
     });
   });
-  describe('validateTypes', () => {
+  describe('isValidTypes', () => {
     const typeDataValid = [
       [ 'foo', 'bar', defaultType ],
       [ 'A', 'B' ],
@@ -363,7 +363,7 @@ describe('Visualization', () => {
         const vis = new Visualization(data, options, types);
         // given
         // when
-        const result = vis.validateTypes(types);
+        const result = vis.isValidTypes(types);
         // then
         expect(result).to.be.true;
       });
@@ -381,7 +381,7 @@ describe('Visualization', () => {
         // given
         const vis = new Visualization(data, options);
         // when
-        const result = vis.validateTypes(types);
+        const result = vis.isValidTypes(types);
         // then
         expect(result).to.be.false;
       });

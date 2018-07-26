@@ -7,35 +7,44 @@ export default class Visualization {
     this.options = Object.assign({}, defaultOptions, options);
     this.xScale = this.createXScale(data);
     this.yScale = this.createYScale(data);
-    if (this.validateTypes(types)) {
-      this.typeColorMap = this.mapTypesToColors(types);
+    if (this.isValidTypes(types)) {
+      this.types = types;
     } else {
-      this.typeColorMap = this.mapTypesToColors([defaultType]);
+      this.types = [defaultType];
     }
-    this.data = data.map(d => this.mapDataToCircle(d));
+    this.typeColorMap = this.mapTypesToColors(this.types);
+    if (this.isValidData(data)) {
+      this.data = data.map(d => this.mapDataToCircle(d));
+    }
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
   }
-  validateData(data) {
+  isValidData(data) {
     let result = false;
     if (!!data && Array.isArray(data)) {
       result = data.reduce((res, val) => {
         return Object.entries(val).reduce((result, entry) => {
           const key = entry[0];
           const val = entry[1];
-
-          return result &&
-            ['x', 'y'].includes(key) &&
-            typeof val === 'number' &&
-            val !== Infinity &&
-            val !== -Infinity;
+          if (['x', 'y'].includes(key)) {
+            return result && typeof val === 'number' && val !== Infinity && val !== -Infinity;
+          } else if (key === 'type') {
+            return result && this.types.includes(val);
+          }
+          return false;
         }, true);
       }, true);
     }
 
     return result;
   }
-  validateTypes(types) {
+  isValidCoordinate(coor) {
+    return typeof coor === 'number' && coor !== Infinity && coor !== -Infinity;
+  }
+  isValidType(type) {
+    return this.types.includes(type);
+  }
+  isValidTypes(types) {
     let result = false;
     if (!!types && Array.isArray(types) && types.length > 0) {
       result = types.reduce((res, type) => {

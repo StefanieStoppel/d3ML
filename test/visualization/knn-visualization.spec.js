@@ -235,7 +235,7 @@ describe('KNNVisualization', () => {
         { x: 2, y: 4, type: 'A'},
         { x: 75, y: 4, type: 'A'}
       ];
-      const vis = new KNNVisualization(data, options);
+      const vis = new KNNVisualization(data, options, ['A', 'B']);
       const circle = new Circle(0, 0);
       vis.addCircle(vis.getClassifiedCircle(circle));
       vis.addCircle(vis.getBoundingCircle(circle));
@@ -259,7 +259,7 @@ describe('KNNVisualization', () => {
         { x: 2, y: 4, type: 'A'},
         { x: 75, y: 4, type: 'A'}
       ];
-      const vis = new KNNVisualization(data, options);
+      const vis = new KNNVisualization(data, options, ['A', 'B']);
       const circle = new Circle(0, 0);
       vis.addCircle(vis.getClassifiedCircle(circle));
       vis.addCircle(vis.getBoundingCircle(circle));
