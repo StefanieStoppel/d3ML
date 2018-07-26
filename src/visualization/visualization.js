@@ -124,7 +124,7 @@ export default class Visualization {
       .attr('r', function (d) { return d.radius; })
       .attr('cx', function (d) { return d.cx; })
       .attr('cy', function (d) { return d.cy; })
-      .attr('class', function (d) { return !!d.cssClass ? d.cssClass : ''; });
+      .attr('class', function (d) { return d.cssClass ? d.cssClass : ''; });
   }
   draw() {
     this.drawCircles();

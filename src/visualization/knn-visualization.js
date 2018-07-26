@@ -23,6 +23,7 @@ export default class KNNVisualization extends Visualization {
     this.addCircle(this.getBoundingCircle(circle));
     this.drawCircles();
     this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(circle));
+    this.removeElementsAfterTransition('.remove');
   }
   getClassifiedCircle(circle) {
     const circleType = this.knn.classify(circle);
@@ -74,20 +75,19 @@ export default class KNNVisualization extends Visualization {
       });
   }
   removeElementsAfterTransition(selector) {
+    this.data = this.data.filter(c => !!c.type && c.type !== defaultType);
+
     const that = this;
-    this.svg.selectAll(selector).transition()
+    this.svg.selectAll(selector)
+      .transition()
       .duration(2000)
+      .style('stroke', 'transparent')
+      .style('fill', 'transparent')
       .on('end', function () {
         that.removeElements(selector);
       });
-    this.makeTransparent(selector);
   }
   removeElements(selector) {
     this.svg.selectAll(selector).remove();
-  }
-  makeTransparent(selector) {
-    this.svg.selectAll(selector)
-      .style('stroke', 'transparent')
-      .style('fill', 'transparent');
   }
 };

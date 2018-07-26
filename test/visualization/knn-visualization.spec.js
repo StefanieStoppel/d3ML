@@ -159,6 +159,7 @@ describe('KNNVisualization', () => {
     let drawCirclesStub;
     let mapClosestNeighborsToConnectingLinesStub;
     let drawConnectingLinesStub;
+    let removeElementsAfterTransitionStub;
     beforeEach(() => {
       getClassifiedCircleStub = sinon.stub(KNNVisualization.prototype, 'getClassifiedCircle');
       getBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'getBoundingCircle');
@@ -166,6 +167,7 @@ describe('KNNVisualization', () => {
       mapClosestNeighborsToConnectingLinesStub =
         sinon.stub(KNNVisualization.prototype, 'mapClosestNeighborsToConnectingLines');
       drawConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'drawConnectingLines');
+      removeElementsAfterTransitionStub = sinon.stub(KNNVisualization.prototype, 'removeElementsAfterTransition');
     });
     afterEach(() => {
       KNNVisualization.prototype.getClassifiedCircle.restore();
@@ -173,6 +175,7 @@ describe('KNNVisualization', () => {
       KNNVisualization.prototype.drawCircles.restore();
       KNNVisualization.prototype.mapClosestNeighborsToConnectingLines.restore();
       KNNVisualization.prototype.drawConnectingLines.restore();
+      KNNVisualization.prototype.removeElementsAfterTransition.restore();
     });
     it('should register click event listener on svg and call callbacks on click', () => {
       // given
@@ -190,6 +193,7 @@ describe('KNNVisualization', () => {
       expect(drawCirclesStub).calledOnce;
       expect(mapClosestNeighborsToConnectingLinesStub).calledOnce;
       expect(drawConnectingLinesStub).calledOnce;
+      expect(removeElementsAfterTransitionStub).calledOnce;
     });
   });
   describe('drawCircles', () => {
@@ -257,35 +261,15 @@ describe('KNNVisualization', () => {
       ];
       const vis = new KNNVisualization(data, options);
       const circle = new Circle(0, 0);
-      vis.svgClickCallback(circle);
+      vis.addCircle(vis.getClassifiedCircle(circle));
+      vis.addCircle(vis.getBoundingCircle(circle));
+      vis.drawCircles();
+      vis.drawConnectingLines(vis.mapClosestNeighborsToConnectingLines(circle));
       expect(document.querySelectorAll('.remove')).to.have.length(vis.knn.k + 1);
       // when
       vis.removeElements('.remove');
       // then
       expect(document.querySelector(`svg#${vis.svgId}`)).to.not.contain('.remove');
-    });
-  });
-  describe('makeTransparent', () => {
-    it('should make all elements with selector .remove transparent', () => {
-      // given
-      const selector = '.remove';
-      const data = [
-        { x: 2, y: 3, type: 'A'},
-        { x: 1, y: 1, type: 'B'},
-        { x: 2, y: 4, type: 'A'},
-        { x: 75, y: 4, type: 'A'},
-        { x: 546, y: 424, type: 'B'}
-      ];
-      const vis = new KNNVisualization(data, options, ['A', 'B'], 4);
-      const circle = new Circle(0, 0);
-      vis.svgClickCallback(circle);
-      // when
-      vis.makeTransparent(selector);
-      // then
-      const transparentElements = Array.from(document.querySelectorAll(selector));
-      transparentElements.forEach(t => {
-        expect(t).to.have.attr('style', 'stroke: transparent; fill: transparent;');
-      });
     });
   });
   describe('removeElementsAfterTransition', () => {
