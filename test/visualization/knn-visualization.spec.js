@@ -117,16 +117,16 @@ describe('KNNVisualization', () => {
     it('should return correct bounding circle', () => {
       // given
       const data = [
-        { x: 1, y: 1 },
-        { x: 2, y: 2 },
-        { x: 64, y: 34 },
-        { x: 324, y: 53 }
+        { x: 1, y: 1, type: 'A' },
+        { x: 2, y: 2, type: 'B' },
+        { x: 64, y: 34, type: 'A' },
+        { x: 324, y: 53, type: 'B' }
       ];
-      const vis = new KNNVisualization(data, options, undefined, 3);
+      const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
       const cx = 1;
       const cy = 2;
       const circle = new Circle(cx, cy);
-      vis.knn.classify(circle);
+      vis.knn.classify(circle, vis.data);
       const furthestNeighbor = vis.data[2];
       const radius = vis.knn.calculateDistance(furthestNeighbor, circle) + options.circleRadius;
       // when
@@ -140,7 +140,7 @@ describe('KNNVisualization', () => {
     });
   });
   describe('getClassifiedCircle', () => {
-    it('should set classified type on circle and add it to data', () => {
+    it('should set classified type on circle', () => {
       // given
       const newCircle = new Circle(1, 2);
       const types = ['A', 'B'];

@@ -5,6 +5,7 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
+ * - fix bug with nearestNeighbors
  * - remove them after a few seconds
  * - add weighted
  */
@@ -19,14 +20,15 @@ export default class KNNVisualization extends Visualization {
     this.onClickSvg([this.svgClickCallback]);
   }
   svgClickCallback(circle) {
-    this.addCircle(this.getClassifiedCircle(circle));
-    this.addCircle(this.getBoundingCircle(circle));
+    const classifiedCircle = this.getClassifiedCircle(circle);
+    this.addCircle(classifiedCircle);
+    this.addCircle(this.getBoundingCircle(classifiedCircle));
     this.drawCircles();
-    this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(circle));
+    this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
     this.removeElementsAfterTransition('.remove');
   }
   getClassifiedCircle(circle) {
-    const circleType = this.knn.classify(circle);
+    const circleType = this.knn.classify(circle, this.data);
     circle.setType(circleType);
 
     return circle;
@@ -75,7 +77,7 @@ export default class KNNVisualization extends Visualization {
       });
   }
   removeElementsAfterTransition(selector) {
-    this.data = this.data.filter(c => !!c.type && c.type !== defaultType);
+    this.data = this.data.filter(c => c.type !== defaultType);
 
     const that = this;
     this.svg.selectAll(selector)

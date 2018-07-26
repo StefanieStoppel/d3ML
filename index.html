@@ -7,7 +7,7 @@
 </head>
 <body>
 <script>
-  document.addEventListener('DOMContentLoaded', (event) => {
+  document.addEventListener('DOMContentLoaded', () => {
     const options = {
       rootNode: 'body',
       backgroundColor: 'black',
@@ -24,7 +24,8 @@
       { x: 44, y: 122, type: 'A' },
       { x: 47, y: 38, type: 'B' },
       { x: 346, y: 10, type: 'B' },
-      { x: 346, y: 410, type: 'A' }
+      // { x: 23, y: 52, type: 'B' },
+      // { x: 346, y: 410, type: 'A' }
     ];
 
     const vis = new d3ml.KNNVisualization(data, options, types, 3);

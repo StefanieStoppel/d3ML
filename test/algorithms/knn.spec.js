@@ -142,7 +142,7 @@ describe('KNN', () => {
       const knn = new Knn(givenNeighbors, types, givenK);
       const newCircle = new Circle(0, 0);
       // when
-      const circleType = knn.classify(newCircle);
+      const circleType = knn.classify(newCircle, givenNeighbors);
       // then
       expect(circleType).to.equal(expectedType);
       expect(knn.kClosestNeighbors).to.deep.equal([givenNeighbors[1], givenNeighbors[2], givenNeighbors[3]]);
@@ -160,7 +160,7 @@ describe('KNN', () => {
       const knn = new Knn(givenNeighbors, types, givenK);
       const newCircle = new Circle(0, 0);
       // when
-      const circleType = knn.classify(newCircle);
+      const circleType = knn.classify(newCircle, givenNeighbors);
       // then
       expect(circleType).to.equal(expectedType);
       expect(knn.kClosestNeighbors).to.deep.equal([givenNeighbors[1], givenNeighbors[2]]);

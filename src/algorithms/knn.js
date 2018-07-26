@@ -1,5 +1,5 @@
 import MachineLearningAlgorithm from './machine-learning-algorithm';
-import {defaultK} from '../visualization/defaults';
+import {defaultK, defaultType} from '../visualization/defaults';
 
 export default class KNN extends MachineLearningAlgorithm {
   constructor(circles, types, k = defaultK) {
@@ -11,14 +11,23 @@ export default class KNN extends MachineLearningAlgorithm {
   calculateDistance(a, b) {
     return Math.sqrt(Math.pow((b.cx - a.cx), 2) + Math.pow((b.cy - a.cy), 2));
   }
-  findKClosestNeighbors(newCircle) {
-    return this.circles.filter(n => n !== newCircle)
+  compareDistance(a, b) {
+    if (a.distance > b.distance) {
+      return 1;
+    } else if (a.distance < b.distance) {
+      return -1;
+    }
+
+    return 0;
+  }
+  findKClosestNeighbors(newCircle, neighbors) {
+    return neighbors.filter(n => n !== newCircle && n.type !== defaultType)
       .map(n => {
         n.setDistance(this.calculateDistance(n, newCircle));
 
         return n;
       })
-      .sort((a, b) => a.distance > b.distance)
+      .sort((a, b) => this.compareDistance(a, b))
       .filter((n, i) => i < this.k);
   }
   determineCircleType(kClosestNeighbors) {
@@ -30,8 +39,8 @@ export default class KNN extends MachineLearningAlgorithm {
 
     return Object.entries(counts).sort((a, b) => a[1] < b[1])[0][0];
   }
-  classify(circle) {
-    this.kClosestNeighbors = this.findKClosestNeighbors(circle);
+  classify(circle, neighbors) {
+    this.kClosestNeighbors = this.findKClosestNeighbors(circle, neighbors);
 
     return this.determineCircleType(this.kClosestNeighbors);
   }
