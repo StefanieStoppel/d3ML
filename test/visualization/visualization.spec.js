@@ -133,7 +133,8 @@ describe('Visualization', () => {
         circleStroke: 'blue'
       };
       const givenData = { x: 13, y: 42, type: 'A' };
-      const vis = new Visualization(data, givenOptions);
+      const givenTypes = [givenData.type];
+      const vis = new Visualization(data, givenOptions, givenTypes);
       const color = vis.typeColorMap[givenData.type];
       const givenCircle = new Circle(
         vis.xScale(13),
@@ -326,6 +327,27 @@ describe('Visualization', () => {
         types.forEach(type => {
           expect(colorMapping[type]).to.equal(colorScale(type));
         });
+      });
+    });
+  });
+  describe('getFillColor', function () {
+    const typeData = [
+      { data: { }, types: ['A', 'B'] },
+      { data: null, types: ['None'] },
+      { data: { type: null }, types: ['Z'] },
+      { data: { type: undefined }, types: ['Z'] },
+      { data: { type: NaN }, types: ['Z'] },
+      { data: { type: 'C' }, types: ['A', 'B'] },
+    ];
+    typeData.forEach(td => {
+      it(`should return default circleFill color for invalid data: ${td}`, () => {
+        // given
+        const options = Object.assign({}, options, { circleFill: 'yellow' });
+        const vis = new Visualization(data, options, td.types);
+        // when
+        const color = vis.getFillColor(td.data);
+        // then
+        expect(color).to.equal(options.circleFill);
       });
     });
   });

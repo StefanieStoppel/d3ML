@@ -45,8 +45,21 @@ export default class Visualization {
 
     return result;
   }
-  getFillColor(data) { // todo: test
-    return data.type ? this.typeColorMap[data.type] : this.options.circleFill;
+  mapTypesToColors(types) {
+    const colorScale = d3.scaleOrdinal(d3.schemeSet1);
+
+    const colorMap = types.reduce((map, type) => {
+      map[type] = colorScale(type);
+
+      return map;
+    }, {});
+    colorMap[defaultType] = colorScale(defaultType);
+
+    return colorMap;
+  }
+  getFillColor(data) {
+    return !!data && data.type && this.typeColorMap.hasOwnProperty(data.type) ?
+      this.typeColorMap[data.type] : this.options.circleFill;
   }
   mapDataToCircle(data) {
     const fillColor = this.getFillColor(data);
@@ -114,17 +127,5 @@ export default class Visualization {
   }
   draw() {
     this.drawCircles();
-  }
-  mapTypesToColors(types) {
-    const colorScale = d3.scaleOrdinal(d3.schemeSet1);
-
-    const colorMap = types.reduce((map, type) => {
-      map[type] = colorScale(type);
-
-      return map;
-    }, {});
-    colorMap[defaultType] = colorScale(defaultType);
-
-    return colorMap;
   }
 }
