@@ -116,14 +116,19 @@ describe('KNNVisualization', () => {
   describe('getBoundingCircle', () => {
     it('should return correct bounding circle', () => {
       // given
-      const vis = new KNNVisualization(data, options);
+      const data = [
+        { x: 1, y: 1 },
+        { x: 2, y: 2 },
+        { x: 64, y: 34 },
+        { x: 324, y: 53 }
+      ];
+      const vis = new KNNVisualization(data, options, undefined, 3);
       const cx = 1;
       const cy = 2;
-      const distance = 14;
-      const radius = distance + options.circleRadius;
       const circle = new Circle(cx, cy);
-      const furthestNeighbor = new Circle(64, 34);
-      furthestNeighbor.setDistance(distance);
+      vis.knn.classify(circle);
+      const furthestNeighbor = vis.data[2];
+      const radius = vis.knn.calculateDistance(furthestNeighbor, circle) + options.circleRadius;
       // when
       const boundingCircle = vis.getBoundingCircle(circle, furthestNeighbor);
       // then

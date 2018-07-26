@@ -19,13 +19,14 @@ export default class KNNVisualization extends Visualization {
     this.addEventListeners();
   }
   addEventListeners() {
-    this.onClickSvg([
-      this.classifyAndAddCircle,
-      this.addBoundingCircle,
-      this.drawCircles,
-      this.addConnectingLines,
-      this.drawConnectingLines
-    ]);
+    this.onClickSvg([this.svgClickCallback]);
+  }
+  svgClickCallback(circle) {
+    this.classifyAndAddCircle(circle);
+    this.addBoundingCircle(circle);
+    this.drawCircles();
+    this.addConnectingLines(circle);
+    this.drawConnectingLines();
   }
   classifyAndAddCircle(circle) {
     const circleType = this.knn.classify(circle);
@@ -33,13 +34,14 @@ export default class KNNVisualization extends Visualization {
     this.addCircle(circle);
   }
   addBoundingCircle(circle) { // todo: test
-    this.boundingCircle = this.getBoundingCircle(circle, this.knn.furthestNeighborOfKClosest);
+    this.boundingCircle = this.getBoundingCircle(circle);
     this.addCircle(this.boundingCircle);
   }
   addConnectingLines(circle) { // todo: test
     this.connectingLines = this.mapClosestNeighborsToConnectingLines(circle);
   }
-  getBoundingCircle(circle, furthestNeighbor) {
+  getBoundingCircle(circle) {
+    const furthestNeighbor = this.knn.kClosestNeighbors[this.knn.k - 1];
     const radius = furthestNeighbor.distance + this.options.circleRadius;
 
     return new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');

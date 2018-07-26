@@ -128,46 +128,6 @@ describe('KNN', () => {
       expect(circleType).to.equal(givenTypes.bar);
     });
   });
-  describe('getter furthestNeighborOfKClosest', () => {
-    it('returns correct value', () => {
-      // given
-      const givenNeighbors = [
-        new Circle(435, 42, 4, 'red', 'blue', 'A'),
-        new Circle(1, 2, 4, 'red', 'blue', 'B')
-      ];
-      const expectedNeighbor = givenNeighbors[0];
-      const knn = new Knn(givenNeighbors, [], 2);
-      knn.classify(new Circle(2, 2));
-      // when
-      const furthestNeighbor = knn.furthestNeighborOfKClosest;
-      // then
-      expect(furthestNeighbor).to.deep.equal(expectedNeighbor);
-    });
-    it('returns null if kClosestNeighbors is not set', () => {
-      // given
-      const givenNeighbors = [
-        new Circle(435, 42, 4, 'red', 'blue', 'A'),
-        new Circle(1, 2, 4, 'red', 'blue', 'B')
-      ];
-      const knn = new Knn(givenNeighbors, [], 2);
-      const furthestNeighbor = knn.furthestNeighborOfKClosest;
-      // then
-      expect(furthestNeighbor).to.equal(null);
-    });
-    it('returns null if k is greater than kClosestNeighbors length', () => {
-      // given
-      const givenNeighbors = [
-        new Circle(435, 42, 4, 'red', 'blue', 'A'),
-        new Circle(1, 2, 4, 'red', 'blue', 'B')
-      ];
-      const knn = new Knn(givenNeighbors);
-      knn.classify(new Circle(2, 2));
-      // when
-      const furthestNeighbor = knn.furthestNeighborOfKClosest;
-      // then
-      expect(furthestNeighbor).to.equal(null);
-    });
-  });
   describe('classify', () => {
     it('should classify new circle type correctly for odd k (unweighted)', () => {
       const expectedType = 'A';

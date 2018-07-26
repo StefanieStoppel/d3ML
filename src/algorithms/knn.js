@@ -11,15 +11,15 @@ export default class KNN extends MachineLearningAlgorithm {
   calculateDistance(a, b) {
     return Math.sqrt(Math.pow((b.cx - a.cx), 2) + Math.pow((b.cy - a.cy), 2));
   }
-  findKClosestNeighbors(newCircle, neighbors, k) {
-    return neighbors.filter(n => n !== newCircle)
+  findKClosestNeighbors(newCircle) {
+    return this.circles.filter(n => n !== newCircle)
       .map(n => {
         n.setDistance(this.calculateDistance(n, newCircle));
 
         return n;
       })
       .sort((a, b) => a.distance > b.distance)
-      .filter((n, i) => i < k);
+      .filter((n, i) => i < this.k);
   }
   determineCircleType(kClosestNeighbors) {
     const counts = {};
@@ -30,15 +30,8 @@ export default class KNN extends MachineLearningAlgorithm {
 
     return Object.entries(counts).sort((a, b) => a[1] < b[1])[0][0];
   }
-  classify(newCircle) {
-    this.kClosestNeighbors = this.findKClosestNeighbors(newCircle, this.circles, this.k);// todo: is this a side effect?
+  classify(circle) {
+    this.kClosestNeighbors = this.findKClosestNeighbors(circle);
     return this.determineCircleType(this.kClosestNeighbors);
-  }
-  get furthestNeighborOfKClosest() {
-    if (!!this.kClosestNeighbors && this.kClosestNeighbors.length >= this.k) {
-      return this.kClosestNeighbors[this.k - 1];
-    }
-
-    return null;
   }
 }
