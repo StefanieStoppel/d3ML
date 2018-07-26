@@ -109,61 +109,71 @@ describe('KNNVisualization', () => {
         expect(line.strokeWidth).to.equal(2);
       });
     });
-    describe('getBoundingCircle', () => {
-      it('should return correct bounding circle', () => {
-        // given
-        const vis = new KNNVisualization(data, options);
-        const cx = 1;
-        const cy = 2;
-        const distance = 14;
-        const radius = distance + options.circleRadius;
-        const circle = new Circle(cx, cy);
-        const furthestNeighbor = new Circle(64, 34);
-        furthestNeighbor.setDistance(distance);
-        // when
-        const boundingCircle = vis.getBoundingCircle(circle, furthestNeighbor);
-        // then
-        expect(boundingCircle.cx).to.equal(cx);
-        expect(boundingCircle.cy).to.equal(cy);
-        expect(boundingCircle.radius).to.equal(radius);
-        expect(boundingCircle.fill).to.equal('transparent');
-        expect(boundingCircle.stroke).to.equal('white');
-      });
+  });
+  describe('getBoundingCircle', () => {
+    it('should return correct bounding circle', () => {
+      // given
+      const vis = new KNNVisualization(data, options);
+      const cx = 1;
+      const cy = 2;
+      const distance = 14;
+      const radius = distance + options.circleRadius;
+      const circle = new Circle(cx, cy);
+      const furthestNeighbor = new Circle(64, 34);
+      furthestNeighbor.setDistance(distance);
+      // when
+      const boundingCircle = vis.getBoundingCircle(circle, furthestNeighbor);
+      // then
+      expect(boundingCircle.cx).to.equal(cx);
+      expect(boundingCircle.cy).to.equal(cy);
+      expect(boundingCircle.radius).to.equal(radius);
+      expect(boundingCircle.fill).to.equal('transparent');
+      expect(boundingCircle.stroke).to.equal('white');
     });
-    describe('classifyAndAddCircle', () => {
-      it('should set classified type on circle and add it to data', () => {
-        // given
-        const newCircle = new Circle(1, 2);
-        const types = ['A', 'B'];
-        const vis = new KNNVisualization(data, options, types, 3);
-        const expectedType = 'B';
-        sinon.stub(vis.knn, 'classify').callsFake((circle) => { return expectedType; });
-        // when
-        vis.classifyAndAddCircle(newCircle);
-        // then
-        expect(newCircle.type).to.equal(expectedType);
-        expect(vis.data).to.contain(newCircle);
-      });
+  });
+  describe('classifyAndAddCircle', () => {
+    it('should set classified type on circle and add it to data', () => {
+      // given
+      const newCircle = new Circle(1, 2);
+      const types = ['A', 'B'];
+      const vis = new KNNVisualization(data, options, types, 3);
+      const expectedType = 'B';
+      sinon.stub(vis.knn, 'classify').callsFake((circle) => { return expectedType; });
+      // when
+      vis.classifyAndAddCircle(newCircle);
+      // then
+      expect(newCircle.type).to.equal(expectedType);
+      expect(vis.data).to.contain(newCircle);
     });
-    describe('addEventListeners', () => {
-      it('should register click event listener on svg and call callbacks on click', () => {
-        // given
-        const types = ['A', 'B'];
-        const classifyAndAddCircleStub = sinon.stub(KNNVisualization.prototype, 'classifyAndAddCircle');
-        const addBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'addBoundingCircle');
-        const addConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'addConnectingLines');
-        const vis = new KNNVisualization(data, options, types, 3);
-        const svg = document.querySelector(`svg#${vis.svgId}`);
-        // when
-        const { node, event } = createEvent(svg, 'click');
-        event.offsetX = 100;
-        event.offsetY = 200;
-        node.dispatchEvent(event, true);
-        // then
-        expect(classifyAndAddCircleStub).calledOnce;
-        expect(addBoundingCircleStub).calledOnce;
-        expect(addConnectingLinesStub).calledOnce;
-      });
+  });
+  describe('addEventListeners', () => {
+    let classifyAndAddCircleStub;
+    let addBoundingCircleStub;
+    let addConnectingLinesStub;
+    beforeEach(() => {
+      classifyAndAddCircleStub = sinon.stub(KNNVisualization.prototype, 'classifyAndAddCircle');
+      addBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'addBoundingCircle');
+      addConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'addConnectingLines');
+    });
+    afterEach(() => {
+      KNNVisualization.prototype.classifyAndAddCircle.restore();
+      KNNVisualization.prototype.addBoundingCircle.restore();
+      KNNVisualization.prototype.addConnectingLines.restore();
+    });
+    it('should register click event listener on svg and call callbacks on click', () => {
+      // given
+      const types = ['A', 'B'];
+      const vis = new KNNVisualization(data, options, types, 3);
+      const svg = document.querySelector(`svg#${vis.svgId}`);
+      // when
+      const { node, event } = createEvent(svg, 'click');
+      event.offsetX = 100;
+      event.offsetY = 200;
+      node.dispatchEvent(event, true);
+      // then
+      expect(classifyAndAddCircleStub).calledOnce;
+      expect(addBoundingCircleStub).calledOnce;
+      expect(addConnectingLinesStub).calledOnce;
     });
   });
   describe('drawCircles', () => {
@@ -176,24 +186,26 @@ describe('KNNVisualization', () => {
     it('should correctly call parent method and transition fill color', () => {
       // given
       const data = [
-        { x: 12, y: 13, type: 'A'},
-        { x: 13, y: 6, type: 'B'},
-        { x: 2, y: 54, type: 'A'},
+        { x: 2, y: 3, type: 'A'},
+        { x: 1, y: 1, type: 'B'},
+        { x: 2, y: 4, type: 'A'},
         { x: 75, y: 4, type: 'A'},
         { x: 45, y: 7, type: 'B'}
       ];
       const types = ['A', 'B'];
       const vis = new KNNVisualization(data, options, types);
       const parentSpy = sinon.spy(Visualization.prototype, 'drawCircles');
-      const newCircle = new Circle(1,2);
+      const newCircle = new Circle(2,2);
       vis.classifyAndAddCircle(newCircle);
-      const expectedColor = vis.typeColorMap[types[1]];
+      const expectedColor = vis.typeColorMap[types[0]];
       // when
       vis.drawCircles();
       // then
       const circle = document.querySelector('circle:last-of-type');
       expect(circle).to.have.style('fill', expectedColor);
       expect(parentSpy).calledOnce;
+
+      Visualization.prototype.drawCircles.restore();
     });
   });
 });

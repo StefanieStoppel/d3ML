@@ -185,7 +185,6 @@ describe('KNN', () => {
       const circleType = knn.classify(newCircle);
       // then
       expect(circleType).to.equal(expectedType);
-      expect(knn.circles).to.contain(newCircle);
       expect(knn.kClosestNeighbors).to.deep.equal([givenNeighbors[1], givenNeighbors[2], givenNeighbors[3]]);
     });
     it('should classify new circle type based on first neighbor in kClosestNeighbors for even k (unweighted)', () => {
@@ -204,7 +203,6 @@ describe('KNN', () => {
       const circleType = knn.classify(newCircle);
       // then
       expect(circleType).to.equal(expectedType);
-      expect(knn.circles).to.contain(newCircle);
       expect(knn.kClosestNeighbors).to.deep.equal([givenNeighbors[1], givenNeighbors[2]]);
     });
   });
