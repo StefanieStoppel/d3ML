@@ -266,7 +266,7 @@ describe('KNNVisualization', () => {
     });
   });
   describe('makeTransparent', () => {
-    it('should make ale elements with selector .remove transparent', () => {
+    it('should make all elements with selector .remove transparent', () => {
       // given
       const selector = '.remove';
       const data = [
@@ -284,9 +284,38 @@ describe('KNNVisualization', () => {
       // then
       const transparentElements = Array.from(document.querySelectorAll(selector));
       transparentElements.forEach(t => {
-        console.log('testing: ' + t);
         expect(t).to.have.attr('style', 'stroke: transparent; fill: transparent;');
       });
+    });
+  });
+  describe('removeElementsAfterTransition', () => {
+    beforeEach(() => {
+      D3TransitionTestUtils.stubAndForceTransitions();
+    });
+    afterEach(() => {
+      D3TransitionTestUtils.restoreTransitions();
+    });
+    it('should make all elements with selector .remove transparent in transition and remove them afterwards', () => {
+      // given
+      const selector = '.remove';
+      const data = [
+        { x: 2, y: 3, type: 'A'},
+        { x: 1, y: 1, type: 'B'},
+        { x: 2, y: 4, type: 'A'},
+        { x: 75, y: 4, type: 'A'},
+        { x: 546, y: 424, type: 'B'}
+      ];
+      const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
+      const circle = new Circle(1, 3);
+      vis.svgClickCallback(circle);
+      // when
+      vis.removeElementsAfterTransition(selector);
+      // then
+      const transparentElements = Array.from(document.querySelectorAll(selector));
+      transparentElements.forEach(t => {
+        expect(t).to.have.attr('style', 'stroke: transparent; fill: transparent;');
+      });
+      expect(document.querySelector(`svg#${vis.svgId}`)).to.not.contain('.remove');
     });
   });
 });

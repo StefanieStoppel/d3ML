@@ -73,6 +73,15 @@ export default class KNNVisualization extends Visualization {
         return d.type === defaultType || d.fill === typeColor ? d.fill : typeColor;
       });
   }
+  removeElementsAfterTransition(selector) {
+    const that = this;
+    this.svg.selectAll(selector).transition()
+      .duration(2000)
+      .on('end', function () {
+        that.removeElements(selector);
+      });
+    this.makeTransparent(selector);
+  }
   removeElements(selector) {
     this.svg.selectAll(selector).remove();
   }
