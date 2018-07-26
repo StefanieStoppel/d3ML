@@ -61,21 +61,24 @@ describe('KNNVisualization', () => {
   describe('drawConnectingLines', () => {
     it('should draw lines correctly', () => {
       // given
-      const vis = new KNNVisualization(data, options);
-      const connectingLines = [
-        { x1: 2, x2: 5, y1: 6, y2: 7, strokeWidth: 2, stroke: 'rgba(230,230,230,0.5)' },
-        { x1: 5, x2: 1, y1: 93, y2: 23, strokeWidth: 2, stroke: 'rgba(230,230,230,0.5)' },
-        { x1: 42, x2: 0, y1: 84, y2: 12, strokeWidth: 2, stroke: 'rgba(230,230,230,0.5)' }
+      const data = [
+        new Circle(2, 6),
+        new Circle(5, 93),
+        new Circle(42, 84)
       ];
+      const vis = new KNNVisualization(data, options);
+      const newCircle = new Circle(5,7);
+      vis.knn.kClosestNeighbors = data;
+      vis.addConnectingLines(newCircle);
       // when
-      vis.drawConnectingLines(connectingLines);
+      vis.drawConnectingLines();
       // then
       const lines = Array.from(document.querySelectorAll('line'));
       lines.forEach((line, idx) => {
-        expect(line).to.have.attr('x1', connectingLines[idx].x1.toString());
-        expect(line).to.have.attr('x2', connectingLines[idx].x2.toString());
-        expect(line).to.have.attr('y1', connectingLines[idx].y1.toString());
-        expect(line).to.have.attr('y2', connectingLines[idx].y2.toString());
+        expect(line).to.have.attr('x1', data[idx].cx.toString());
+        expect(line).to.have.attr('x2', newCircle.cx.toString());
+        expect(line).to.have.attr('y1', data[idx].cy.toString());
+        expect(line).to.have.attr('y2', newCircle.cy.toString());
         expect(line).to.have.attr('style', 'stroke: rgba(230,230,230,0.5);');
         expect(line).to.have.attr('stroke-width', '2');
         expect(line).to.have.class('remove');
@@ -149,16 +152,22 @@ describe('KNNVisualization', () => {
   describe('addEventListeners', () => {
     let classifyAndAddCircleStub;
     let addBoundingCircleStub;
+    let drawCircleStub;
     let addConnectingLinesStub;
+    let drawConnectingLinesStub;
     beforeEach(() => {
       classifyAndAddCircleStub = sinon.stub(KNNVisualization.prototype, 'classifyAndAddCircle');
       addBoundingCircleStub = sinon.stub(KNNVisualization.prototype, 'addBoundingCircle');
+      drawCircleStub = sinon.stub(KNNVisualization.prototype, 'drawCircles');
       addConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'addConnectingLines');
+      drawConnectingLinesStub = sinon.stub(KNNVisualization.prototype, 'drawConnectingLines');
     });
     afterEach(() => {
       KNNVisualization.prototype.classifyAndAddCircle.restore();
       KNNVisualization.prototype.addBoundingCircle.restore();
+      KNNVisualization.prototype.drawCircles.restore();
       KNNVisualization.prototype.addConnectingLines.restore();
+      KNNVisualization.prototype.drawConnectingLines.restore();
     });
     it('should register click event listener on svg and call callbacks on click', () => {
       // given
@@ -173,7 +182,9 @@ describe('KNNVisualization', () => {
       // then
       expect(classifyAndAddCircleStub).calledOnce;
       expect(addBoundingCircleStub).calledOnce;
+      expect(drawCircleStub).calledOnce;
       expect(addConnectingLinesStub).calledOnce;
+      expect(drawConnectingLinesStub).calledOnce;
     });
   });
   describe('drawCircles', () => {

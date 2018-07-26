@@ -7,7 +7,6 @@ import KNN from '../algorithms/knn';
  * TODO:
  * - add class .remove to bounding circle and lines
  * - remove them after a few seconds
- * - add transitions
  * - add weighted
  */
 
@@ -15,10 +14,18 @@ export default class KNNVisualization extends Visualization {
   constructor(data, options, types, k = defaultK) {
     super(data, options, types);
     this.knn = new KNN(this.data, types, k);
+    this.boundingCircle = null;
+    this.connectingLines = null;
     this.addEventListeners();
   }
   addEventListeners() {
-    this.onClickSvg([this.classifyAndAddCircle, this.addBoundingCircle, this.addConnectingLines]);
+    this.onClickSvg([
+      this.classifyAndAddCircle,
+      this.addBoundingCircle,
+      this.drawCircles,
+      this.addConnectingLines,
+      this.drawConnectingLines
+    ]);
   }
   classifyAndAddCircle(circle) {
     const circleType = this.knn.classify(circle);
@@ -26,13 +33,11 @@ export default class KNNVisualization extends Visualization {
     this.addCircle(circle);
   }
   addBoundingCircle(circle) { // todo: test
-    const boundingCircle = this.getBoundingCircle(circle, this.knn.furthestNeighborOfKClosest);
-    this.addCircle(boundingCircle);
-    this.drawCircles();
+    this.boundingCircle = this.getBoundingCircle(circle, this.knn.furthestNeighborOfKClosest);
+    this.addCircle(this.boundingCircle);
   }
   addConnectingLines(circle) { // todo: test
-    const connectingLines = this.mapClosestNeighborsToConnectingLines(circle);
-    this.drawConnectingLines(connectingLines);
+    this.connectingLines = this.mapClosestNeighborsToConnectingLines(circle);
   }
   getBoundingCircle(circle, furthestNeighbor) {
     const radius = furthestNeighbor.distance + this.options.circleRadius;
@@ -51,9 +56,9 @@ export default class KNNVisualization extends Visualization {
       };
     });
   }
-  drawConnectingLines(connectingLines) {
+  drawConnectingLines() {
     this.svg.selectAll('line')
-      .data(connectingLines)
+      .data(this.connectingLines)
       .enter().append('line')
       .style('stroke', function (d) { return d.stroke; })
       .attr('stroke-width', function (d) { return d.strokeWidth; })
