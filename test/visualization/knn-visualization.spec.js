@@ -223,5 +223,27 @@ describe('KNNVisualization', () => {
 
       Visualization.prototype.drawCircles.restore();
     });
+    it('should add class .remove to bounding circle, but not to rest', () => {
+      // given
+      const data = [
+        { x: 2, y: 3, type: 'A'},
+        { x: 1, y: 1, type: 'B'},
+        { x: 2, y: 4, type: 'A'},
+        { x: 75, y: 4, type: 'A'}
+      ];
+      const vis = new KNNVisualization(data, options);
+      const circle = new Circle(0, 0);
+      vis.addCircle(vis.getClassifiedCircle(circle));
+      vis.addCircle(vis.getBoundingCircle(circle));
+      // when
+      vis.drawCircles();
+      // then
+      const boundingCircle = document.querySelector('circle:last-of-type');
+      expect(boundingCircle).to.have.attr('class', 'remove');
+      const circles = Array.from(document.querySelector('circle:not(:last-of-type)'));
+      circles.forEach(circle => {
+        expect(circle).to.not.have.attr('class', 'remove');
+      });
+    });
   });
 });

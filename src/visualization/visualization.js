@@ -123,7 +123,8 @@ export default class Visualization {
       .style('fill', function (d) { return d.fill; })
       .attr('r', function (d) { return d.radius; })
       .attr('cx', function (d) { return d.cx; })
-      .attr('cy', function (d) { return d.cy; });
+      .attr('cy', function (d) { return d.cy; })
+      .attr('class', function (d) { return !!d.cssClass ? d.cssClass : ''; });
   }
   draw() {
     this.drawCircles();

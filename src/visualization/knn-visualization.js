@@ -5,7 +5,6 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
- * - add class .remove to bounding circle and lines
  * - remove them after a few seconds
  * - add weighted
  */
@@ -34,8 +33,10 @@ export default class KNNVisualization extends Visualization {
   getBoundingCircle(circle) {
     const furthestNeighbor = this.knn.kClosestNeighbors[this.knn.k - 1];
     const radius = furthestNeighbor.distance + this.options.circleRadius;
+    const boundingCircle = new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');
+    boundingCircle.setCssClass('remove');
 
-    return new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');
+    return boundingCircle;
   }
   mapClosestNeighborsToConnectingLines(circle) {
     return this.knn.kClosestNeighbors.map(n => {
