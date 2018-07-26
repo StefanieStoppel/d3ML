@@ -2,13 +2,17 @@
 
 import chai from 'chai';
 import chaiDom from 'chai-dom';
+import chaiStyle from 'chai-style';
 import KNNVisualization from '../../src/visualization/knn-visualization';
 import Circle from '../../src/visualization/circle';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {createEvent} from '../test-helper';
+import D3TransitionTestUtils from '../d3-transition-test-helper';
+import Visualization from "../../src/visualization/visualization";
 
 chai.use(chaiDom);
+chai.use(chaiStyle);
 chai.use(sinonChai);
 const expect = chai.expect;
 
@@ -160,6 +164,36 @@ describe('KNNVisualization', () => {
         expect(addBoundingCircleStub).calledOnce;
         expect(addConnectingLinesStub).calledOnce;
       });
+    });
+  });
+  describe('drawCircles', () => {
+    beforeEach(() => {
+      D3TransitionTestUtils.stubAndForceTransitions();
+    });
+    afterEach(() => {
+      D3TransitionTestUtils.restoreTransitions();
+    });
+    it('should correctly call parent method and transition fill color', () => {
+      // given
+      const data = [
+        { x: 12, y: 13, type: 'A'},
+        { x: 13, y: 6, type: 'B'},
+        { x: 2, y: 54, type: 'A'},
+        { x: 75, y: 4, type: 'A'},
+        { x: 45, y: 7, type: 'B'}
+      ];
+      const types = ['A', 'B'];
+      const vis = new KNNVisualization(data, options, types);
+      const parentSpy = sinon.spy(Visualization.prototype, 'drawCircles');
+      const newCircle = new Circle(1,2);
+      vis.classifyAndAddCircle(newCircle);
+      const expectedColor = vis.typeColorMap[types[1]];
+      // when
+      vis.drawCircles();
+      // then
+      const circle = document.querySelector('circle:last-of-type');
+      expect(circle).to.have.style('fill', expectedColor);
+      expect(parentSpy).calledOnce;
     });
   });
 });

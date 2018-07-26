@@ -63,17 +63,15 @@ export default class KNNVisualization extends Visualization {
       .attr('y2', function (d) { return d.y2; })
       .attr('class', 'remove');
   }
-  drawCircles() {// todo: test
-    const that = this;
+  drawCircles() {
+    super.drawCircles();
+    const colorMap = this.typeColorMap;
     this.svg.selectAll('circle')
-      .data(this.data)
-      .enter().append('circle')
-      .style('stroke', function (d) { return d.stroke; })
-      .style('fill', function (d) { return d.fill; })
-      .attr('r', function (d) { return d.radius; })
-      .attr('cx', function (d) { return d.cx; })
-      .attr('cy', function (d) { return d.cy; })
       .transition().duration(1500)
-      .style('fill', function (d) { return d.type === defaultType ? d.fill : that.typeColorMap[d.type]; });
+      .style('fill', function (d) {
+        const typeColor = colorMap[d.type];
+
+        return d.type === defaultType || d.fill === typeColor ? d.fill : typeColor;
+      });
   }
 };
