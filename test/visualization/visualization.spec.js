@@ -47,7 +47,7 @@ describe('Visualization', () => {
     });
   });
   describe('constructor', () => {
-    it('should initialize options correctly', () => {
+    it('should initialize correctly', () => {
       // given
       const options = {
         rootNode: 'body',
@@ -70,6 +70,7 @@ describe('Visualization', () => {
       expect(vis.options.circleRadius).to.equal(options.circleRadius);
       expect(vis.options.circleFill).to.equal(options.circleFill);
       expect(vis.options.circleStroke).to.equal(options.circleStroke);
+      expect(vis.clickable).to.equal(true);
     });
     const incorrectTypes = [
       {},
@@ -119,8 +120,8 @@ describe('Visualization', () => {
         const vis = new Visualization([]);
         // then
         expect(vis.isValidData.bind(vis, test.data))
-          .to.throw(`Invalid data specified: "${test.expected.key}" with value ${test.expected.val}.` +
-          ' Accepted data keys are "x" and "y". Values must be numeric.');
+          .to.throw(`Invalid data specified: ${test.expected.key} with value ${test.expected.val}.` +
+          ' Accepted data keys are x and y. Values must be numeric.');
       });
     });
   });
