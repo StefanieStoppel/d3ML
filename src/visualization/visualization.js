@@ -18,6 +18,7 @@ export default class Visualization {
     }
     this.svgId = 'd3ml-' + Date.now();
     this.svg = this.appendSVG();
+    this.clickable = true;
   }
   isValidData(data) {
     let result = false;
@@ -101,12 +102,15 @@ export default class Visualization {
     return !!e.target && e.target.id === this.svgId;
   }
   clickCallback(e, callbacks) {
-    if (this.isValidEventTarget(e)) {
+    if (this.isValidEventTarget(e) && this.clickable) {
       const newCircle = this.mapDataToCircle({x: this.xScale.invert(e.offsetX), y: this.yScale.invert(e.offsetY)});
       callbacks.forEach(callback => {
         callback.call(this, newCircle);
       });
     }
+  }
+  setClickable(clickable) {
+    this.clickable = clickable;
   }
   addCircle(circle) {
     this.data.push(circle);

@@ -55,7 +55,6 @@ describe('KNNVisualization', () => {
       const vis = new KNNVisualization(data, options);
       // then
       expect(vis.knn).to.not.be.null;
-      // todo: check event listener count is 1
     });
   });
   describe('drawConnectingLines', () => {
@@ -307,6 +306,23 @@ describe('KNNVisualization', () => {
         expect(t).to.have.attr('style', 'stroke: transparent; fill: transparent;');
       });
       expect(document.querySelector(`svg#${vis.svgId}`)).to.not.contain('.remove');
+    });
+  });
+  describe('clickable', () => {
+    it('should not add circle if clickable is set to false', () => {
+      const dataCount = data.length;
+      const vis = new KNNVisualization(data, options, ['A', 'B']);
+      const svg = document.querySelector(`svg#${vis.svgId}`);
+      expect(vis.data.length).to.equal(data.length);
+      vis.clickable = false;
+      // when
+      const { node, event } = createEvent(svg, 'click');
+      event.offsetX = 100;
+      event.offsetY = 200;
+      node.dispatchEvent(event, true);
+      // then
+      expect(vis.data.length).to.equal(dataCount);
+      expect(vis.clickable).to.be.false;
     });
   });
 });

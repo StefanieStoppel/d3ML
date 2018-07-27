@@ -19,11 +19,14 @@ export default class KNNVisualization extends Visualization {
     this.onClickSvg([this.svgClickCallback]);
   }
   svgClickCallback(circle) {
+    this.setClickable(false);
     const classifiedCircle = this.getClassifiedCircle(circle);
     this.addCircle(classifiedCircle);
-    this.addCircle(this.getBoundingCircle(classifiedCircle));
+    const boundingCircle = this.getBoundingCircle(classifiedCircle);
+    this.addCircle(boundingCircle);
     this.drawCircles();
     this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
+    this.data = this.data.filter(c => c !== boundingCircle);
     this.removeElementsAfterTransition('.remove');
   }
   getClassifiedCircle(circle) {
@@ -76,8 +79,6 @@ export default class KNNVisualization extends Visualization {
       });
   }
   removeElementsAfterTransition(selector) {
-    this.data = this.data.filter(c => c.type !== defaultType);
-
     const that = this;
     this.svg.selectAll(selector)
       .transition()
@@ -86,6 +87,7 @@ export default class KNNVisualization extends Visualization {
       .style('fill', 'transparent')
       .on('end', function () {
         that.removeElements(selector);
+        that.setClickable(true);
       });
   }
   removeElements(selector) {
