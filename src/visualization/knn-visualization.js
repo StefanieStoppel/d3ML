@@ -5,8 +5,7 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
- * - add listener for weighted checkbox
- * - add weighted checkbox
+ * - add intergration test
  */
 
 export default class KNNVisualization extends Visualization {

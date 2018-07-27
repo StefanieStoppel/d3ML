@@ -69,6 +69,15 @@ describe('KNNVisualization', () => {
       expect(document.querySelector('#range-k').value).to.equal(k.toString());
       expect(document.querySelector('#range-k-label span')).to.have.text(k.toString());
     });
+    it('should attach checkbox and label for setting weighted', () => {
+      // given
+      const weighted = false;
+      // when
+      const vis = new KNNVisualization(data, options, [], 3);
+      // then
+      expect(document.querySelector('#weighted').value).to.equal('false');
+      expect(document.querySelector('#weighted-label span')).to.have.text('false');
+    });
   });
   describe('drawConnectingLines', () => {
     it('should draw lines correctly', () => {

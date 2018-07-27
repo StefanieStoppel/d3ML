@@ -209,7 +209,7 @@ describe('Visualization', () => {
         offsetY: 200
       };
       // when
-      vis.clickCallback(event, vis.svgId,[callback]);
+      vis.clickCallback(event, vis.svgId, [callback]);
       // then
       expect(callback).calledOnce;
     });
