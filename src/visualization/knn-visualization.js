@@ -5,7 +5,6 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
- * - add boolean flag for clickable
  * - add weighted
  */
 
