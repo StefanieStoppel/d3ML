@@ -98,18 +98,19 @@ export default class Visualization {
       this.clickCallback(e, targetId, callbacks);
     });
   }
-  onChangeInput(inputId, callbacks) {
+  onChangeInput(inputId, inputType, callbacks) {
     document.querySelector(`#${inputId}`).addEventListener('change', (e) => {
-      this.inputChangeCallback(e, inputId, callbacks);
+      this.inputChangeCallback(e, inputId, inputType, callbacks);
     });
   }
   isValidEventTarget(target, targetId) {
     return !!target && target.id === targetId;
   }
-  inputChangeCallback(e, inputId, callbacks) {
-    if (this.isValidEventTarget(e.target, inputId) && !!e.target.value) {
+  inputChangeCallback(e, inputId, type, callbacks) {
+    if (this.isValidEventTarget(e.target, inputId)) {
+      const value = type === 'checkbox' ? e.target.checked : e.target.value;
       callbacks.forEach(callback => {
-        callback.call(this, e.target.value);
+        callback.call(this, value);
       });
     }
   }

@@ -57,8 +57,8 @@ export default class KNNVisualization extends Visualization {
   }
   addEventListeners() {
     this.onClickSvg(this.svgId, [this.svgClickCallback]);
-    this.onChangeInput('range-k', [this.inputRangeKChangeCallback]);
-    this.onChangeInput('weighted', [this.checkboxWeightedChangeCallback]);
+    this.onChangeInput('range-k', 'range', [this.inputRangeKChangeCallback]);
+    this.onChangeInput('weighted', 'checkbox', [this.checkboxWeightedChangeCallback]);
   }
   svgClickCallback(circle) {// todo: test
     this.setClickable(false);
