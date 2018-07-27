@@ -37,20 +37,21 @@ export default class KNNVisualization extends Visualization {
       ['value', this.knn.k]
     ];
     const { label, input } = this.createLabeledInput(labelText, labelAttributes, this.knn.k, inputAttributes);
+
     return this.createSettingsGroup([label, input]);
   }
   createSettingsGroupForWeighted() {
     const labelText = 'Use weighted algorithm: ';
     const labelAttributes = [
       ['for', 'weighted'],
-      ['id', 'weighted-label'],
+      ['id', 'weighted-label']
     ];
     const inputAttributes = [
       ['id', 'weighted'],
-      ['type', 'checkbox'],
-      ['checked', false]
+      ['type', 'checkbox']
     ];
     const { label, input } = this.createLabeledInput(labelText, labelAttributes, false, inputAttributes);
+
     return this.createSettingsGroup([label, input]);
   }
   addEventListeners() {
@@ -67,6 +68,11 @@ export default class KNNVisualization extends Visualization {
     this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
     this.data = this.data.filter(c => c !== boundingCircle);
     this.removeElementsAfterTransition('.remove');
+    this.updateInputRangeKMax(this.data.length);
+  }
+  updateInputRangeKMax(maxK) {
+    const inputRangeK = document.querySelector('#range-k');
+    inputRangeK.setAttribute('max', maxK);
   }
   inputRangeKChangeCallback(k) {
     this.k = k;
