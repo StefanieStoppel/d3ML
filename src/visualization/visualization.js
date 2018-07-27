@@ -26,23 +26,32 @@ export default class Visualization {
         return Object.entries(val).reduce((result, entry) => {
           const key = entry[0];
           const val = entry[1];
-          if (['x', 'y'].includes(key)) {
-            return result && typeof val === 'number' && val !== Infinity && val !== -Infinity;
-          } else if (key === 'type') {
-            return result && this.types.includes(val);
+          let res = false;
+          if (this.isValidCoordinate(key, val) || this.isValidType(key, val)) {
+            res = result && true;
+          } else {
+            if (!this.isValidType(key, val)) {
+              throw Error(`Invalid data specified: "${key}" with value ${val}.` +
+                ` Accepted data keys are "x" and "y". Values must be numeric.`);
+            } else if (!this.isValidCoordinate(key, val)) {
+              throw Error(`Invalid type specified: ${key}: ${val}`);
+            }
           }
-          return false;
+          return res;
         }, true);
       }, true);
     }
 
     return result;
   }
-  isValidCoordinate(coor) {
-    return typeof coor === 'number' && coor !== Infinity && coor !== -Infinity;
+  isValidCoordinate(key, val) {
+    return ['x', 'y'].includes(key) &&
+      typeof val === 'number' &&
+      val !== Infinity &&
+      val !== -Infinity;
   }
-  isValidType(type) {
-    return this.types.includes(type);
+  isValidType(key, val) {
+    return key === 'type' && this.types.includes(val);
   }
   isValidTypes(types) {
     let result = false;

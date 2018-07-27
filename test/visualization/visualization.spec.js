@@ -104,23 +104,23 @@ describe('Visualization', () => {
       expect(validation).to.be.true;
     });
     const failingTests = [
-      { data: [{ a: 13, b: 42 }], expected: false },
-      { data: [{ x: 145, foo: 144645867 }], expected: false },
-      { data: [{ z: Math.PI, y: 53.24 }], expected: false },
-      { data: [{ x: 'hello', y: 53.24 }], expected: false },
-      { data: [{ x: 2, y: Infinity }], expected: false },
-      { data: [{ x: 42, y: {} }], expected: false },
-      { data: [{ x: 1, y: null }], expected: false },
-      { data: [{ x: 1, y: '12' }], expected: false }
+      { data: [{ a: 13, b: 42 }], expected: { key: 'a', val: 13 } },
+      { data: [{ x: 145, foo: 144645867 }], expected: { key: 'foo', val: 144645867 } },
+      { data: [{ z: Math.PI, y: 53.24 }], expected: { key: 'z', val: Math.PI } },
+      { data: [{ x: 'hello', y: 53.24 }], expected: { key: 'x', val: 'hello' } },
+      { data: [{ x: 2, y: Infinity }], expected: { key: 'y', val: Infinity } },
+      { data: [{ x: 42, y: {} }], expected: { key: 'y', val: {} } },
+      { data: [{ x: 1, y: null }], expected: { key: 'y', val: null } },
+      { data: [{ x: 1, y: '12' }], expected: { key: 'y', val: '12' } }
     ];
     failingTests.forEach(test => {
       it(`should fail validation for data: ${Object.entries(test.data[0])}`, () => {
         // when
         const vis = new Visualization([]);
-        // given
-        const validationResult = vis.isValidData(test.data);
         // then
-        expect(validationResult).to.equal(test.expected);
+        expect(vis.isValidData.bind(vis, test.data))
+          .to.throw(`Invalid data specified: "${test.expected.key}" with value ${test.expected.val}.` +
+          ` Accepted data keys are "x" and "y". Values must be numeric.`);
       });
     });
   });

@@ -62,22 +62,29 @@ describe('KNNVisualization', () => {
     it('should draw lines correctly', () => {
       // given
       const data = [
+        {x: 2, y: 6},
+        {x: 5, y: 93},
+        {x: 42, y: 84},
+        {x: 524, y: 1242},
+        {x: 35, y: 232}
+      ];
+      const neighbors = [
         new Circle(2, 6),
         new Circle(5, 93),
         new Circle(42, 84)
       ];
       const vis = new KNNVisualization(data, options);
       const newCircle = new Circle(5,7);
-      vis.knn.kClosestNeighbors = data;
+      vis.knn.kClosestNeighbors = neighbors;
       const connectingLines = vis.mapClosestNeighborsToConnectingLines(newCircle);
       // when
       vis.drawConnectingLines(connectingLines);
       // then
       const lines = Array.from(document.querySelectorAll('line'));
       lines.forEach((line, idx) => {
-        expect(line).to.have.attr('x1', data[idx].cx.toString());
+        expect(line).to.have.attr('x1', data[idx].x.toString());
         expect(line).to.have.attr('x2', newCircle.cx.toString());
-        expect(line).to.have.attr('y1', data[idx].cy.toString());
+        expect(line).to.have.attr('y1', data[idx].y.toString());
         expect(line).to.have.attr('y2', newCircle.cy.toString());
         expect(line).to.have.attr('style', 'stroke: rgba(230,230,230,0.5);');
         expect(line).to.have.attr('stroke-width', '2');
