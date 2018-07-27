@@ -60,16 +60,8 @@ export default class KNN extends MachineLearningAlgorithm {
     return Object.entries(counts).sort((a, b) => a[1] < b[1])[0][0];
   }
   determineCircleType(kClosestNeighbors, weighted) {
-    let result;
-    if (weighted) {
-      result = this.getCircleTypeWeighted(kClosestNeighbors);
-    } else {
-      result = this.getCircleTypeUnweighted(kClosestNeighbors);
-    }
-
-    return result;
+    return weighted ? this.getCircleTypeWeighted(kClosestNeighbors) : this.getCircleTypeUnweighted(kClosestNeighbors);
   }
-
   classify(circle, neighbors, weighted = false) {
     this.kClosestNeighbors = this.findKClosestNeighbors(circle, neighbors);
 

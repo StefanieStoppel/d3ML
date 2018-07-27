@@ -14,17 +14,13 @@ describe('KNN', () => {
     it('should initialize correctly', () => {
       // given
       const givenK = 4;
-      const givenTypes = {
-        foo: 'foo',
-        bar: 'bar',
-        None: 'None'
-      };
+      const givenTypes = ['foo', 'bar'];
       const givenCircles = [
-        new Circle(1, 2, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(2, 3, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(4, 5, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(1123, 53, 4, 'red', 'blue', givenTypes.bar),
-        new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar),
+        new Circle(1, 2, 4, 'red', 'blue', 'foo'),
+        new Circle(2, 3, 4, 'red', 'blue', 'foo'),
+        new Circle(4, 5, 4, 'red', 'blue', 'foo'),
+        new Circle(1123, 53, 4, 'red', 'blue', 'bar'),
+        new Circle(435, 42, 4, 'red', 'blue', 'bar'),
         new Circle(435, 42, 4, 'red', 'blue', givenTypes.None)
       ];
       // when
@@ -37,14 +33,10 @@ describe('KNN', () => {
     });
     it('should initialize with defaults correctly', () => {
       // given
-      const givenTypes = {
-        foo: 'foo',
-        bar: 'bar',
-        None: 'None'
-      };
+      const givenTypes = ['foo', 'bar'];
       const givenCircles = [
-        new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar),
-        new Circle(435, 42, 4, 'red', 'blue', givenTypes.None)
+        new Circle(435, 42, 4, 'red', 'blue', 'bar'),
+        new Circle(435, 42, 4, 'red', 'blue', 'None')
       ];
       // when
       const knn = new Knn(givenCircles, givenTypes);
@@ -56,17 +48,13 @@ describe('KNN', () => {
     it('should find neighbors correctly', () => {
       // given
       const givenK = 4;
-      const givenTypes = {
-        foo: 'foo',
-        bar: 'bar',
-        None: 'None'
-      };
+      const givenTypes = ['foo', 'bar'];
       const givenCircles = [
-        new Circle(1, 2, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(2, 3, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(4, 5, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(1123, 53, 4, 'red', 'blue', givenTypes.bar),
-        new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar)
+        new Circle(1, 2, 4, 'red', 'blue', 'foo'),
+        new Circle(2, 3, 4, 'red', 'blue', 'foo'),
+        new Circle(4, 5, 4, 'red', 'blue', 'foo'),
+        new Circle(1123, 53, 4, 'red', 'blue', 'bar'),
+        new Circle(435, 42, 4, 'red', 'blue', 'bar')
       ];
       const knn = new Knn(givenCircles, givenTypes, givenK);
       const newCircle = new Circle(0, 0, 'red', 'blue', givenTypes.None);
@@ -83,49 +71,63 @@ describe('KNN', () => {
       expect(kClosestNeighbors).to.deep.equal(expected);
     });
   });
-  describe('determineCircleType', () => {
+  describe('getCircleTypeWeighted', () => {
+    it('should determine circle type correctly when weighted', () => {
+      // given
+      const expectedType = 'foo';
+      const givenK = 3;
+      const givenTypes = ['foo', 'bar'];
+      const givenKClosestNeighbors = [
+        new Circle(1, 2, 4, 'red', 'blue', 'foo'),
+        new Circle(2, 3, 4, 'red', 'blue', 'bar'),
+        new Circle(4, 5, 4, 'red', 'blue', 'bar')
+      ];
+      const circle = new Circle(1, 1);
+      const knn = new Knn([], givenTypes, givenK);
+      const kClosestNeighbors = knn.findKClosestNeighbors(circle, givenKClosestNeighbors);
+      // when
+      const circleType = knn.getCircleTypeWeighted(kClosestNeighbors);
+      // then
+      expect(circleType).to.deep.equal(expectedType);
+    });
+  });
+  describe('getCircleTypeUnweighted', () => {
     it('should determine circle type correctly', () => {
       // given
       const givenK = 3;
-      const givenTypes = {
-        foo: 'foo',
-        bar: 'bar',
-        None: 'None'
-      };
+      const givenTypes = ['foo', 'bar'];
       const givenKClosestNeighbors = [
-        new Circle(1, 2, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(2, 3, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(4, 5, 4, 'red', 'blue', givenTypes.bar)
+        new Circle(1, 2, 4, 'red', 'blue', 'foo'),
+        new Circle(2, 3, 4, 'red', 'blue', 'foo'),
+        new Circle(4, 5, 4, 'red', 'blue', 'bar')
       ];
       const givenCircles = [
         ... givenKClosestNeighbors,
-        new Circle(4, 8, 4, 'red', 'blue', givenTypes.foo),
-        new Circle(6, 8, 4, 'red', 'blue', givenTypes.bar)
+        new Circle(4, 8, 4, 'red', 'blue', 'foo'),
+        new Circle(6, 8, 4, 'red', 'blue', 'bar')
       ];
+      const circle = new Circle(1, 1);
       const knn = new Knn(givenCircles, givenTypes, givenK);
-      const expectedType = givenTypes.foo;
+      const kClosestNeighbors = knn.findKClosestNeighbors(circle, givenKClosestNeighbors);
+      const expectedType = 'foo';
       // when
-      const circleType = knn.determineCircleType(givenKClosestNeighbors);
+      const circleType = knn.getCircleTypeUnweighted(kClosestNeighbors);
       // then
       expect(circleType).to.deep.equal(expectedType);
     });
     it('should pick first neighbor\'s circle type in a tie', () => {
       // given
       const givenK = 2;
-      const givenTypes = {
-        foo: 'foo',
-        bar: 'bar',
-        None: 'None'
-      };
+      const givenTypes = ['foo', 'bar'];
       const givenCircles = [
-        new Circle(435, 42, 4, 'red', 'blue', givenTypes.bar),
-        new Circle(1, 2, 4, 'red', 'blue', givenTypes.foo)
+        new Circle(435, 42, 4, 'red', 'blue', 'bar'),
+        new Circle(1, 2, 4, 'red', 'blue', 'foo')
       ];
       const knn = new Knn([], givenTypes, givenK);
       // when
-      const circleType = knn.determineCircleType(givenCircles);
+      const circleType = knn.getCircleTypeUnweighted(givenCircles);
       // then
-      expect(circleType).to.equal(givenTypes.bar);
+      expect(circleType).to.equal('bar');
     });
   });
   describe('classify (unweighted)', () => {
@@ -160,7 +162,7 @@ describe('KNN', () => {
       const knn = new Knn(givenNeighbors, types, givenK);
       const newCircle = new Circle(0, 0);
       // when
-      const circleType = knn.classify(newCircle, givenNeighbors);
+      const circleType = knn.classify(newCircle, givenNeighbors, false);
       // then
       expect(circleType).to.equal(expectedType);
       expect(knn.kClosestNeighbors).to.deep.equal([givenNeighbors[1], givenNeighbors[2]]);
@@ -173,7 +175,7 @@ describe('KNN', () => {
       const kClosestNeighbors = [
         new Circle(435, 253, 4, 'green', 'blue', 'B'),
         new Circle(65757, 2525, 4, 'green', 'blue', 'B'),
-        new Circle(2, 3, 4, 'red', 'blue', 'A'),
+        new Circle(2, 3, 4, 'red', 'blue', 'A')
       ];
       const neighbors = [
         ...kClosestNeighbors,
@@ -196,7 +198,7 @@ describe('KNN', () => {
         new Circle(4, 5, 4, 'green', 'blue', 'B'),
         new Circle(3, 5, 4, 'green', 'blue', 'B'),
         new Circle(2, 3, 4, 'red', 'blue', 'A'),
-        new Circle(2, 1, 4, 'red', 'blue', 'A'),
+        new Circle(2, 1, 4, 'red', 'blue', 'A')
       ];
       const neighbors = [
         ...kClosestNeighbors,
