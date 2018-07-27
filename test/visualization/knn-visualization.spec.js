@@ -338,21 +338,18 @@ describe('KNNVisualization', () => {
       expect(vis.clickable).to.be.false;
     });
   });
-  describe('onChangeInputRangeK', () => {
+  describe('inputRangeKChangeCallback', () => {
     it('should update value of k on input range change', () => {
       // given
       const expectedK = 7;
       const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
       const rangeInputK = document.querySelector(`#range-k`);
       // when
-      const { node, event } = createEvent(rangeInputK, 'change');
-      event.target.value = 7;// todo: fix
-      node.dispatchEvent(event, true);
+      vis.inputRangeKChangeCallback(7);
       // then
       expect(vis.k).to.equal(expectedK);
       expect(vis.knn.k).to.equal(expectedK);
       expect(document.querySelector('#range-k-label > span').innerHTML).to.equal(expectedK.toString());
     });
   });
-  // todo: add tests for settings and settings__group in general
 });

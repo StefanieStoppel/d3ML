@@ -17,7 +17,6 @@ export default class KNNVisualization extends Visualization {
     document.querySelector(this.options.rootNode).appendChild(this.createSettings());
     this.addEventListeners();
   }
-
   createSettings() { // todo: refactor and test
     const settings = this.createElement('div', [['class', 'settings']]);
 

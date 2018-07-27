@@ -103,15 +103,18 @@ export default class Visualization {
       this.inputChangeCallback(e, inputId, callbacks);
     });
   }
+  isValidEventTarget(target, targetId) {
+    return !!target && target.id === targetId;
+  }
   inputChangeCallback(e, inputId, callbacks) {
-    if (!!e.target && e.target.id === inputId && !!e.target.value) {
+    if (this.isValidEventTarget(e.target, inputId) && !!e.target.value) {
       callbacks.forEach(callback => {
         callback.call(this, e.target.value);
       });
     }
   }
   clickCallback(e, targetId, callbacks) {
-    if (!!e.target && e.target.id === targetId && this.clickable) {
+    if (this.isValidEventTarget(e.target, targetId) && this.clickable) {
       const newCircle = this.mapDataToCircle({x: this.xScale.invert(e.offsetX), y: this.yScale.invert(e.offsetY)});
       callbacks.forEach(callback => {
         callback.call(this, newCircle);

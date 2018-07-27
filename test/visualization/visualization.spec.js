@@ -177,7 +177,7 @@ describe('Visualization', () => {
         // given
         const vis = new Visualization([], options);
         // when
-        const result = vis.isValidEventTarget(test.event);
+        const result = vis.isValidEventTarget(test.event.target, vis.svgId);
         // then
         expect(result).to.be.false;
       });
@@ -209,7 +209,7 @@ describe('Visualization', () => {
         offsetY: 200
       };
       // when
-      vis.clickCallback(event, [callback]);
+      vis.clickCallback(event, vis.svgId,[callback]);
       // then
       expect(callback).calledOnce;
     });
@@ -388,4 +388,6 @@ describe('Visualization', () => {
       });
     });
   });
+  // todo: add tests for settings and settings__group in general
+
 });
