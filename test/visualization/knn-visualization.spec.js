@@ -351,6 +351,26 @@ describe('KNNVisualization', () => {
       expect(document.querySelector('#range-k-label > span').innerHTML).to.equal(expectedK.toString());
     });
   });
+  describe('checkboxWeightedChangeCallback', () => {
+    it('should set weighted to true', () => {
+      // given
+      const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
+      expect(vis.knn.weighted).to.equal(false);
+      // when
+      vis.checkboxWeightedChangeCallback(true);
+      // then
+      expect(vis.knn.weighted).to.equal(true);
+    });
+    it('should set weighted to false', () => {
+      // given
+      const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
+      vis.knn.weighted = true;
+      // when
+      vis.checkboxWeightedChangeCallback(false);
+      // then
+      expect(vis.knn.weighted).to.equal(false);
+    });
+  });
   describe('createSettingsGroupForWeighted ', () => {
     it('should create settings group for k correctly', () => {
       // given
@@ -371,7 +391,7 @@ describe('KNNVisualization', () => {
       const weighted = settingsGroup.querySelector('#weighted');
       const weightedLabel = settingsGroup.querySelector('#weighted-label');
       expect(weighted).to.have.attr('type', 'checkbox');
-      expect(weighted).to.have.attr('checked', 'false');
+      expect(weighted).to.have.attr('value', 'false');
       expect(weightedLabel).to.have.text('Use weighted algorithm: false');
       expect(weightedLabel).to.have.attr('for', 'weighted');
     });

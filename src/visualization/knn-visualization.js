@@ -5,6 +5,7 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
+ * - add listener for weighted checkbox
  * - add weighted checkbox
  */
 
@@ -57,27 +58,31 @@ export default class KNNVisualization extends Visualization {
   addEventListeners() {
     this.onClickSvg(this.svgId, [this.svgClickCallback]);
     this.onChangeInput('range-k', [this.inputRangeKChangeCallback]);
+    this.onChangeInput('weighted', [this.checkboxWeightedChangeCallback]);
   }
-  svgClickCallback(circle) {
+  svgClickCallback(circle) {// todo: test
     this.setClickable(false);
+
     const classifiedCircle = this.getClassifiedCircle(circle);
     this.addCircle(classifiedCircle);
     const boundingCircle = this.getBoundingCircle(classifiedCircle);
     this.addCircle(boundingCircle);
+
     this.drawCircles();
     this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
+
     this.data = this.data.filter(c => c !== boundingCircle);
     this.removeElementsAfterTransition('.remove');
-    this.updateInputRangeKMax(this.data.length);
-  }
-  updateInputRangeKMax(maxK) {
-    const inputRangeK = document.querySelector('#range-k');
-    inputRangeK.setAttribute('max', maxK);
+
+    document.querySelector('#range-k').setAttribute('max', this.data.length); // todo: test
   }
   inputRangeKChangeCallback(k) {
     this.k = k;
     this.knn.k = k;
     document.querySelector('#range-k-label > span').innerHTML = k;
+  }
+  checkboxWeightedChangeCallback(checked) {
+    this.knn.weighted = checked;
   }
   getClassifiedCircle(circle) {
     const circleType = this.knn.classify(circle, this.data);

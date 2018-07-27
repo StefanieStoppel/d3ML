@@ -2,11 +2,12 @@ import MachineLearningAlgorithm from './machine-learning-algorithm';
 import {defaultK} from '../visualization/defaults';
 
 export default class KNN extends MachineLearningAlgorithm {
-  constructor(circles, types, k = defaultK) {
+  constructor(circles, types, k = defaultK, weighted = false) {
     super(circles);
     this.k = k;
     this.types = types;
     this.kClosestNeighbors = null;
+    this.weighted = weighted;
   }
   calculateDistance(a, b) {
     return Math.sqrt(Math.pow((b.cx - a.cx), 2) + Math.pow((b.cy - a.cy), 2));
@@ -59,12 +60,12 @@ export default class KNN extends MachineLearningAlgorithm {
 
     return Object.entries(counts).sort((a, b) => a[1] < b[1])[0][0];
   }
-  determineCircleType(kClosestNeighbors, weighted) {
-    return weighted ? this.getCircleTypeWeighted(kClosestNeighbors) : this.getCircleTypeUnweighted(kClosestNeighbors);
+  determineCircleType(kClosestNeighbors) {
+    return this.weighted ? this.getCircleTypeWeighted(kClosestNeighbors) : this.getCircleTypeUnweighted(kClosestNeighbors);
   }
-  classify(circle, neighbors, weighted = false) {
+  classify(circle, neighbors) {
     this.kClosestNeighbors = this.findKClosestNeighbors(circle, neighbors);
 
-    return this.determineCircleType(this.kClosestNeighbors, weighted);
+    return this.determineCircleType(this.kClosestNeighbors);
   }
 }
