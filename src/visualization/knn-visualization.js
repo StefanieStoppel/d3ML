@@ -5,7 +5,7 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
- * - throw error when types and data types don't match
+ * - add boolean flag for clickable
  * - add weighted
  */
 

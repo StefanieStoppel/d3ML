@@ -6,50 +6,51 @@ const d3SelectionProto = Object.assign({}, selection.prototype);
 
 const D3TransitionTestUtils = {
   stubAndForceTransitions() {
-    selection.prototype.transition = function() {
+    selection.prototype.transition = function () {
       return this;
     };
 
-    selection.prototype.duration = function() {
+    selection.prototype.duration = function () {
       return this;
     };
 
-    selection.prototype.delay = function() {
+    selection.prototype.delay = function () {
       return this;
     };
 
-    selection.prototype.ease = function() {
+    selection.prototype.ease = function () {
       return this;
     };
 
-    selection.prototype.on = function(event, callback) {
+    selection.prototype.on = function (event, callback) {
       if (event === 'start' || event === 'end') {
         this.each(callback);
 
         return this;
-      } else {
-        return d3SelectionProto.on.apply(this, arguments);
       }
+
+      return d3SelectionProto.on.apply(this, arguments);
+
     };
 
-    selection.prototype.tween = function(_name, tweenFn) {
-      this.each(function(datum, index) {
+    selection.prototype.tween = function (_name, tweenFn) {
+      this.each(function (datum, index) {
         tweenFn.call(this, datum, index)(1);
       });
 
       return this;
     };
 
-    selection.prototype.attrTween = function(attr, tweenFn) {
-      this.each(function(datum, index) {
+    selection.prototype.attrTween = function (attr, tweenFn) {
+      this.each(function (datum, index) {
         select(this).attr(attr, tweenFn.call(this, datum, index)(1));
       });
 
       return this;
     };
 
-    selection.prototype.styleTween = function(style, tweenFn) {
-      this.each(function(datum, index) {
+    selection.prototype.styleTween = function (style, tweenFn) {
+      this.each(function (datum, index) {
         select(this).style(style, tweenFn.call(this, datum, index)(1));
       });
 

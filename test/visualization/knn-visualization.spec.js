@@ -9,7 +9,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {createEvent} from '../test-helper';
 import D3TransitionTestUtils from '../d3-transition-test-helper';
-import Visualization from "../../src/visualization/visualization";
+import Visualization from '../../src/visualization/visualization';
 
 chai.use(chaiDom);
 chai.use(chaiStyle);
@@ -74,7 +74,7 @@ describe('KNNVisualization', () => {
         new Circle(42, 84)
       ];
       const vis = new KNNVisualization(data, options);
-      const newCircle = new Circle(5,7);
+      const newCircle = new Circle(5, 7);
       vis.knn.kClosestNeighbors = neighbors;
       const connectingLines = vis.mapClosestNeighborsToConnectingLines(newCircle);
       // when
@@ -222,7 +222,7 @@ describe('KNNVisualization', () => {
       const types = ['A', 'B'];
       const vis = new KNNVisualization(data, options, types);
       const parentSpy = sinon.spy(Visualization.prototype, 'drawCircles');
-      const newCircle = new Circle(2,2);
+      const newCircle = new Circle(2, 2);
       vis.addCircle(vis.getClassifiedCircle(newCircle));
       const expectedColor = vis.typeColorMap[types[0]];
       // when

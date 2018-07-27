@@ -120,7 +120,7 @@ describe('Visualization', () => {
         // then
         expect(vis.isValidData.bind(vis, test.data))
           .to.throw(`Invalid data specified: "${test.expected.key}" with value ${test.expected.val}.` +
-          ` Accepted data keys are "x" and "y". Values must be numeric.`);
+          ' Accepted data keys are "x" and "y". Values must be numeric.');
       });
     });
   });
@@ -337,17 +337,17 @@ describe('Visualization', () => {
       { data: { type: null }, types: ['Z'] },
       { data: { type: undefined }, types: ['Z'] },
       { data: { type: NaN }, types: ['Z'] },
-      { data: { type: 'C' }, types: ['A', 'B'] },
+      { data: { type: 'C' }, types: ['A', 'B'] }
     ];
     typeData.forEach(td => {
       it(`should return default circleFill color for invalid data: ${td}`, () => {
         // given
-        const options = Object.assign({}, options, { circleFill: 'yellow' });
-        const vis = new Visualization(data, options, td.types);
+        const givenOptions = Object.assign({}, options, { circleFill: 'yellow' });
+        const vis = new Visualization(data, givenOptions, td.types);
         // when
         const color = vis.getFillColor(td.data);
         // then
-        expect(color).to.equal(options.circleFill);
+        expect(color).to.equal(givenOptions.circleFill);
       });
     });
   });

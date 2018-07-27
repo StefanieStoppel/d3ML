@@ -31,12 +31,14 @@ export default class Visualization {
             res = result && true;
           } else {
             if (!this.isValidType(key, val)) {
-              throw Error(`Invalid data specified: "${key}" with value ${val}.` +
-                ` Accepted data keys are "x" and "y". Values must be numeric.`);
+              const msg = `Invalid data specified: ${key} with value ${val}. ` +
+                'Accepted data keys are x and y. Values must be numeric.';
+              throw Error(msg);
             } else if (!this.isValidCoordinate(key, val)) {
               throw Error(`Invalid type specified: ${key}: ${val}`);
             }
           }
+
           return res;
         }, true);
       }, true);
