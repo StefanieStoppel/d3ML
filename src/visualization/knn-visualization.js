@@ -5,17 +5,42 @@ import KNN from '../algorithms/knn';
 
 /*
  * TODO:
- * - add weighted
+ * - add weighted checkbox
+ * - add slider for k
  */
 
 export default class KNNVisualization extends Visualization {
   constructor(data, options, types, k = defaultK) {
     super(data, options, types);
     this.knn = new KNN(this.data, types, k);
+
+    document.querySelector(this.options.rootNode).appendChild(this.createSettings());
     this.addEventListeners();
   }
+
+  createSettings() { // todo: refactor and test
+    const settings = this.createElement('div', [['class', 'settings']]);
+
+    const inputAttributes = [
+      ['id', 'range-k'],
+      ['type', 'range'],
+      ['min', '1'],
+      ['max', this.data.length], // todo: update max value according to new data.length
+      ['value', this.knn.k]
+    ];
+    const labelAttributes = [
+      ['for', 'range-k'],
+      ['id', 'range-k-label']
+    ];
+    const labelText = 'Amount of neighbors, k: ';
+    const { label, input } = this.createLabeledInput(labelText, labelAttributes, this.knn.k, inputAttributes);
+    settings.appendChild(this.createSettingsGroup([label, input]));
+
+    return settings;
+  }
   addEventListeners() {
-    this.onClickSvg([this.svgClickCallback]);
+    this.onClickSvg(this.svgId, [this.svgClickCallback]);
+    this.onChangeInput('range-k', [this.inputRangeKChangeCallback]);
   }
   svgClickCallback(circle) {
     this.setClickable(false);
@@ -27,6 +52,11 @@ export default class KNNVisualization extends Visualization {
     this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
     this.data = this.data.filter(c => c !== boundingCircle);
     this.removeElementsAfterTransition('.remove');
+  }
+  inputRangeKChangeCallback(k) {
+    this.k = k;
+    this.knn.k = k;
+    document.querySelector('#range-k-label > span').innerHTML = k;
   }
   getClassifiedCircle(circle) {
     const circleType = this.knn.classify(circle, this.data);

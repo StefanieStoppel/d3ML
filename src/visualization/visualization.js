@@ -93,16 +93,25 @@ export default class Visualization {
       this.options.circleStroke,
       data.type);
   }
-  onClickSvg(callbacks) {
+  onClickSvg(targetId, callbacks) {
     document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
-      this.clickCallback(e, callbacks);
+      this.clickCallback(e, targetId, callbacks);
     });
   }
-  isValidEventTarget(e) {
-    return !!e.target && e.target.id === this.svgId;
+  onChangeInput(inputId, callbacks) {
+    document.querySelector(`#${inputId}`).addEventListener('change', (e) => {
+      this.inputChangeCallback(e, inputId, callbacks);
+    });
   }
-  clickCallback(e, callbacks) {
-    if (this.isValidEventTarget(e) && this.clickable) {
+  inputChangeCallback(e, inputId, callbacks) {
+    if (!!e.target && e.target.id === inputId && !!e.target.value) {
+      callbacks.forEach(callback => {
+        callback.call(this, e.target.value);
+      });
+    }
+  }
+  clickCallback(e, targetId, callbacks) {
+    if (!!e.target && e.target.id === targetId && this.clickable) {
       const newCircle = this.mapDataToCircle({x: this.xScale.invert(e.offsetX), y: this.yScale.invert(e.offsetY)});
       callbacks.forEach(callback => {
         callback.call(this, newCircle);
@@ -111,6 +120,34 @@ export default class Visualization {
   }
   setClickable(clickable) {
     this.clickable = clickable;
+  }
+  createElement(elementName, attributes = []) {
+    const el = document.createElement(elementName);
+    attributes.forEach(attr => {
+      el.setAttribute(attr[0], attr[1]);
+    });
+
+    return el;
+  }
+  createSettingsGroup(childElements) {
+    const settingsGroup = this.createElement('div', [['class', 'settings__group']]);
+    childElements.forEach(child => {
+      settingsGroup.append(child);
+    });
+
+    return settingsGroup;
+  }
+  createLabeledInput(labelText, labelAttributes, inputValue, inputAttributes) {
+    const span = this.createElement('span');
+    span.innerHTML = inputValue;
+
+    const inputLabel = this.createElement('label', labelAttributes);
+    inputLabel.textContent = labelText;
+
+    const input = this.createElement('input', [...inputAttributes, ['value', inputValue]]);
+    inputLabel.appendChild(span);
+
+    return {label: inputLabel, input};
   }
   addCircle(circle) {
     this.data.push(circle);

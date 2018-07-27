@@ -47,6 +47,10 @@ describe('KNNVisualization', () => {
     svgs.forEach(svg => {
       svg.remove();
     });
+    const settings = Array.from(document.querySelectorAll('.settings'));
+    settings.forEach(setting => {
+      setting.remove();
+    });
   });
   describe('constructor', () => {
     it('should initialize KNN algorithm', () => {
@@ -55,6 +59,15 @@ describe('KNNVisualization', () => {
       const vis = new KNNVisualization(data, options);
       // then
       expect(vis.knn).to.not.be.null;
+    });
+    it('should attach range slider and label for changing k', () => {
+      // given
+      const k = 4;
+      // when
+      const vis = new KNNVisualization(data, options, [], k);
+      // then
+      expect(document.querySelector('#range-k').value).to.equal(k.toString());
+      expect(document.querySelector('#range-k-label span')).to.have.text(k.toString());
     });
   });
   describe('drawConnectingLines', () => {
@@ -325,4 +338,21 @@ describe('KNNVisualization', () => {
       expect(vis.clickable).to.be.false;
     });
   });
+  describe('onChangeInputRangeK', () => {
+    it('should update value of k on input range change', () => {
+      // given
+      const expectedK = 7;
+      const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
+      const rangeInputK = document.querySelector(`#range-k`);
+      // when
+      const { node, event } = createEvent(rangeInputK, 'change');
+      event.target.value = 7;// todo: fix
+      node.dispatchEvent(event, true);
+      // then
+      expect(vis.k).to.equal(expectedK);
+      expect(vis.knn.k).to.equal(expectedK);
+      expect(document.querySelector('#range-k-label > span').innerHTML).to.equal(expectedK.toString());
+    });
+  });
+  // todo: add tests for settings and settings__group in general
 });
