@@ -128,7 +128,7 @@ describe('KNN', () => {
       expect(circleType).to.equal(givenTypes.bar);
     });
   });
-  describe('classify', () => {
+  describe('classify (unweighted)', () => {
     it('should classify new circle type correctly for odd k (unweighted)', () => {
       const expectedType = 'A';
       const givenK = 3;
@@ -164,6 +164,54 @@ describe('KNN', () => {
       // then
       expect(circleType).to.equal(expectedType);
       expect(knn.kClosestNeighbors).to.deep.equal([givenNeighbors[1], givenNeighbors[2]]);
+    });
+  });
+  describe('classify (weighted)', () => {
+    it('should classify new circle type correctly for odd k by inverse distance (weighted)', () => {
+      const expectedType = 'A';
+      const givenK = 3;
+      const kClosestNeighbors = [
+        new Circle(435, 253, 4, 'green', 'blue', 'B'),
+        new Circle(65757, 2525, 4, 'green', 'blue', 'B'),
+        new Circle(2, 3, 4, 'red', 'blue', 'A'),
+      ];
+      const neighbors = [
+        ...kClosestNeighbors,
+        new Circle(24245454, 131332424, 4, 'green', 'blue', 'A'),
+        new Circle(4354657, 242435, 4, 'red', 'blue', 'A')
+      ];
+      const types = ['A', 'B'];
+      const knn = new Knn(neighbors, types, givenK);
+      const newCircle = new Circle(2, 2);
+      // when
+      const circleType = knn.classify(newCircle, neighbors, true);
+      // then
+      expect(circleType).to.equal(expectedType);
+      expect(knn.kClosestNeighbors).to.deep.equal([kClosestNeighbors[2], kClosestNeighbors[0], kClosestNeighbors[1]]);
+    });
+    it('should classify new circle type correctly for even k by inverse distance (weighted)', () => {
+      const expectedType = 'A';
+      const givenK = 4;
+      const kClosestNeighbors = [
+        new Circle(4, 5, 4, 'green', 'blue', 'B'),
+        new Circle(3, 5, 4, 'green', 'blue', 'B'),
+        new Circle(2, 3, 4, 'red', 'blue', 'A'),
+        new Circle(2, 1, 4, 'red', 'blue', 'A'),
+      ];
+      const neighbors = [
+        ...kClosestNeighbors,
+        new Circle(24245454, 131332424, 4, 'green', 'blue', 'A'),
+        new Circle(4354657, 242435, 4, 'red', 'blue', 'A')
+      ];
+      const types = ['A', 'B'];
+      const knn = new Knn(neighbors, types, givenK);
+      const newCircle = new Circle(2, 2);
+      // when
+      const circleType = knn.classify(newCircle, neighbors, true);
+      // then
+      expect(circleType).to.equal(expectedType);
+      expect(knn.kClosestNeighbors)
+        .to.deep.equal([kClosestNeighbors[2], kClosestNeighbors[3], kClosestNeighbors[1], kClosestNeighbors[0]]);
     });
   });
 });
