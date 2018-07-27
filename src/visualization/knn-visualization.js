@@ -6,7 +6,6 @@ import KNN from '../algorithms/knn';
 /*
  * TODO:
  * - add weighted checkbox
- * - add slider for k
  */
 
 export default class KNNVisualization extends Visualization {
@@ -17,9 +16,19 @@ export default class KNNVisualization extends Visualization {
     document.querySelector(this.options.rootNode).appendChild(this.createSettings());
     this.addEventListeners();
   }
-  createSettings() { // todo: refactor and test
+  createSettings() {
     const settings = this.createElement('div', [['class', 'settings']]);
+    settings.appendChild(this.createSettingsGroupForK());
+    settings.appendChild(this.createSettingsGroupForWeighted());
 
+    return settings;
+  }
+  createSettingsGroupForK() {
+    const labelText = 'Amount of neighbors, k: ';
+    const labelAttributes = [
+      ['for', 'range-k'],
+      ['id', 'range-k-label']
+    ];
     const inputAttributes = [
       ['id', 'range-k'],
       ['type', 'range'],
@@ -27,15 +36,22 @@ export default class KNNVisualization extends Visualization {
       ['max', this.data.length], // todo: update max value according to new data.length
       ['value', this.knn.k]
     ];
-    const labelAttributes = [
-      ['for', 'range-k'],
-      ['id', 'range-k-label']
-    ];
-    const labelText = 'Amount of neighbors, k: ';
     const { label, input } = this.createLabeledInput(labelText, labelAttributes, this.knn.k, inputAttributes);
-    settings.appendChild(this.createSettingsGroup([label, input]));
-
-    return settings;
+    return this.createSettingsGroup([label, input]);
+  }
+  createSettingsGroupForWeighted() {
+    const labelText = 'Use weighted algorithm: ';
+    const labelAttributes = [
+      ['for', 'weighted'],
+      ['id', 'weighted-label'],
+    ];
+    const inputAttributes = [
+      ['id', 'weighted'],
+      ['type', 'checkbox'],
+      ['checked', false]
+    ];
+    const { label, input } = this.createLabeledInput(labelText, labelAttributes, false, inputAttributes);
+    return this.createSettingsGroup([label, input]);
   }
   addEventListeners() {
     this.onClickSvg(this.svgId, [this.svgClickCallback]);

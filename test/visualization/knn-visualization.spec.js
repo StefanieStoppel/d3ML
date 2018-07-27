@@ -343,13 +343,83 @@ describe('KNNVisualization', () => {
       // given
       const expectedK = 7;
       const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
-      const rangeInputK = document.querySelector(`#range-k`);
       // when
       vis.inputRangeKChangeCallback(7);
       // then
       expect(vis.k).to.equal(expectedK);
       expect(vis.knn.k).to.equal(expectedK);
       expect(document.querySelector('#range-k-label > span').innerHTML).to.equal(expectedK.toString());
+    });
+  });
+  describe('createSettingsGroupForWeighted ', () => {
+    it('should create settings group for k correctly', () => {
+      // given
+      const data = [
+        { x: 2, y: 3, type: 'A'},
+        { x: 1, y: 1, type: 'B'},
+        { x: 2, y: 4, type: 'A'},
+        { x: 75, y: 4, type: 'A'},
+        { x: 546, y: 424, type: 'B'}
+      ];
+      const vis = new KNNVisualization(data, options, ['A', 'B']);
+      // when
+      const settingsGroup = vis.createSettingsGroupForWeighted();
+      // then
+      expect(settingsGroup).to.have.attr('class', 'settings__group');
+      expect(settingsGroup).to.contain('#weighted');
+      expect(settingsGroup).to.contain('#weighted-label');
+      const weighted = settingsGroup.querySelector('#weighted');
+      const weightedLabel = settingsGroup.querySelector('#weighted-label');
+      expect(weighted).to.have.attr('type', 'checkbox');
+      expect(weighted).to.have.attr('checked', 'false');
+      expect(weightedLabel).to.have.text('Use weighted algorithm: false');
+      expect(weightedLabel).to.have.attr('for', 'weighted');
+    });
+  });
+  describe('createSettingsGroupForK ', () => {
+    it('should create settings group for k correctly', () => {
+      // given
+      const givenK = 4;
+      const data = [
+        { x: 2, y: 3, type: 'A'},
+        { x: 1, y: 1, type: 'B'},
+        { x: 2, y: 4, type: 'A'},
+        { x: 75, y: 4, type: 'A'},
+        { x: 546, y: 424, type: 'B'}
+      ];
+      const vis = new KNNVisualization(data, options, ['A', 'B'], givenK);
+      // when
+      const settingsGroup = vis.createSettingsGroupForK();
+      // then
+      expect(settingsGroup).to.have.attr('class', 'settings__group');
+      expect(settingsGroup).to.contain('#range-k');
+      expect(settingsGroup).to.contain('#range-k-label');
+      const k = settingsGroup.querySelector('#range-k');
+      const kLabel = settingsGroup.querySelector('#range-k-label');
+      expect(k).to.have.attr('type', 'range');
+      expect(k).to.have.attr('min', '1');
+      expect(k).to.have.attr('max', vis.data.length.toString());
+      expect(k).to.have.attr('value', givenK.toString());
+      expect(kLabel).to.have.text('Amount of neighbors, k: ' + givenK);
+      expect(kLabel).to.have.attr('for', 'range-k');
+    });
+  });
+  describe('createSettings', () => {
+    it('should create settings with two groups correctly', () => {
+      // given
+      const data = [
+        { x: 2, y: 3, type: 'A'},
+        { x: 1, y: 1, type: 'B'},
+        { x: 2, y: 4, type: 'A'},
+        { x: 75, y: 4, type: 'A'},
+        { x: 546, y: 424, type: 'B'}
+      ];
+      const vis = new KNNVisualization(data, options, ['A', 'B'], 4);
+      // when
+      const settings = vis.createSettings();
+      // then
+      expect(settings).to.have.attr('class', 'settings');
+      expect(settings.querySelectorAll('.settings__group').length).to.equal(2);
     });
   });
 });
