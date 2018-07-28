@@ -28,7 +28,7 @@ export default class KNNVisualization extends Visualization {
       ['id', 'range-k'],
       ['type', 'range'],
       ['min', '1'],
-      ['max', this.data.length], // todo: update max value according to new data.length
+      ['max', this.data.length],
       ['value', this.knn.k]
     ];
     const { label, input } = this.createLabeledInput(labelText, labelAttributes, this.knn.k, inputAttributes);
