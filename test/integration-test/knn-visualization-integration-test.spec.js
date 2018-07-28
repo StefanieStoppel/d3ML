@@ -16,7 +16,7 @@ chai.use(chaiStyle);
 chai.use(sinonChai);
 const expect = chai.expect;
 
-describe.only('KNNVisualization Integration Test', () => {
+describe('KNNVisualization Integration Test', () => {
   let data;
   let options;
   let types;
