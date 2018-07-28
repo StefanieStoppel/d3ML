@@ -20,14 +20,10 @@ const expect = chai.expect;
  * TODOS:
  *
  * UNWEIGHTED
- * - check whether new circle was added at correct coordinates
- * - check whether circle was classified correctly
- * - check whether bounding circle and lines were drawn and then removed
  * - check whether max increased in range slider
  *
- * - simulate checking of weighted checkbox
- *
  * WEIGHTED
+ * - simulate checking of weighted checkbox
  * - simulate a click on the svg, before that check that weighted is true / checked
  * - check whether new circle was added at correct coordinates
  * - check whether circle was classified correctly using weighted algorithm
@@ -57,7 +53,6 @@ describe.only('KNNVisualization Integration Test', () => {
   let vis;
 
   beforeEach(() => {
-    D3TransitionTestUtils.stubAndForceTransitions();
     data = [
       {x: 23, y: 56, type: 1},
       {x: 23, y: 65, type: 1},
@@ -78,14 +73,13 @@ describe.only('KNNVisualization Integration Test', () => {
       padding: 10,
       backgroundColor: 'white',
       circleRadius: 4,
-      circleFill: 'transparent',
+      circleFill: 'white',
       circleStroke: 'black'
     };
     types = [1, 2];
   });
 
   afterEach(() => {
-    D3TransitionTestUtils.restoreTransitions();
     const svgs = Array.from(document.querySelectorAll('svg'));
     svgs.forEach(svg => {
       svg.remove();
@@ -104,7 +98,10 @@ describe.only('KNNVisualization Integration Test', () => {
     // check whether svg is displayed correctly
     const svg = document.querySelector(`#${vis.svgId}`);
     expectSvgToBeDisplayedCorrectly(svg, options);
-    expectInputRangeKToBeDisplayedCorrectly(k, dataLength);
+
+    const inputRangeK = document.querySelector('#range-k');
+    const labelSpan = document.querySelector('#range-k-label span');
+    expectInputRangeKAndLabelToBeDisplayedCorrectly(inputRangeK, labelSpan, k, dataLength);
 
     // draw visualization
     vis.draw();
@@ -129,8 +126,20 @@ describe.only('KNNVisualization Integration Test', () => {
     expect(addedCircle.type).to.equal(types[0].toString());
 
     // check whether added circle is displayed correctly
-    const circle = document.querySelector('circle:last-of-type');
-    expectCircleToBeDisplayedCorrectly(circle, addedCircle, options, vis.typeColorMap[addedCircle.type]);
+    const circle = document.querySelector('circle:nth-last-of-type(2)');
+    // There is a transition on the new circle which changes the color after 1500 ms.
+    // However at this point it did not take place yet, so the circle has the default color specified in options.
+    expectCircleToBeDisplayedCorrectly(circle, addedCircle, options, options.circleFill);
+
+    // check whether bounding circle is displayed correctly
+    const boundingCircle = document.querySelector('circle:last-of-type');
+    expectBoundingCircleToBeDisplayedCorrectly(boundingCircle, addedCircle, options, vis.knn.kClosestNeighbors[k-1]);
+
+    // check whether connecting lines are displayed correctly
+    const lines = Array.from(document.querySelectorAll('line'));
+    expectConnectingLinesToBeDisplayedCorrectly(lines, addedCircle, vis.knn.kClosestNeighbors);
+
+    expectInputRangeKMaxToBeCorrect(inputRangeK, dataLength);
   });
 
   function expectCirclesToBeDisplayedCorrectly(data, options, colorMap) {
@@ -147,7 +156,27 @@ describe.only('KNNVisualization Integration Test', () => {
     expect(circle).to.have.attr('cx', circleData.cx.toString());
     expect(circle).to.have.attr('cy', circleData.cy.toString());
     expect(circle).to.have.style('stroke', options.circleStroke);
-    expect(circle).to.have.style('fill', fill)
+    expect(circle).to.have.style('fill', fill);
+  }
+
+  function expectBoundingCircleToBeDisplayedCorrectly(boundingCircle, addedCircleData, options, furthestNeighbor) {
+    expect(boundingCircle).to.have.attr('r', (furthestNeighbor.distance + options.circleRadius).toString());
+    expect(boundingCircle).to.have.attr('cx', addedCircleData.cx.toString());
+    expect(boundingCircle).to.have.attr('cy', addedCircleData.cy.toString());
+    expect(boundingCircle).to.have.attr('style', 'stroke: white; fill: transparent;');
+    expect(boundingCircle).to.have.attr('class', 'remove');
+  }
+
+  function expectConnectingLinesToBeDisplayedCorrectly(lines, addedCircle, kClosestNeighbors) {
+    lines.forEach((line, idx)=> {
+      expect(line).to.have.attr('x1', kClosestNeighbors[idx].cx.toString());
+      expect(line).to.have.attr('x2', addedCircle.cx.toString());
+      expect(line).to.have.attr('y1', kClosestNeighbors[idx].cy.toString());
+      expect(line).to.have.attr('y2', addedCircle.cy.toString());
+      expect(line).to.have.attr('stroke-width', '2');
+      expect(line).to.have.style('stroke', 'rgba(230,230,230,0.5)');
+      expect(line).to.have.attr('class', 'remove');
+    });
   }
 
   function expectWeightedCheckboxChecked(checked) {
@@ -160,14 +189,16 @@ describe.only('KNNVisualization Integration Test', () => {
     }
   }
 
-  function expectInputRangeKToBeDisplayedCorrectly(k, dataLength) {
-    const inputRangeK = document.querySelector('#range-k');
+  function expectInputRangeKAndLabelToBeDisplayedCorrectly(inputRangeK, labelSpan, k, dataLength) {
     expect(inputRangeK).to.have.attr('value', k.toString());
     expect(inputRangeK).to.have.attr('min', '1');
-    expect(inputRangeK).to.have.attr('max', dataLength.toString());
+    expectInputRangeKMaxToBeCorrect(inputRangeK, dataLength);
 
-    const labelSpan = document.querySelector('#range-k-label span');
     expect(labelSpan).to.have.text(k.toString());
+  }
+
+  function expectInputRangeKMaxToBeCorrect(inputRangeK, dataLength) {
+    expect(inputRangeK).to.have.attr('max', dataLength.toString());
   }
 
   function expectSvgToBeDisplayedCorrectly(svg, options) {

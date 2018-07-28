@@ -3,11 +3,6 @@ import {defaultK, defaultType} from './defaults';
 import Visualization from './visualization';
 import KNN from '../algorithms/knn';
 
-/*
- * TODO:
- * - add intergration test
- */
-
 export default class KNNVisualization extends Visualization {
   constructor(data, options, types, k = defaultK) {
     super(data, options, types);

@@ -225,6 +225,8 @@ describe('KNNVisualization', () => {
     });
   });
   describe('drawCircles', () => {
+    // TODO: add a test that doesn't stub the transitions
+    // TODO: check whether the circle has the right color before transitioning
     beforeEach(() => {
       D3TransitionTestUtils.stubAndForceTransitions();
     });
