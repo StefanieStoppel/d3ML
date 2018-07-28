@@ -64,16 +64,15 @@ describe('KNNVisualization', () => {
       // given
       const k = 4;
       // when
-      const vis = new KNNVisualization(data, options, [], k);
+      const vis = new KNNVisualization(data, options, [], k); // eslint-disable-line
       // then
       expect(document.querySelector('#range-k').value).to.equal(k.toString());
       expect(document.querySelector('#range-k-label span')).to.have.text(k.toString());
     });
     it('should attach checkbox and label for setting weighted', () => {
       // given
-      const weighted = false;
       // when
-      const vis = new KNNVisualization(data, options, [], 3);
+      const vis = new KNNVisualization(data, options, [], 3);// eslint-disable-line
       // then
       expect(document.querySelector('#weighted').value).to.equal('false');
       expect(document.querySelector('#weighted-label span')).to.have.text('false');
