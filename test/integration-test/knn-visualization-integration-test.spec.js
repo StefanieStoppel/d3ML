@@ -16,36 +16,6 @@ chai.use(chaiStyle);
 chai.use(sinonChai);
 const expect = chai.expect;
 
-/**
- * TODOS:
- *
- * UNWEIGHTED
- * - check whether max increased in range slider
- *
- * WEIGHTED
- * - simulate checking of weighted checkbox
- * - simulate a click on the svg, before that check that weighted is true / checked
- * - check whether new circle was added at correct coordinates
- * - check whether circle was classified correctly using weighted algorithm
- * - check whether bounding circle and lines were drawn and then removed
- * - check whether max increased in range slider
- *
- * CHANGE K
- * - simulate a change event on range input, change value to 8
- * - check whether range input value has changed
- * - check whether k has changed
- * - simulate click
- * - check amount of kClosestNeighbors === 8
- * - check circle
- * - check that there was 8 lines
- *
- * CLICK TWICE
- * - simulate a click on the svg, before that check that weighted is true / checked
- * - check clickable false
- * - simulate another click
- * - check that only first circle was added
- **/
-
 describe.only('KNNVisualization Integration Test', () => {
   let data;
   let options;
@@ -56,7 +26,7 @@ describe.only('KNNVisualization Integration Test', () => {
     data = [
       {x: 23, y: 56, type: 1},
       {x: 23, y: 65, type: 1},
-      {x: 23, y: 87, type: 2},
+      {x: 25, y: 87, type: 2},
       {x: 256, y: 74, type: 2},
       {x: 14, y: 2, type: 1},
       {x: 64, y: 555, type: 1},
@@ -90,57 +60,194 @@ describe.only('KNNVisualization Integration Test', () => {
     });
   });
 
-  it('should perform and visualize "unweighted" KNN correctly', () => {
-    let dataLength = data.length;
-    const k = 3;
-    vis = new KNNVisualization(data, options, types, k);
+  describe('Unweighted KNN', () => {
+    it('should perform and visualize "unweighted" KNN correctly', () => {
+      let dataLength = data.length;
+      const k = 3;
+      vis = new KNNVisualization(data, options, types, k);
 
-    // check whether svg is displayed correctly
-    const svg = document.querySelector(`#${vis.svgId}`);
-    expectSvgToBeDisplayedCorrectly(svg, options);
+      const svg = document.querySelector(`#${vis.svgId}`);
+      const inputRangeK = document.querySelector('#range-k');
+      const labelSpan = document.querySelector('#range-k-label span');
+      const weightedCheckBox = document.querySelector('#weighted');
 
-    const inputRangeK = document.querySelector('#range-k');
-    const labelSpan = document.querySelector('#range-k-label span');
-    expectInputRangeKAndLabelToBeDisplayedCorrectly(inputRangeK, labelSpan, k, dataLength);
+      expectInitialStateToBeDisplayedCorrectly(
+        svg, inputRangeK, labelSpan, weightedCheckBox, options, k, dataLength
+      );
 
-    // draw visualization
-    vis.draw();
+      // draw visualization
+      vis.draw();
 
-    // check whether circles are displayed correctly
-    expectCirclesToBeDisplayedCorrectly(vis.data, options, vis.typeColorMap);
+      // check whether circles are displayed correctly
+      expectCirclesToBeDisplayedCorrectly(vis.data, options, vis.typeColorMap);
 
-    // check whether weighted checkbox is not checked
-    expectWeightedCheckboxChecked(false);
+      // check whether weighted checkbox is not checked
+      expectWeightedCheckboxChecked(weightedCheckBox, false);
 
-    // simulate a click on the svg
-    const clickCoord = { x: 25, y: 60 };
-    simulateSvgClick(svg, clickCoord.x, clickCoord.y);
+      // simulate a click on the svg
+      const clickCoord = { x: 25, y: 60 };
+      simulateSvgClick(svg, clickCoord.x, clickCoord.y);
 
-    // check whether new circle was added to data
-    dataLength += 1;
-    expect(vis.data.length).to.equal(dataLength);
+      // check whether new circle was added to data
+      dataLength += 1;
+      expect(vis.data.length).to.equal(dataLength);
 
-    const addedCircle = vis.data[dataLength - 1];
-    expect(addedCircle.cx).to.equal(clickCoord.x);
-    expect(addedCircle.cy).to.equal(clickCoord.y);
-    expect(addedCircle.type).to.equal(types[0].toString());
+      const addedCircle = vis.data[dataLength - 1];
+      expectCircleToHaveCorrectAttributes(addedCircle, clickCoord.x, clickCoord.y, types[0].toString());
 
-    // check whether added circle is displayed correctly
-    const circle = document.querySelector('circle:nth-last-of-type(2)');
-    // There is a transition on the new circle which changes the color after 1500 ms.
-    // However at this point it did not take place yet, so the circle has the default color specified in options.
-    expectCircleToBeDisplayedCorrectly(circle, addedCircle, options, options.circleFill);
+      // check whether added circle is displayed correctly
+      const circle = document.querySelector('circle:nth-last-of-type(2)');
+      // There is a transition on the new circle which changes the color after 1500 ms.
+      // However at this point it did not take place yet, so the circle has the default color specified in options.
+      expectCircleToBeDisplayedCorrectly(circle, addedCircle, options, options.circleFill);
 
-    // check whether bounding circle is displayed correctly
-    const boundingCircle = document.querySelector('circle:last-of-type');
-    expectBoundingCircleToBeDisplayedCorrectly(boundingCircle, addedCircle, options, vis.knn.kClosestNeighbors[k-1]);
+      // check whether bounding circle is displayed correctly
+      const boundingCircle = document.querySelector('circle:last-of-type');
+      expectBoundingCircleToBeDisplayedCorrectly(boundingCircle, addedCircle, options, vis.knn.kClosestNeighbors[k-1]);
 
-    // check whether connecting lines are displayed correctly
-    const lines = Array.from(document.querySelectorAll('line'));
-    expectConnectingLinesToBeDisplayedCorrectly(lines, addedCircle, vis.knn.kClosestNeighbors);
+      // check whether connecting lines are displayed correctly
+      const lines = Array.from(document.querySelectorAll('line'));
+      expectConnectingLinesToBeDisplayedCorrectly(lines, addedCircle, vis.knn.kClosestNeighbors);
 
-    expectInputRangeKMaxToBeCorrect(inputRangeK, dataLength);
+      expectInputRangeKMaxToBeCorrect(inputRangeK, dataLength);
+    });
   });
+
+  describe('Weighted KNN', () => {
+    it('should perform and visualize "weighted" KNN correctly', () => {
+      let dataLength = data.length;
+      const k = 2;
+      vis = new KNNVisualization(data, options, types, k);
+
+      const svg = document.querySelector(`#${vis.svgId}`);
+      const inputRangeK = document.querySelector('#range-k');
+      const labelSpan = document.querySelector('#range-k-label span');
+      const weightedCheckBox = document.querySelector('#weighted');
+
+      expectInitialStateToBeDisplayedCorrectly(
+        svg, inputRangeK, labelSpan, weightedCheckBox, options, k, dataLength
+      );
+
+      // draw visualization
+      vis.draw();
+
+      // check whether circles are displayed correctly
+      expectCirclesToBeDisplayedCorrectly(vis.data, options, vis.typeColorMap);
+
+      // check whether weighted checkbox is not checked
+      expectWeightedCheckboxChecked(weightedCheckBox, false);
+
+      // simulate checking weighted checkbox
+      simulateCheckingWeightedCheckbox(weightedCheckBox, true);
+
+      // check whether weighted checkbox is now checked and weighted flag set to true
+      expectWeightedCheckboxChecked(weightedCheckBox, true);
+      expect(vis.knn.weighted).to.be.true;
+
+      // simulate a click on the svg
+      const clickCoord = { x: vis.xScale(data[2].x + 1), y: vis.yScale(data[2].y + 1) };
+      simulateSvgClick(svg, clickCoord.x, clickCoord.y);
+
+      // check whether new circle was added to data
+      dataLength += 1;
+      expect(vis.data.length).to.equal(dataLength);
+
+      const addedCircle = vis.data[dataLength - 1];
+      expectCircleToHaveCorrectAttributes(addedCircle, clickCoord.x, clickCoord.y, types[1]);
+
+      // check whether added circle is displayed correctly
+      const circle = document.querySelector('circle:nth-last-of-type(2)');
+      // There is a transition on the new circle which changes the color after 1500 ms.
+      // However at this point it did not take place yet, so the circle has the default color specified in options.
+      expectCircleToBeDisplayedCorrectly(circle, addedCircle, options, options.circleFill);
+
+      // check whether bounding circle is displayed correctly
+      const boundingCircle = document.querySelector('circle:last-of-type');
+      expectBoundingCircleToBeDisplayedCorrectly(boundingCircle, addedCircle, options, vis.knn.kClosestNeighbors[k-1]);
+
+      // check whether connecting lines are displayed correctly
+      const lines = Array.from(document.querySelectorAll('line'));
+      expectConnectingLinesToBeDisplayedCorrectly(lines, addedCircle, vis.knn.kClosestNeighbors);
+
+      // check that maximum of k slider has changed
+      expectInputRangeKMaxToBeCorrect(inputRangeK, dataLength);
+    });
+  });
+
+  describe('clickable', () => {
+    it('should *NOT* perform and visualize algorithm twice in a row', () => {
+      let dataLength = data.length;
+      const k = 3;
+      vis = new KNNVisualization(data, options, types, k);
+
+      const svg = document.querySelector(`#${vis.svgId}`);
+      const inputRangeK = document.querySelector('#range-k');
+      const labelSpan = document.querySelector('#range-k-label span');
+      const weightedCheckBox = document.querySelector('#weighted');
+
+      expectInitialStateToBeDisplayedCorrectly(
+        svg, inputRangeK, labelSpan, weightedCheckBox, options, k, dataLength
+      );
+
+      // draw visualization
+      vis.draw();
+
+      // check whether circles are displayed correctly
+      expectCirclesToBeDisplayedCorrectly(vis.data, options, vis.typeColorMap);
+
+      // check whether weighted checkbox is not checked
+      expectWeightedCheckboxChecked(weightedCheckBox, false);
+
+      // simulate a click on the svg
+      let clickCoord = { x: 25, y: 60 };
+      simulateSvgClick(svg, clickCoord.x, clickCoord.y);
+
+      // check whether new circle was added to data
+      dataLength += 1;
+      expect(vis.data.length).to.equal(dataLength);
+
+      // check whether circle was classified correctly unweighted
+      const addedCircle = vis.data[dataLength - 1];
+      expectCircleToHaveCorrectAttributes(addedCircle, clickCoord.x, clickCoord.y, types[0].toString());
+
+      // check whether added circle is displayed correctly
+      const circle = document.querySelector('circle:nth-last-of-type(2)');
+      expectCircleToBeDisplayedCorrectly(circle, addedCircle, options, options.circleFill);
+
+      // check cliackable is false
+      expect(vis.clickable).to.be.false;
+
+      // create spies for click callbacks
+      const svgClickCallbackSpy = sinon.spy(KNNVisualization.prototype, 'svgClickCallback');
+      const clickCallbackSpy = sinon.spy(Visualization.prototype, 'clickCallback');
+
+      // simulate second click
+      clickCoord = { x: 14, y: 52 };
+      simulateSvgClick(svg, clickCoord.x, clickCoord.y);
+
+      // check that new circle was NOT added
+      expect(vis.data.length).to.equal(dataLength);
+      expect(document.querySelectorAll('circle')).to.have.length(dataLength + 1);// circles + bounding circle
+
+      // check spy calls
+      expect(clickCallbackSpy).to.have.been.calledOnce;
+      expect(svgClickCallbackSpy).to.not.have.been.called;
+    });
+  });
+
+  function expectInitialStateToBeDisplayedCorrectly(
+    svg, inputRangeK, labelK, weightedCheckBox, options, k, dataLength
+  ) {
+    expectSvgToBeDisplayedCorrectly(svg, options);
+    expectInputRangeKAndLabelToBeDisplayedCorrectly(inputRangeK, labelK, k, dataLength);
+    expectWeightedCheckboxAndLabelDisplayedCorrectly(weightedCheckBox, false);
+  }
+
+  function expectCircleToHaveCorrectAttributes(addedCircle, x, y, type) {
+    expect(addedCircle.cx).to.equal(x);
+    expect(addedCircle.cy).to.equal(y);
+    expect(addedCircle.type).to.equal(type);
+  }
 
   function expectCirclesToBeDisplayedCorrectly(data, options, colorMap) {
     const circles = Array.from(document.querySelectorAll('circle'));
@@ -168,6 +275,8 @@ describe.only('KNNVisualization Integration Test', () => {
   }
 
   function expectConnectingLinesToBeDisplayedCorrectly(lines, addedCircle, kClosestNeighbors) {
+    expect(lines.length).to.equal(kClosestNeighbors.length);
+
     lines.forEach((line, idx)=> {
       expect(line).to.have.attr('x1', kClosestNeighbors[idx].cx.toString());
       expect(line).to.have.attr('x2', addedCircle.cx.toString());
@@ -179,21 +288,28 @@ describe.only('KNNVisualization Integration Test', () => {
     });
   }
 
-  function expectWeightedCheckboxChecked(checked) {
-    const weightedCheckBox = document.querySelector('#weighted');
+  function expectWeightedCheckboxChecked(weightedCheckBox, checked) {
     expect(weightedCheckBox).to.not.be.null;
     if (checked) {
-      expect(weightedCheckBox).to.have.attr('checked', 'true');
+      expect(weightedCheckBox.checked).to.equal(true);
     } else {
       expect(weightedCheckBox).to.not.have.attr('checked');
     }
   }
 
+  function expectWeightedCheckboxAndLabelDisplayedCorrectly(weightedCheckBox) {
+    expect(weightedCheckBox).to.not.be.null;
+    expect(weightedCheckBox).to.have.attr('type', 'checkbox');
+  }
+
   function expectInputRangeKAndLabelToBeDisplayedCorrectly(inputRangeK, labelSpan, k, dataLength) {
+    expect(inputRangeK).to.not.be.null;
+    expect(inputRangeK).to.have.attr('type', 'range');
     expect(inputRangeK).to.have.attr('value', k.toString());
     expect(inputRangeK).to.have.attr('min', '1');
     expectInputRangeKMaxToBeCorrect(inputRangeK, dataLength);
 
+    expect(labelSpan).to.not.be.null;
     expect(labelSpan).to.have.text(k.toString());
   }
 
@@ -215,5 +331,10 @@ describe.only('KNNVisualization Integration Test', () => {
     event.offsetY = y;
     node.dispatchEvent(event, true);
     // expect(spy).calledOnce;
+  }
+
+  function simulateCheckingWeightedCheckbox(weightedCheckbox, checked) {
+    weightedCheckbox.checked = checked;
+    vis.checkboxWeightedChangeCallback(checked);
   }
 });
