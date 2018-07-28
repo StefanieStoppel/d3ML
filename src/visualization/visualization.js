@@ -98,6 +98,14 @@ export default class Visualization {
       this.clickCallback(e, targetId, callbacks);
     });
   }
+  clickCallback(e, targetId, callbacks) {
+    if (this.isValidEventTarget(e.target, targetId) && this.clickable) {
+      const newCircle = this.mapDataToCircle({x: this.xScale.invert(e.offsetX), y: this.yScale.invert(e.offsetY)});
+      callbacks.forEach(callback => {
+        callback.call(this, newCircle);
+      });
+    }
+  }
   onChangeInput(inputId, inputType, callbacks) {
     document.querySelector(`#${inputId}`).addEventListener('change', (e) => {
       this.inputChangeCallback(e, inputId, inputType, callbacks);
@@ -111,14 +119,6 @@ export default class Visualization {
       const value = type === 'checkbox' ? e.target.checked : e.target.value;
       callbacks.forEach(callback => {
         callback.call(this, value);
-      });
-    }
-  }
-  clickCallback(e, targetId, callbacks) {
-    if (this.isValidEventTarget(e.target, targetId) && this.clickable) {
-      const newCircle = this.mapDataToCircle({x: this.xScale.invert(e.offsetX), y: this.yScale.invert(e.offsetY)});
-      callbacks.forEach(callback => {
-        callback.call(this, newCircle);
       });
     }
   }

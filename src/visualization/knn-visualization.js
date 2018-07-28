@@ -54,7 +54,7 @@ export default class KNNVisualization extends Visualization {
     this.onChangeInput('range-k', 'range', [this.inputRangeKChangeCallback]);
     this.onChangeInput('weighted', 'checkbox', [this.checkboxWeightedChangeCallback]);
   }
-  svgClickCallback(circle) {// todo: test
+  svgClickCallback(circle) {
     this.setClickable(false);
 
     const classifiedCircle = this.getClassifiedCircle(circle);
@@ -68,7 +68,11 @@ export default class KNNVisualization extends Visualization {
     this.data = this.data.filter(c => c !== boundingCircle);
     this.removeElementsAfterTransition('.remove');
 
-    document.querySelector('#range-k').setAttribute('max', this.data.length); // todo: test
+    this.updateIndexRangeKMaximum(this.data.length);
+  }
+
+  updateIndexRangeKMaximum(max) {// todo: test
+    document.querySelector('#range-k').setAttribute('max', max);
   }
   inputRangeKChangeCallback(k) {
     this.k = k;
