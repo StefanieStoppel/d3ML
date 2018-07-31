@@ -214,6 +214,18 @@ describe('Visualization', () => {
       expect(callback).calledOnce;
     });
   });
+  describe('appendWrapperContainer', () => {
+    it('should append div with correct attributes', () => {
+      // given
+      const vis = new Visualization(data, options);
+      // when
+      vis.appendWrapperContainer();
+      // then
+      const container = document.querySelector(`#${vis.containerId}`);
+      expect(container).to.not.be.null;
+      expect(container).to.have.attr('class', 'd3ml');
+    });
+  });
   describe('appendSvg', () => {
     it('should append svg with correct attributes', () => {
       // given
@@ -221,9 +233,8 @@ describe('Visualization', () => {
       // when
       vis.appendSVG();
       // then
-      const body = document.body;
-      expect(body).to.contain(`svg#${vis.svgId}`);
-      const svg = document.querySelector(`#${vis.svgId}`);
+      const svg = document.querySelector(`#${vis.containerId} svg`);
+      expect(svg).to.not.be.null;
       expect(svg).to.have.attr('width', options.width.toString());
       expect(svg).to.have.attr('height', options.height.toString());
       expect(svg).to.have.attr('style', `background-color: ${options.backgroundColor};`);

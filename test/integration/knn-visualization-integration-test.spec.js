@@ -165,7 +165,7 @@ describe('KNNVisualization Integration Test', () => {
       const k = 3;
       vis = new KNNVisualization(data, options, types, k);
 
-      const svg = document.querySelector(`#${vis.svgId}`);
+      const svg = document.querySelector(`#${vis.containerId} svg`);
       const inputRangeK = document.querySelector('#range-k');
       const labelSpan = document.querySelector('#range-k-label span');
       const weightedCheckBox = document.querySelector('#weighted');
@@ -219,7 +219,7 @@ describe('KNNVisualization Integration Test', () => {
       const k = 2;
       vis = new KNNVisualization(data, options, types, k);
 
-      const svg = document.querySelector(`#${vis.svgId}`);
+      const svg = document.querySelector(`#${vis.containerId} svg`);
       const inputRangeK = document.querySelector('#range-k');
       const labelSpan = document.querySelector('#range-k-label span');
       const weightedCheckBox = document.querySelector('#weighted');
@@ -281,7 +281,7 @@ describe('KNNVisualization Integration Test', () => {
       const k = 3;
       vis = new KNNVisualization(data, options, types, k);
 
-      const svg = document.querySelector(`#${vis.svgId}`);
+      const svg = document.querySelector(`#${vis.containerId} svg`);
       const inputRangeK = document.querySelector('#range-k');
       const labelSpan = document.querySelector('#range-k-label span');
       const weightedCheckBox = document.querySelector('#weighted');

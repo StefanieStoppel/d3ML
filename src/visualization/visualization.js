@@ -16,9 +16,29 @@ export default class Visualization {
     if (this.isValidData(data)) {
       this.data = data.map(d => this.mapDataToCircle(d));
     }
-    this.svgId = 'd3ml-' + Date.now();
-    this.svg = this.appendSVG();
     this.clickable = true;
+
+    this.createVisualization();
+  }
+  createVisualization() {
+    this.containerId = 'd3ml-' + Date.now();
+    this.svgId = 'd3ml__visualization';
+
+    this.appendWrapperContainer();
+    this.appendSVG();
+  }
+  appendWrapperContainer() {
+    const container = this.createElement('div', [['class', 'd3ml'], ['id', this.containerId]]);
+    const rootNode = document.querySelector(this.options.rootNode);
+    rootNode.appendChild(container);
+  }
+  appendSVG() {
+    this.svg = d3.select(`#${this.containerId}`)
+      .append('svg')
+      .attr('id', this.svgId)
+      .attr('width', this.options.width)
+      .attr('height', this.options.height)
+      .style('background-color', this.options.backgroundColor);
   }
   isValidData(data) {
     let result = false;
@@ -155,14 +175,6 @@ export default class Visualization {
   }
   addCircle(circle) {
     this.data.push(circle);
-  }
-  appendSVG() {
-    return d3.select(this.options.rootNode)
-      .append('svg')
-      .attr('id', this.svgId)
-      .attr('width', this.options.width)
-      .attr('height', this.options.height)
-      .style('background-color', this.options.backgroundColor);
   }
   createXScale(data) {
     return d3.scaleLinear()
