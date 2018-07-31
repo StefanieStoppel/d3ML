@@ -6,12 +6,15 @@
   "scripts": {
     "start:dev": "webpack-dev-server",
     "lint": "eslint --fix --ext .js src test",
-    "build": "webpack --env dev && webpack --env build && npm run test",
+    "build": "webpack --env dev && webpack --env build && npm run test && npm run integration-test",
     "dev": "webpack --progress --colors --watch --env dev",
-    "test": "mocha --require babel-register --colors ./test/**/*.spec.js",
+    "integration-test": "mocha --require babel-register --colors ./test/integration/**/*.spec.js",
+    "integration-test:watch": "npm run integration-test -- -w",
+    "integration-test:debug": "npm run integration-test:watch -- --source-maps --inspect",
+    "test": "mocha --require babel-register --colors ./test/unit/**/*.spec.js",
     "test:report-coverage": "nyc --reporter=lcov --reporter=text-lcov npm test",
     "test:watch": "npm run test -- -w",
-    "test:debug": "mocha --require babel-register --source-maps --inspect --colors -w ./test/**/*.spec.js"
+    "test:debug": "npm run test:watch -- --source-maps --inspect"
   },
   "repository": {
     "type": "git",
