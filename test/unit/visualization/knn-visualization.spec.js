@@ -3,13 +3,13 @@
 import chai from 'chai';
 import chaiDom from 'chai-dom';
 import chaiStyle from 'chai-style';
-import KNNVisualization from '../../src/visualization/knn-visualization';
-import Circle from '../../src/visualization/circle';
+import KNNVisualization from '../../../src/visualization/knn-visualization';
+import Circle from '../../../src/visualization/circle';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {createEvent} from '../test-helper';
+import {createEvent} from '../../test-helper';
 import D3TransitionTestUtils from '../d3-transition-test-helper';
-import Visualization from '../../src/visualization/visualization';
+import Visualization from '../../../src/visualization/visualization';
 
 chai.use(chaiDom);
 chai.use(chaiStyle);
@@ -74,8 +74,8 @@ describe('KNNVisualization', () => {
       // when
       const vis = new KNNVisualization(data, options, [], 3);// eslint-disable-line
       // then
-      expect(document.querySelector('#weighted').value).to.equal('false');
-      expect(document.querySelector('#weighted-label span')).to.have.text('false');
+      // expect(document.querySelector('#weighted').value).to.equal('false');
+      expect(document.querySelector('#weighted-label span')).to.have.text('');
     });
   });
   describe('drawConnectingLines', () => {
@@ -401,8 +401,7 @@ describe('KNNVisualization', () => {
       const weighted = settingsGroup.querySelector('#weighted');
       const weightedLabel = settingsGroup.querySelector('#weighted-label');
       expect(weighted).to.have.attr('type', 'checkbox');
-      expect(weighted).to.have.attr('value', 'false');
-      expect(weightedLabel).to.have.text('Use weighted algorithm: false');
+      expect(weightedLabel).to.have.text('Use weighted algorithm: ');
       expect(weightedLabel).to.have.attr('for', 'weighted');
     });
   });

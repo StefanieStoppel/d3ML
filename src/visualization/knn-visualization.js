@@ -45,7 +45,7 @@ export default class KNNVisualization extends Visualization {
       ['id', 'weighted'],
       ['type', 'checkbox']
     ];
-    const { label, input } = this.createLabeledInput(labelText, labelAttributes, false, inputAttributes);
+    const { label, input } = this.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
 
     return this.createSettingsGroup([label, input]);
   }

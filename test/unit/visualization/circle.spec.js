@@ -1,8 +1,8 @@
 /* global describe, it, before */
 
 import chai from 'chai';
-import Circle from '../../src/visualization/circle';
-import { defaultType, defaultOptions } from '../../src/visualization/defaults';
+import Circle from '../../../src/visualization/circle';
+import { defaultType, defaultOptions } from '../../../src/visualization/defaults';
 
 const expect = chai.expect;
 

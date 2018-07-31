@@ -2,9 +2,9 @@
 
 import chai from 'chai';
 import chaiDom from 'chai-dom';
-import Knn from '../../src/algorithms/knn';
-import Circle from '../../src/visualization/circle';
-import {defaultK} from '../../src/visualization/defaults';
+import Knn from '../../../src/algorithms/knn';
+import Circle from '../../../src/visualization/circle';
+import {defaultK} from '../../../src/visualization/defaults';
 
 chai.use(chaiDom);
 const expect = chai.expect;
