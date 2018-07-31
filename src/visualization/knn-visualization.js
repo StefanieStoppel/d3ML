@@ -8,11 +8,14 @@ export default class KNNVisualization extends Visualization {
     super(data, options, types);
     this.knn = new KNN(this.data, types, k);
 
-    document.querySelector(this.options.rootNode).appendChild(this.createSettings());
+    this.appendSettings();
     this.addEventListeners();
   }
+  appendSettings() {
+    document.querySelector(`#${this.containerId}`).appendChild(this.createSettings());
+  }
   createSettings() {
-    const settings = this.createElement('div', [['class', 'settings']]);
+    const settings = this.createElement('div', [['class', 'd3ml__settings']]);
     settings.appendChild(this.createSettingsGroupForK());
     settings.appendChild(this.createSettingsGroupForWeighted());
 
@@ -50,7 +53,7 @@ export default class KNNVisualization extends Visualization {
     return this.createSettingsGroup([label, input]);
   }
   addEventListeners() {
-    this.onClickSvg(this.svgId, [this.svgClickCallback]);
+    this.onClickSvg([this.svgClickCallback]);
     this.onChangeInput('range-k', 'range', [this.inputRangeKChangeCallback]);
     this.onChangeInput('weighted', 'checkbox', [this.checkboxWeightedChangeCallback]);
   }

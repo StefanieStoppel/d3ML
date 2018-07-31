@@ -41,9 +41,9 @@ describe('Visualization', () => {
     };
   });
   afterEach(() => {
-    const svgs = Array.from(document.querySelectorAll('svg'));
-    svgs.forEach(svg => {
-      svg.remove();
+    const divs = Array.from(document.querySelectorAll('body > div'));
+    divs.forEach(div => {
+      div.remove();
     });
   });
   describe('constructor', () => {
@@ -162,40 +162,6 @@ describe('Visualization', () => {
       expect(vis.data.pop()).to.deep.equal(givenCircle);
     });
   });
-  describe('isValidEventTarget', () => {
-    const failingTests = [
-      { event: { target: undefined, offsetX: 100, offsetY: 200 }},
-      { event: { target: null, offsetX: 100, offsetY: 200 }},
-      { event: { offsetX: 100, offsetY: 200 }},
-      { event: { target: {}, offsetX: 100, offsetY: 200 }},
-      { event: { target: { id: null }, offsetX: 100, offsetY: 200 }},
-      { event: { target: { id: 'd3ml-123456' }, offsetX: 100, offsetY: 200 }}
-    ];
-    failingTests.forEach(test => {
-      it(`should return false when event has invalid target: 
-      ${test.event.target ? Object.entries(test.event.target) : test.event.target}`, () => {
-        // given
-        const vis = new Visualization([], options);
-        // when
-        const result = vis.isValidEventTarget(test.event.target, vis.svgId);
-        // then
-        expect(result).to.be.false;
-      });
-    });
-    it('should return true when event has valid target', () => {
-      // given
-      const vis = new Visualization([], options);
-      const event = {
-        target: {
-          id: vis.svgId
-        }
-      };
-      // when
-      const result = vis.isValidEventTarget(event);
-      // then
-      expect(result).to.be.true;
-    });
-  });
   describe('clickCallback', () => {
     it('should call passed callback', () => {
       // given
@@ -209,7 +175,7 @@ describe('Visualization', () => {
         offsetY: 200
       };
       // when
-      vis.clickCallback(event, vis.svgId, [callback]);
+      vis.clickCallback(event, [callback]);
       // then
       expect(callback).calledOnce;
     });

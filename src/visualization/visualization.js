@@ -22,8 +22,6 @@ export default class Visualization {
   }
   createVisualization() {
     this.containerId = 'd3ml-' + Date.now();
-    this.svgId = 'd3ml__visualization';
-
     this.appendWrapperContainer();
     this.appendSVG();
   }
@@ -35,7 +33,6 @@ export default class Visualization {
   appendSVG() {
     this.svg = d3.select(`#${this.containerId}`)
       .append('svg')
-      .attr('id', this.svgId)
       .attr('width', this.options.width)
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
@@ -113,13 +110,13 @@ export default class Visualization {
       this.options.circleStroke,
       data.type);
   }
-  onClickSvg(targetId, callbacks) {
-    document.querySelector(`#${this.svgId}`).addEventListener('click', (e) => {
-      this.clickCallback(e, targetId, callbacks);
+  onClickSvg(callbacks) {
+    document.querySelector(`#${this.containerId} svg`).addEventListener('click', (e) => {
+      this.clickCallback(e, callbacks);
     });
   }
-  clickCallback(e, targetId, callbacks) {
-    if (this.isValidEventTarget(e.target, targetId) && this.clickable) {
+  clickCallback(e, callbacks) {
+    if (!!e.target && this.clickable) {
       const newCircle = this.mapDataToCircle({x: this.xScale.invert(e.offsetX), y: this.yScale.invert(e.offsetY)});
       callbacks.forEach(callback => {
         callback.call(this, newCircle);
@@ -131,11 +128,8 @@ export default class Visualization {
       this.inputChangeCallback(e, inputId, inputType, callbacks);
     });
   }
-  isValidEventTarget(target, targetId) {
-    return !!target && target.id === targetId;
-  }
   inputChangeCallback(e, inputId, type, callbacks) {
-    if (this.isValidEventTarget(e.target, inputId)) {
+    if (e.target) {
       const value = type === 'checkbox' ? e.target.checked : e.target.value;
       callbacks.forEach(callback => {
         callback.call(this, value);
@@ -154,7 +148,7 @@ export default class Visualization {
     return el;
   }
   createSettingsGroup(childElements) {
-    const settingsGroup = this.createElement('div', [['class', 'settings__group']]);
+    const settingsGroup = this.createElement('div', [['class', 'd3ml__settings__group']]);
     childElements.forEach(child => {
       settingsGroup.append(child);
     });

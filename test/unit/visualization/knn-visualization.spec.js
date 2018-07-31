@@ -43,13 +43,9 @@ describe('KNNVisualization', () => {
     };
   });
   afterEach(() => {
-    const svgs = Array.from(document.querySelectorAll('svg'));
-    svgs.forEach(svg => {
-      svg.remove();
-    });
-    const settings = Array.from(document.querySelectorAll('.settings'));
-    settings.forEach(setting => {
-      setting.remove();
+    const divs = Array.from(document.querySelectorAll('body > div'));
+    divs.forEach(div => {
+      div.remove();
     });
   });
   describe('constructor', () => {
@@ -208,7 +204,7 @@ describe('KNNVisualization', () => {
       // given
       const types = ['A', 'B'];
       const vis = new KNNVisualization(data, options, types, 3);
-      const svg = document.querySelector(`svg#${vis.svgId}`);
+      const svg = document.querySelector(`#${vis.containerId} svg`);
       // when
       const { node, event } = createEvent(svg, 'click');
       event.offsetX = 100;
@@ -298,7 +294,7 @@ describe('KNNVisualization', () => {
       // when
       vis.removeElements('.remove');
       // then
-      expect(document.querySelector(`svg#${vis.svgId}`)).to.not.contain('.remove');
+      expect(document.querySelector(`#${vis.containerId} svg`)).to.not.contain('.remove');
     });
   });
   describe('removeElementsAfterTransition', () => {
@@ -328,14 +324,14 @@ describe('KNNVisualization', () => {
       transparentElements.forEach(t => {
         expect(t).to.have.attr('style', 'stroke: transparent; fill: transparent;');
       });
-      expect(document.querySelector(`svg#${vis.svgId}`)).to.not.contain('.remove');
+      expect(document.querySelector(`#${vis.containerId} svg`)).to.not.contain('.remove');
     });
   });
   describe('clickable', () => {
     it('should not add circle if clickable is set to false', () => {
       const dataCount = data.length;
       const vis = new KNNVisualization(data, options, ['A', 'B']);
-      const svg = document.querySelector(`svg#${vis.svgId}`);
+      const svg = document.querySelector(`#${vis.containerId} svg`);
       expect(vis.data.length).to.equal(data.length);
       vis.clickable = false;
       // when
@@ -395,7 +391,7 @@ describe('KNNVisualization', () => {
       // when
       const settingsGroup = vis.createSettingsGroupForWeighted();
       // then
-      expect(settingsGroup).to.have.attr('class', 'settings__group');
+      expect(settingsGroup).to.have.attr('class', 'd3ml__settings__group');
       expect(settingsGroup).to.contain('#weighted');
       expect(settingsGroup).to.contain('#weighted-label');
       const weighted = settingsGroup.querySelector('#weighted');
@@ -420,7 +416,7 @@ describe('KNNVisualization', () => {
       // when
       const settingsGroup = vis.createSettingsGroupForK();
       // then
-      expect(settingsGroup).to.have.attr('class', 'settings__group');
+      expect(settingsGroup).to.have.attr('class', 'd3ml__settings__group');
       expect(settingsGroup).to.contain('#range-k');
       expect(settingsGroup).to.contain('#range-k-label');
       const k = settingsGroup.querySelector('#range-k');
@@ -447,8 +443,8 @@ describe('KNNVisualization', () => {
       // when
       const settings = vis.createSettings();
       // then
-      expect(settings).to.have.attr('class', 'settings');
-      expect(settings.querySelectorAll('.settings__group').length).to.equal(2);
+      expect(settings).to.have.attr('class', 'd3ml__settings');
+      expect(settings.querySelectorAll('.d3ml__settings__group').length).to.equal(2);
     });
   });
 });

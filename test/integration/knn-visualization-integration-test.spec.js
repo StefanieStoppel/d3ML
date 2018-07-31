@@ -108,6 +108,7 @@ describe('KNNVisualization Integration Test', () => {
     weightedCheckbox.checked = checked;
     vis.checkboxWeightedChangeCallback(checked);
   }
+
   function expectInitialStateToBeDisplayedCorrectly(
     svg, inputRangeK, labelK, weightedCheckBox, options, k, dataLength
   ) {
@@ -149,13 +150,9 @@ describe('KNNVisualization Integration Test', () => {
   });
 
   afterEach(() => {
-    const svgs = Array.from(document.querySelectorAll('svg'));
-    svgs.forEach(svg => {
-      svg.remove();
-    });
-    const settings = Array.from(document.querySelectorAll('.settings'));
-    settings.forEach(setting => {
-      setting.remove();
+    const divs = Array.from(document.querySelectorAll('body > div'));
+    divs.forEach(div => {
+      div.remove();
     });
   });
 
@@ -286,9 +283,7 @@ describe('KNNVisualization Integration Test', () => {
       const labelSpan = document.querySelector('#range-k-label span');
       const weightedCheckBox = document.querySelector('#weighted');
 
-      expectInitialStateToBeDisplayedCorrectly(
-        svg, inputRangeK, labelSpan, weightedCheckBox, options, k, dataLength
-      );
+      expectInitialStateToBeDisplayedCorrectly(svg, inputRangeK, labelSpan, weightedCheckBox, options, k, dataLength);
 
       // draw visualization
       vis.draw();
