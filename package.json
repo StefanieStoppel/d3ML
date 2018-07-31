@@ -4,7 +4,6 @@
   "description": "A library that visualizes how machine learning algorithms work using d3.js",
   "main": "lib/d3ml.js",
   "scripts": {
-    "start:dev": "webpack-dev-server",
     "lint": "eslint --fix --ext .js src test",
     "build": "webpack --env dev && webpack --env build && npm run test && npm run integration-test",
     "dev": "webpack --progress --colors --watch --env dev",
