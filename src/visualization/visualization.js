@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import Circle from './circle';
-import { defaultOptions, defaultType } from './defaults';
+import { defaultOptions, defaultType, defaultClassSelectors } from './defaults';
 
 export default class Visualization {
   constructor(data, options, types = [defaultType]) {
@@ -21,12 +21,12 @@ export default class Visualization {
     this.createVisualization();
   }
   createVisualization() {
-    this.containerId = 'd3ml-' + Date.now();
+    this.containerId = defaultClassSelectors.d3ml + Date.now();
     this.appendWrapperContainer();
     this.appendSVG();
   }
   appendWrapperContainer() {
-    const container = this.createElement('div', [['class', 'd3ml'], ['id', this.containerId]]);
+    const container = this.createElement('div', [['class', defaultClassSelectors.d3ml], ['id', this.containerId]]);
     const rootNode = document.querySelector(this.options.rootNode);
     rootNode.appendChild(container);
   }
@@ -148,7 +148,7 @@ export default class Visualization {
     return el;
   }
   createSettingsGroup(childElements) {
-    const settingsGroup = this.createElement('div', [['class', 'd3ml__settings__group']]);
+    const settingsGroup = this.createElement('div', [['class', defaultClassSelectors.settingsGroup]]);
     childElements.forEach(child => {
       settingsGroup.append(child);
     });

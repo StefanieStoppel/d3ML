@@ -18,9 +18,17 @@ const defaultTypes = {
 
 const defaultK = 3;
 
+const defaultClassSelectors = {
+  remove: 'remove',
+  d3ml: 'd3ml',
+  settings: 'd3ml__settings',
+  settingsGroup: 'd3ml__settings__group'
+};
+
 export default {
   defaultOptions,
   defaultType,
   defaultTypes,
-  defaultK
+  defaultK,
+  defaultClassSelectors
 };

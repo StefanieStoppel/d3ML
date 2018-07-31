@@ -1,7 +1,16 @@
 import Circle from './circle';
-import {defaultK, defaultType} from './defaults';
+import {defaultK, defaultType, defaultClassSelectors} from './defaults';
 import Visualization from './visualization';
 import KNN from '../algorithms/knn';
+
+const selectors = {
+  id: {
+    rangeK: 'range-k',
+    rangeKLabel: 'range-k-label',
+    weightedCheckbox: 'weighted',
+    weightedLabel: 'weighted-label'
+  }
+};
 
 export default class KNNVisualization extends Visualization {
   constructor(data, options, types, k = defaultK) {
@@ -15,7 +24,7 @@ export default class KNNVisualization extends Visualization {
     document.querySelector(`#${this.containerId}`).appendChild(this.createSettings());
   }
   createSettings() {
-    const settings = this.createElement('div', [['class', 'd3ml__settings']]);
+    const settings = this.createElement('div', [['class', defaultClassSelectors.settings]]);
     settings.appendChild(this.createSettingsGroupForK());
     settings.appendChild(this.createSettingsGroupForWeighted());
 
@@ -24,11 +33,11 @@ export default class KNNVisualization extends Visualization {
   createSettingsGroupForK() {
     const labelText = 'Amount of neighbors, k: ';
     const labelAttributes = [
-      ['for', 'range-k'],
-      ['id', 'range-k-label']
+      ['for', selectors.id.rangeK],
+      ['id', selectors.id.rangeKLabel]
     ];
     const inputAttributes = [
-      ['id', 'range-k'],
+      ['id', selectors.id.rangeK],
       ['type', 'range'],
       ['min', '1'],
       ['max', this.data.length],
@@ -41,11 +50,11 @@ export default class KNNVisualization extends Visualization {
   createSettingsGroupForWeighted() {
     const labelText = 'Use weighted algorithm: ';
     const labelAttributes = [
-      ['for', 'weighted'],
-      ['id', 'weighted-label']
+      ['for', selectors.id.weightedCheckbox],
+      ['id', selectors.id.weightedLabel]
     ];
     const inputAttributes = [
-      ['id', 'weighted'],
+      ['id', selectors.id.weightedCheckbox],
       ['type', 'checkbox']
     ];
     const { label, input } = this.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
@@ -54,8 +63,8 @@ export default class KNNVisualization extends Visualization {
   }
   addEventListeners() {
     this.onClickSvg([this.svgClickCallback]);
-    this.onChangeInput('range-k', 'range', [this.inputRangeKChangeCallback]);
-    this.onChangeInput('weighted', 'checkbox', [this.checkboxWeightedChangeCallback]);
+    this.onChangeInput(selectors.id.rangeK, 'range', [this.inputRangeKChangeCallback]);
+    this.onChangeInput(selectors.id.weightedCheckbox, 'checkbox', [this.checkboxWeightedChangeCallback]);
   }
   svgClickCallback(circle) {
     this.setClickable(false);
@@ -69,18 +78,18 @@ export default class KNNVisualization extends Visualization {
     this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
 
     this.data = this.data.filter(c => c !== boundingCircle);
-    this.removeElementsAfterTransition('.remove');
+    this.removeElementsAfterTransition(`.${defaultClassSelectors.remove}`);
 
     this.updateIndexRangeKMaximum(this.data.length);
   }
 
   updateIndexRangeKMaximum(max) {// todo: test
-    document.querySelector('#range-k').setAttribute('max', max);
+    document.querySelector(`#${selectors.id.rangeK}`).setAttribute('max', max);
   }
   inputRangeKChangeCallback(k) {
     this.k = k;
     this.knn.k = k;
-    document.querySelector('#range-k-label > span').innerHTML = k;
+    document.querySelector(`#${selectors.id.rangeKLabel} > span`).innerHTML = k;
   }
   checkboxWeightedChangeCallback(checked) {
     this.knn.weighted = checked;
@@ -95,7 +104,7 @@ export default class KNNVisualization extends Visualization {
     const furthestNeighbor = this.knn.kClosestNeighbors[this.knn.k - 1];
     const radius = furthestNeighbor.distance + this.options.circleRadius;
     const boundingCircle = new Circle(circle.cx, circle.cy, radius, 'transparent', 'white');
-    boundingCircle.setCssClass('remove');
+    boundingCircle.setCssClass(defaultClassSelectors.remove);
 
     return boundingCircle;
   }
@@ -121,7 +130,7 @@ export default class KNNVisualization extends Visualization {
       .attr('y1', function (d) { return d.y1; })
       .attr('x2', function (d) { return d.x2; })
       .attr('y2', function (d) { return d.y2; })
-      .attr('class', 'remove');
+      .attr('class', defaultClassSelectors.remove);
   }
   drawCircles() {
     super.drawCircles();
