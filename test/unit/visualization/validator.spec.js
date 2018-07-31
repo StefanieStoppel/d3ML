@@ -21,9 +21,8 @@ describe('Validator', () => {
     negativeTestCases.forEach(testCase => {
       it(`should return false for invalid options: ${testCase.options}`, () => {
         // given
-        const validator = new Validator();
         // when
-        const result = validator.isValidOptions(testCase.options);
+        const result = Validator.isValidOptions(testCase.options);
         // then
         expect(result).to.equal(false);
       });
@@ -38,9 +37,8 @@ describe('Validator', () => {
     positiveTestCases.forEach(testCase => {
       it(`should return true for valid options: ${testCase.options}`, () => {
         // given
-        const validator = new Validator();
         // when
-        const result = validator.isValidOptions(testCase.options);
+        const result = Validator.isValidOptions(testCase.options);
         // then
         expect(result).to.equal(true);
       });
@@ -65,10 +63,9 @@ describe('Validator', () => {
     negativeTestCases.forEach(testCase => {
       it(`should return false for invalid data: ${testCase.data}`, () => {
         // given
-        const validator = new Validator();
         const types = testCase.types || [];
         // when
-        const result = validator.isValidData(testCase.data, types);
+        const result = Validator.isValidData(testCase.data, types);
         // then
         expect(result).to.equal(false);
       });
@@ -90,10 +87,80 @@ describe('Validator', () => {
     positiveTestCases.forEach(testCase => {
       it(`should return true for valid data: ${testCase.data}`, () => {
         // given
-        const validator = new Validator();
         const types = testCase.types || [];
         // when
-        const result = validator.isValidData(testCase.data, types);
+        const result = Validator.isValidData(testCase.data, types);
+        // then
+        expect(result).to.equal(true);
+      });
+    });
+  });
+  describe('isValidTypes', () => {
+    const negativeTestCases = [
+      { types: undefined },
+      { types: null },
+      { types: 5 },
+      { types: '' },
+      { types: 'bla' },
+      { types: {} },
+      { types: [{A: 'A', B: 'B'}, 'C'] }
+    ];
+    negativeTestCases.forEach(testCase => {
+      it(`should return false for invalid types: ${testCase.types}`, () => {
+        // given
+        // when
+        const result = Validator.isValidTypes(testCase.types);
+        // then
+        expect(result).to.equal(false);
+      });
+    });
+    const positiveTestCases = [
+      { types: [] },
+      { types: [1, 2] },
+      { types: ['foo', 'bar', 'baz'] },
+      { types: [1, '2', 42] }
+    ];
+    positiveTestCases.forEach(testCase => {
+      it(`should return true for valid types: ${testCase.types}`, () => {
+        // given
+        // when
+        const result = Validator.isValidTypes(testCase.types);
+        // then
+        expect(result).to.equal(true);
+      });
+    });
+  });
+  describe('isValidK', () => {
+    const negativeTestCases = [
+      { k: undefined },
+      { k: null },
+      { k: '' },
+      { k: 'bla' },
+      { k: {} },
+      { k: [] },
+      { k: 0 },
+      { k: -5 },
+      { k: 42.5 }
+    ];
+    negativeTestCases.forEach(testCase => {
+      it(`should return false for invalid k: ${testCase.k}`, () => {
+        // given
+        // when
+        const result = Validator.isValidK(testCase.k);
+        // then
+        expect(result).to.equal(false);
+      });
+    });
+    const positiveTestCases = [
+      { k: 1 },
+      { k: 100 },
+      { k: 42 }
+    ];
+    positiveTestCases.forEach(testCase => {
+      it(`should return true for valid k: ${testCase.k}`, () => {
+        // given
+        // when
+        const result = Validator.isValidK(testCase.k);
         // then
         expect(result).to.equal(true);
       });

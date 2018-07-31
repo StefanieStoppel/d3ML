@@ -1,7 +1,7 @@
 import {defaultOptions} from './defaults'
 
 export default class Validator {
-  isValidOptions(options) {
+  static isValidOptions(options) {
     let result = false;
     if(!!options &&
       typeof options === 'object' &&
@@ -10,9 +10,10 @@ export default class Validator {
     ) {
       result = true;
     }
+
     return result
   }
-  isValidData(data, types) {
+  static isValidData(data, types) {
     let result = false;
     if (!!data && Array.isArray(data) && data.length > 0) {
       result = data.every(d => {
@@ -25,8 +26,26 @@ export default class Validator {
             return !!val && types.includes(val);
           }
         });
+
         return keysValid && valuesValid;
       });
+    }
+
+    return result;
+  }
+  static isValidTypes(types) {
+    let result = false;
+    if (!!types && Array.isArray(types) && types.every(t => typeof t === 'number' || typeof t === 'string')) {
+      result = true;
+    }
+
+    return result;
+  }
+
+  static isValidK(k) {
+    let result = false;
+    if (!!k && Number.isInteger(k) && k > 0) {
+      result = true;
     }
     return result;
   }
