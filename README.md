@@ -2,8 +2,8 @@
 ## A javascript library that visualizes how machine learning algorithms work using [d3.js](https://d3js.org/).
 
 ### About
-The goal of this library is to create beautiful, interactive visualizations of machine learning algorithms to make them easier to understand.
-You can check out an example visualization of the K-Nearest Neighbor (KNN) algorithm on [codepen](https://codepen.io/Qbrid/pen/OwpjLX?editors=1010).
+The goal of d3ML is to create beautiful, interactive visualizations of machine learning algorithms to make them easier to understand.
+You can check out an example visualization of the [K-Nearest Neighbor (KNN) algorithm](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) on [codepen](https://codepen.io/Qbrid/pen/OwpjLX?editors=1010).
 
 
 ### Usage
@@ -21,7 +21,7 @@ var knnVis = new d3ml.KNNVisualization(data, options, types, k);
 knnVis.draw();
 ```
 
-###Parameters
+### Parameters
 `data`
 ---
 `data` represents the data points you want to visualize.
@@ -58,43 +58,43 @@ const options = {
 };
 ```
 
-####`rootNode`
+#### `rootNode`
 A CSS selector specifying which DOM element the visualization will be attached to.
 
 Default: `body`.
 
-####`width`
+#### `width`
 The width of the SVG for the visualization in pixels.
 
 Default: `500`.
 
-####`height` 
+#### `height` 
 The height of the SVG for the visualization in pixels.
 
 Default: `300`.
 
-####`padding`
+#### `padding`
 The domain of the visualization depends on your data. You can specify a padding (in pixels) to ensure 
 that your data points are not too close to the edge of the SVG.
 
 Default: `50`
 
-####`backgroundColor`
+#### `backgroundColor`
 Set the background color of the visualization.
 
 Default: `#1d1e22`, which is a dark grey.
 
-####`circleRadius`
+#### `circleRadius`
 The data points are displayed as circles. Set the radius (in pixels) of the circles with this option.
 
 Default: `5`
 
-####`circleFill`
+#### `circleFill`
 Set the fill color of the circles.
 
 Default: `grey`
 
-####`circleStroke`
+#### `circleStroke`
 Set the stroke color of the circles.
 
 Default: `white`
