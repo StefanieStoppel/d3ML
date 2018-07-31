@@ -1,12 +1,12 @@
 # d3ML
-## A javascript library that visualizes how machine learning algorithms work using [d3.js](https://d3js.org/).
+A javascript library that visualizes how machine learning algorithms work using [d3.js](https://d3js.org/).
 
-### About
+## About
 The goal of d3ML is to create beautiful, interactive visualizations of machine learning algorithms to make them easier to understand.
 You can check out an example visualization of the [K-Nearest Neighbor (KNN) algorithm](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) on [codepen](https://codepen.io/Qbrid/pen/OwpjLX?editors=1010).
 
 
-### Usage
+## Usage
 At the moment d3ML is not available on npm yet. 
 Instead you can paste the following code in your HTML to use the current version of the library from [rawgit](https://rawgit.com/) in your project:
 
@@ -14,7 +14,7 @@ Instead you can paste the following code in your HTML to use the current version
 <script src="https://rawgit.com/StefanieStoppel/d3ML/master/lib/d3ml.min.js"></script>
 ```
 
-#### Create a visualization of the K-Nearest Neighbor (KNN) algorithm
+### Create a visualization of the K-Nearest Neighbor (KNN) algorithm
 > Currently only the K-Nearest Neighbor (KNN) algorithm is implemented. 
 ```$xslt
 var knnVis = new d3ml.KNNVisualization(data, options, types, k);
@@ -46,7 +46,7 @@ The `x` and `y` values represent the data coordinates and have to be **numeric**
 You can pass options to specify the look of your visualization.
 The default options object looks like this:
 ```$xslt
-const options = {
+var options = {
   rootNode: 'body',
   width: 500,
   height: 300,
