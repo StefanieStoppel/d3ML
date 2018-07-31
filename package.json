@@ -20,6 +20,7 @@
     "url": "git+https://github.com/StefanieStoppel/d3ML.git"
   },
   "keywords": [
+    "d3ML",
     "machinelearning",
     "visualization",
     "d3js"
