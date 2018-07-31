@@ -3,7 +3,7 @@ A javascript library that visualizes how machine learning algorithms work using 
 
 ## About
 The goal of d3ML is to create beautiful, interactive visualizations of machine learning algorithms to make them easier to understand.
-You can check out an example visualization of the [K-Nearest Neighbor (KNN) algorithm](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) on [codepen](https://codepen.io/Qbrid/pen/OwpjLX?editors=1010).
+You can check out [this](https://codepen.io/Qbrid/pen/OwpjLX?editors=1010) example visualization of the [K-Nearest Neighbor (KNN) algorithm](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) on codepen.
 
 
 ## Usage
