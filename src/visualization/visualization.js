@@ -141,14 +141,14 @@ export default class Visualization {
 
     return settingsGroup;
   }
-  createLabeledInput(labelText, labelAttributes, inputValue, inputAttributes) {
+  createLabeledInput(labelText, labelAttributes, displayedValue, inputAttributes) {
     const span = this.createElement('span');
-    span.innerHTML = inputValue;
+    span.innerHTML = displayedValue;
 
     const inputLabel = this.createElement('label', labelAttributes);
     inputLabel.textContent = labelText;
 
-    const input = this.createElement('input', [...inputAttributes, ['value', inputValue]]);
+    const input = this.createElement('input', inputAttributes);
     inputLabel.appendChild(span);
 
     return {label: inputLabel, input};

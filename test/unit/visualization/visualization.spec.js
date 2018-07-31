@@ -4,9 +4,9 @@ import chai from 'chai';
 import chaiDom from 'chai-dom';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import Visualization from '../../src/visualization/visualization';
-import Circle from '../../src/visualization/circle';
-import { defaultType } from '../../src/visualization/defaults';
+import Visualization from '../../../src/visualization/visualization';
+import Circle from '../../../src/visualization/circle';
+import { defaultType } from '../../../src/visualization/defaults';
 import { scaleOrdinal, schemeSet1 } from 'd3';
 
 chai.use(chaiDom);
