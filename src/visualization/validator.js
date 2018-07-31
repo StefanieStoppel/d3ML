@@ -1,9 +1,9 @@
-import {defaultOptions} from './defaults'
+import {defaultOptions} from './defaults';
 
 export default class Validator {
   static isValidOptions(options) {
     let result = false;
-    if(!!options &&
+    if (!!options &&
       typeof options === 'object' &&
       !Array.isArray(options) &&
       Object.keys(options).every(val => Object.keys(defaultOptions).includes(val))
@@ -11,7 +11,7 @@ export default class Validator {
       result = true;
     }
 
-    return result
+    return result;
   }
   static isValidData(data, types) {
     let result = false;
@@ -19,12 +19,15 @@ export default class Validator {
       result = data.every(d => {
         const keysValid = ['x', 'y', 'type'].every(key => Object.keys(d).includes(key));
         const valuesValid = ['x', 'y', 'type'].every(key => {
+          let res;
           const val = d[key];
           if (key === 'x' || key === 'y') {
-            return !!val && typeof val === 'number' && val !== Infinity && val !== -Infinity;
+            res = !!val && typeof val === 'number' && val !== Infinity && val !== -Infinity;
           } else if (key === 'type') {
-            return !!val && types.includes(val);
+            res = !!val && types.includes(val);
           }
+
+          return res;
         });
 
         return keysValid && valuesValid;
@@ -41,12 +44,12 @@ export default class Validator {
 
     return result;
   }
-
   static isValidK(k) {
     let result = false;
     if (!!k && Number.isInteger(k) && k > 0) {
       result = true;
     }
+
     return result;
   }
 }

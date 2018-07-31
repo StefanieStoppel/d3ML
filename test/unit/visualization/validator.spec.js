@@ -1,8 +1,7 @@
-/* global describe, it, beforeEach, afterEach */
+/* global describe, it */
 
 import chai from 'chai';
 import Validator from '../../../src/visualization/validator';
-import {defaultOptions} from '../../../src/visualization/defaults';
 
 const expect = chai.expect;
 
@@ -16,7 +15,7 @@ describe('Validator', () => {
       { options: '' },
       { options: 'bla' },
       { options: {a: 2, b: 'foo'} },
-      { options: {circleRadius: 2, y: 'baz'} },
+      { options: {circleRadius: 2, y: 'baz'} }
     ];
     negativeTestCases.forEach(testCase => {
       it(`should return false for invalid options: ${testCase.options}`, () => {
@@ -82,7 +81,7 @@ describe('Validator', () => {
           {x: 31, y: 3, type: 54}
         ],
         types: [1, 2, 54]
-      },
+      }
     ];
     positiveTestCases.forEach(testCase => {
       it(`should return true for valid data: ${testCase.data}`, () => {
