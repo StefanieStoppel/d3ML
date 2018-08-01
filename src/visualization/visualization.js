@@ -1,10 +1,11 @@
 import * as d3 from 'd3';
 import Circle from './circle';
 import { defaultOptions, defaultType, defaultClassSelectors } from './defaults';
+import { isValidOptions } from './validator';
 
 export default class Visualization {
   constructor(data, options, types = [defaultType]) {
-    this.options = Object.assign({}, defaultOptions, options);
+    this.initializeOptions(options);
     this.xScale = this.createXScale(data);
     this.yScale = this.createYScale(data);
     if (this.isValidTypes(types)) {
@@ -19,6 +20,12 @@ export default class Visualization {
     this.clickable = true;
 
     this.createVisualization();
+  }
+  initializeOptions(options) {
+    if (!isValidOptions(options)) {
+      options = {};
+    }
+    this.options = Object.assign({}, defaultOptions, options);
   }
   createVisualization() {
     this.containerId = defaultClassSelectors.d3ml + Date.now();

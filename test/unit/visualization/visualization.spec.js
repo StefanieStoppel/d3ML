@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Visualization from '../../../src/visualization/visualization';
 import Circle from '../../../src/visualization/circle';
-import { defaultType } from '../../../src/visualization/defaults';
+import { defaultType, defaultOptions } from '../../../src/visualization/defaults';
 import { scaleOrdinal, schemeSet1 } from 'd3';
 
 chai.use(chaiDom);
@@ -88,6 +88,46 @@ describe('Visualization', () => {
         // then
         expect(vis.typeColorMap).to.deep.equal(vis.mapTypesToColors([defaultType]));
       });
+    });
+  });
+  describe('initializeOptions', () => {
+    const negativeTestCases = [
+      { options: undefined },
+      { options: [] },
+      { options: null },
+      { options: 5 },
+      { options: '' },
+      { options: 'bla' },
+      { options: {a: 2, b: 'foo'} },
+      { options: {circleRadius: 2, y: 'baz'} }
+    ];
+    negativeTestCases.forEach(testCase => {
+      it(`should initialize using defaultOptions when passed invalid options: ${testCase.options}`, () => {
+        // given
+        const vis = new Visualization(data, options);
+        // when
+        vis.initializeOptions(testCase.options);
+        // then
+        expect(vis.options).to.deep.equal(defaultOptions);
+      });
+    });
+    const positiveTestCases = [
+      { options: {circleRadius: 2, circleFill: 'blue'} },
+      { options: {circleStroke: 'red', width: 400} },
+      { options: {height: 1, padding: 100, backgroundColor: '#1hef2e'} },
+      { options: {rootNode: '.root', circleFill: 'yellow'} }
+    ];
+    positiveTestCases.forEach(testCase => {
+      it(`should initialize by merging defaultOptions and options when passed valid options: ${testCase.options}`,
+        () => {
+          // given
+          const vis = new Visualization(data, options);
+          const expectedOptions = Object.assign({}, defaultOptions, testCase.options);
+          // when
+          vis.initializeOptions(testCase.options);
+          // then
+          expect(vis.options).to.deep.equal(expectedOptions);
+        });
     });
   });
   describe('isValidData', () => {
