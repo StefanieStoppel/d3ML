@@ -1,7 +1,7 @@
 /* global describe, it */
 
 import chai from 'chai';
-import Validator from '../../../src/visualization/validator';
+import Validator from '../../../src/validation/validator';
 
 const expect = chai.expect;
 

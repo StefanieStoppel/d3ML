@@ -1,4 +1,4 @@
-import {defaultOptions} from './defaults';
+import {defaultOptions} from '../visualization/defaults';
 
 export default class Validator {
   static isValidOptions(options) {

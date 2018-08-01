@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import Circle from './circle';
 import { defaultOptions, defaultType, defaultClassSelectors } from './defaults';
-import { isValidOptions, isValidTypes, isValidData } from './validator';
+import { isValidOptions, isValidTypes, isValidData } from '../validation/validator';
 
 export default class Visualization {
   constructor(data, options, types = [defaultType]) {
