@@ -1,21 +1,24 @@
 import * as d3 from 'd3';
 import Circle from './circle';
 import { defaultOptions, defaultType, defaultClassSelectors } from './defaults';
-import { isValidOptions, isValidTypes } from './validator';
+import { isValidOptions, isValidTypes, isValidData } from './validator';
 
 export default class Visualization {
   constructor(data, options, types = [defaultType]) {
     this.initializeOptions(options);
     this.initializeTypes(types);
-    this.xScale = this.createXScale(data);
-    this.yScale = this.createYScale(data);
-    this.typeColorMap = this.mapTypesToColors(this.types);
-    if (this.isValidData(data)) {
-      this.data = data.map(d => this.mapDataToCircle(d));
-    }
-    this.clickable = true;
+    this.initializeTypeColorMap(this.types);
+    this.initializeScales(data, options);
+    this.initializeData(data, types);
 
     this.createVisualization();
+    this.clickable = true;
+  }
+  initializeOptions(options) {
+    if (!isValidOptions(options)) {
+      options = {};
+    }
+    this.options = Object.assign({}, defaultOptions, options);
   }
   initializeTypes(types) {
     if (!isValidTypes(types)) {
@@ -23,11 +26,30 @@ export default class Visualization {
     }
     this.types = types;
   }
-  initializeOptions(options) {
-    if (!isValidOptions(options)) {
-      options = {};
+  initializeTypeColorMap(types) {
+    this.typeColorMap = this.mapTypesToColors(types);
+  }
+  initializeScales(data, options) {
+    this.xScale = d3.scaleLinear()
+      .domain([
+        d3.min(data, function (d) { return d.x; }) - options.padding,
+        d3.max(data, function (d) { return d.x; }) + options.padding
+      ])
+      .range([0, options.width]);
+
+    this.yScale =  d3.scaleLinear()
+      .domain([
+        d3.min(data, function (d) { return d.y; }) - options.padding,
+        d3.max(data, function (d) { return d.y; }) + options.padding
+      ])
+      .range([0, options.height]);
+  }
+  initializeData(data, types) {
+    if (!isValidData(data, types)) {
+      this.data = [];
+    } else {
+      this.data = data.map(d => this.mapDataToCircle(d));
     }
-    this.options = Object.assign({}, defaultOptions, options);
   }
   createVisualization() {
     this.containerId = defaultClassSelectors.d3ml + Date.now();
@@ -45,52 +67,6 @@ export default class Visualization {
       .attr('width', this.options.width)
       .attr('height', this.options.height)
       .style('background-color', this.options.backgroundColor);
-  }
-  isValidData(data) {
-    let result = false;
-    if (!!data && Array.isArray(data)) {
-      result = data.reduce((res, val) => {
-        return Object.entries(val).reduce((result, entry) => {
-          const key = entry[0];
-          const val = entry[1];
-          let res = false;
-          if (this.isValidCoordinate(key, val) || this.isValidType(key, val)) {
-            res = result && true;
-          } else {
-            if (!this.isValidType(key, val)) {
-              const msg = `Invalid data specified: ${key} with value ${val}. ` +
-                'Accepted data keys are x and y. Values must be numeric.';
-              throw Error(msg);
-            } else if (!this.isValidCoordinate(key, val)) {
-              throw Error(`Invalid type specified: ${key}: ${val}`);
-            }
-          }
-
-          return res;
-        }, true);
-      }, true);
-    }
-
-    return result;
-  }
-  isValidCoordinate(key, val) {
-    return ['x', 'y'].includes(key) &&
-      typeof val === 'number' &&
-      val !== Infinity &&
-      val !== -Infinity;
-  }
-  isValidType(key, val) {
-    return key === 'type' && this.types.includes(val);
-  }
-  isValidTypes(types) {
-    let result = false;
-    if (!!types && Array.isArray(types) && types.length > 0) {
-      result = types.reduce((res, type) => {
-        return res && !!type;
-      }, true);
-    }
-
-    return result;
   }
   mapTypesToColors(types) {
     const colorScale = d3.scaleOrdinal(d3.schemeSet1);
@@ -145,9 +121,6 @@ export default class Visualization {
       });
     }
   }
-  setClickable(clickable) {
-    this.clickable = clickable;
-  }
   createElement(elementName, attributes = []) {
     const el = document.createElement(elementName);
     attributes.forEach(attr => {
@@ -178,22 +151,6 @@ export default class Visualization {
   }
   addCircle(circle) {
     this.data.push(circle);
-  }
-  createXScale(data) {
-    return d3.scaleLinear()
-      .domain([
-        d3.min(data, function (d) { return d.x; }) - this.options.padding,
-        d3.max(data, function (d) { return d.x; }) + this.options.padding
-      ])
-      .range([0, this.options.width]);
-  }
-  createYScale(data) {
-    return d3.scaleLinear()
-      .domain([
-        d3.min(data, function (d) { return d.y; }) - this.options.padding,
-        d3.max(data, function (d) { return d.y; }) + this.options.padding
-      ])
-      .range([0, this.options.height]);
   }
   drawCircles() {
     this.svg.selectAll('circle')

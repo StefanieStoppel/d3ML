@@ -17,8 +17,18 @@ export default class Validator {
     let result = false;
     if (!!data && Array.isArray(data) && data.length > 0) {
       result = data.every(d => {
-        const keysValid = ['x', 'y', 'type'].every(key => Object.keys(d).includes(key));
-        const valuesValid = ['x', 'y', 'type'].every(key => {
+        if(!d) {
+          return false;
+        }
+        let keys = ['x', 'y'];
+        let hasType = false;
+        if(!!types && Array.isArray(types) && types.length > 0) {
+          keys.push('type');
+          hasType = true;
+        }
+        const validTypes = hasType ? Object.keys(d).includes('type') : !Object.keys(d).includes('type');
+        const validKeys = keys.every(key => Object.keys(d).includes(key));
+        const validValues = keys.every(key => {
           let res;
           const val = d[key];
           if (key === 'x' || key === 'y') {
@@ -30,7 +40,7 @@ export default class Validator {
           return res;
         });
 
-        return keysValid && valuesValid;
+        return validKeys && validValues && validTypes;
       });
     }
 

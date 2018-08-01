@@ -329,6 +329,11 @@ describe('KNNVisualization', () => {
   });
   describe('clickable', () => {
     it('should not add circle if clickable is set to false', () => {
+      const data = [
+        {x: 1, y: 2, type: 'A'},
+        {x: 9, y: 3, type: 'B'},
+        {x: 7, y: 6, type: 'A'}
+      ];
       const dataCount = data.length;
       const vis = new KNNVisualization(data, options, ['A', 'B']);
       const svg = document.querySelector(`#${vis.containerId} svg`);

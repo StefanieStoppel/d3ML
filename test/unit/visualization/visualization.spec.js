@@ -169,41 +169,46 @@ describe('Visualization', () => {
         });
     });
   });
-  describe('isValidData', () => {
-    it('should pass validation', () => {
-      // given
-      const givenData = [
-        { x: 13, y: 42 },
-        { x: 145, y: 144645867 },
-        { x: Math.PI, y: 53.24 }
-      ];
-      const vis = new Visualization([]);
-      // when
-      const validation = vis.isValidData(givenData);
-      // then
-      expect(validation).to.be.true;
-    });
-    const failingTests = [
-      { data: [{ a: 13, b: 42 }], expected: { key: 'a', val: 13 } },
-      { data: [{ x: 145, foo: 144645867 }], expected: { key: 'foo', val: 144645867 } },
-      { data: [{ z: Math.PI, y: 53.24 }], expected: { key: 'z', val: Math.PI } },
-      { data: [{ x: 'hello', y: 53.24 }], expected: { key: 'x', val: 'hello' } },
-      { data: [{ x: 2, y: Infinity }], expected: { key: 'y', val: Infinity } },
-      { data: [{ x: 42, y: {} }], expected: { key: 'y', val: {} } },
-      { data: [{ x: 1, y: null }], expected: { key: 'y', val: null } },
-      { data: [{ x: 1, y: '12' }], expected: { key: 'y', val: '12' } }
+  describe('initializeData', () => {
+    const negativeTestCases = [
+      { data: undefined, types: [] },
+      { data: [], types: []  },
+      { data: null, types: []  },
+      { data: [null], types: []  },
+      { data: 5, types: []  },
+      { data: '', types: []  },
+      { data: 'bla', types: []  },
+      { data: [{x: 2, y: 'foo'}] },
+      { data: [{x: 2, y: 3, type: 1}], types: [] },
+      { data: [{x: 2, y: 3, type: '1'}], types: [2, 3] }
     ];
-    failingTests.forEach(test => {
-      it(`should fail validation for data: ${Object.entries(test.data[0])}`, () => {
+    negativeTestCases.forEach(testCase => {
+      it(`should initialize data as empty array when passed invalid parameters data: ${testCase.data} and types: ${testCase.types}`, () => { // eslint-disable-line
+        // given
+        const vis = new Visualization(data, options);
         // when
-        const vis = new Visualization([]);
+        vis.initializeData(testCase.data, testCase.types, vis.options);
         // then
-        expect(vis.isValidData.bind(vis, test.data))
-          .to.throw(`Invalid data specified: ${test.expected.key} with value ${test.expected.val}.` +
-          ' Accepted data keys are x and y. Values must be numeric.');
+        expect(vis.data).to.deep.equal([]);
+      });
+    });
+    const positiveTestCases = [
+      { data: [{x: 2, y: 3, type: 42}], types: [42] },
+      { data: [{x: 2, y: 3, type: 'A'}], types: ['A', 2, 3] },
+      { data: [{x: 2, y: 3}], types: [] },
+    ];
+    positiveTestCases.forEach(testCase => {
+      it(`should initialize data correctly when using valid parameters data: ${testCase.data} and types: ${testCase.types}`, () => { // eslint-disable-line
+        // given
+        const vis = new Visualization(data, options);
+        // when
+        vis.initializeData(testCase.data, testCase.types);
+        // then
+        expect(vis.data).to.deep.equal(testCase.data.map(d => vis.mapDataToCircle(d)));
       });
     });
   });
+
   describe('mapDataToCircle', () => {
     it('should return correct mapping', () => {
       // given
@@ -306,8 +311,8 @@ describe('Visualization', () => {
       });
     });
   });
-  describe('createXScale', () => {
-    it('should create xScale correctly', () => {
+  describe('initializeScales', () => {
+    it('should initialize x and y scales correctly', () => {
       // given
       const givenOptions = Object.assign({}, options, {
         width: 500,
@@ -316,43 +321,20 @@ describe('Visualization', () => {
       });
       const givenData = [
         { x: 1, y: 3 },
-        { x: 2, y: 4 },
+        { x: 2, y: 102 },
         { x: 4, y: 100 }
       ];
       const expectedXDomain = {
         min: givenData[0].x - givenOptions.padding,
         max: givenData[2].x + givenOptions.padding
       };
+      const expectedYDomain = {
+        min: givenData[0].y - givenOptions.padding,
+        max: givenData[1].y + givenOptions.padding
+      };
       const expectedXRange = {
         min: 0,
         max: givenOptions.width
-      };
-      const vis = new Visualization(givenData, givenOptions);
-      // when
-      const xScale = vis.createXScale(givenData);
-      // then
-      expect(xScale.domain()[0]).to.equal(expectedXDomain.min);
-      expect(xScale.domain()[1]).to.equal(expectedXDomain.max);
-      expect(xScale.range()[0]).to.equal(expectedXRange.min);
-      expect(xScale.range()[1]).to.equal(expectedXRange.max);
-    });
-  });
-  describe('createYScale', () => {
-    it('should create yScale correctly', () => {
-      // given
-      const givenOptions = Object.assign({}, options, {
-        width: 500,
-        height: 600,
-        padding: 10
-      });
-      const givenData = [
-        { x: 1, y: 7 },
-        { x: 2, y: 4 },
-        { x: 4, y: 100 }
-      ];
-      const expectedYDomain = {
-        min: givenData[1].y - givenOptions.padding,
-        max: givenData[2].y + givenOptions.padding
       };
       const expectedYRange = {
         min: 0,
@@ -360,12 +342,16 @@ describe('Visualization', () => {
       };
       const vis = new Visualization(givenData, givenOptions);
       // when
-      const yScale = vis.createYScale(givenData);
+      vis.initializeScales(givenData, vis.options);
       // then
-      expect(yScale.domain()[0]).to.equal(expectedYDomain.min);
-      expect(yScale.domain()[1]).to.equal(expectedYDomain.max);
-      expect(yScale.range()[0]).to.equal(expectedYRange.min);
-      expect(yScale.range()[1]).to.equal(expectedYRange.max);
+      expect(vis.xScale.domain()[0]).to.equal(expectedXDomain.min);
+      expect(vis.xScale.domain()[1]).to.equal(expectedXDomain.max);
+      expect(vis.xScale.range()[0]).to.equal(expectedXRange.min);
+      expect(vis.xScale.range()[1]).to.equal(expectedXRange.max);
+      expect(vis.yScale.domain()[0]).to.equal(expectedYDomain.min);
+      expect(vis.yScale.domain()[1]).to.equal(expectedYDomain.max);
+      expect(vis.yScale.range()[0]).to.equal(expectedYRange.min);
+      expect(vis.yScale.range()[1]).to.equal(expectedYRange.max);
     });
   });
   describe('mapTypeToColor', () => {
@@ -408,42 +394,4 @@ describe('Visualization', () => {
       });
     });
   });
-  describe('isValidTypes', () => {
-    const typeDataValid = [
-      [ 'foo', 'bar', defaultType ],
-      [ 'A', 'B' ],
-      [ defaultType ],
-      [ 'Z' ]
-    ];
-    typeDataValid.forEach(types => {
-      it(`should return true for validation of ${types}`, () => {
-        const vis = new Visualization(data, options, types);
-        // given
-        // when
-        const result = vis.isValidTypes(types);
-        // then
-        expect(result).to.be.true;
-      });
-    });
-    const typeDataInvalid = [
-      {},
-      null,
-      [],
-      undefined,
-      'A',
-      7
-    ];
-    typeDataInvalid.forEach(types => {
-      it(`should return false for validation of ${types}`, () => {
-        // given
-        const vis = new Visualization(data, options);
-        // when
-        const result = vis.isValidTypes(types);
-        // then
-        expect(result).to.be.false;
-      });
-    });
-  });
-  // todo: add tests for settings and settings__group in general
-
 });

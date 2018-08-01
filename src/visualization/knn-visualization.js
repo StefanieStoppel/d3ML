@@ -67,7 +67,7 @@ export default class KNNVisualization extends Visualization {
     this.onChangeInput(selectors.id.weightedCheckbox, 'checkbox', [this.checkboxWeightedChangeCallback]);
   }
   svgClickCallback(circle) {
-    this.setClickable(false);
+    this.clickable = false;
 
     const classifiedCircle = this.getClassifiedCircle(circle);
     this.addCircle(classifiedCircle);
@@ -152,7 +152,7 @@ export default class KNNVisualization extends Visualization {
       .style('fill', 'transparent')
       .on('end', function () {
         that.removeElements(selector);
-        that.setClickable(true);
+        that.clickable = true;
       });
   }
   removeElements(selector) {
