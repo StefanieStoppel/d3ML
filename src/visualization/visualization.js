@@ -1,18 +1,14 @@
 import * as d3 from 'd3';
 import Circle from './circle';
 import { defaultOptions, defaultType, defaultClassSelectors } from './defaults';
-import { isValidOptions } from './validator';
+import { isValidOptions, isValidTypes } from './validator';
 
 export default class Visualization {
   constructor(data, options, types = [defaultType]) {
     this.initializeOptions(options);
+    this.initializeTypes(types);
     this.xScale = this.createXScale(data);
     this.yScale = this.createYScale(data);
-    if (this.isValidTypes(types)) {
-      this.types = types;
-    } else {
-      this.types = [defaultType];
-    }
     this.typeColorMap = this.mapTypesToColors(this.types);
     if (this.isValidData(data)) {
       this.data = data.map(d => this.mapDataToCircle(d));
@@ -20,6 +16,12 @@ export default class Visualization {
     this.clickable = true;
 
     this.createVisualization();
+  }
+  initializeTypes(types) {
+    if (!isValidTypes(types)) {
+      types = [];
+    }
+    this.types = types;
   }
   initializeOptions(options) {
     if (!isValidOptions(options)) {

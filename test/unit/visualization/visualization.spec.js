@@ -130,6 +130,45 @@ describe('Visualization', () => {
         });
     });
   });
+  describe('initializeTypes', () => {
+    const negativeTestCases = [
+      { types: undefined },
+      { types: [] },
+      { types: null },
+      { types: [null] },
+      { types: 5 },
+      { types: '' },
+      { types: 'bla' },
+      { types: {a: 2, b: 'foo'} },
+      { types: {circleRadius: 2, y: 'baz'} }
+    ];
+    negativeTestCases.forEach(testCase => {
+      it(`should initialize types as empty array when passed invalid parameter: ${testCase.types}`, () => {
+        // given
+        const vis = new Visualization(data, options);
+        // when
+        vis.initializeTypes(testCase.types);
+        // then
+        expect(vis.types).to.deep.equal([]);
+      });
+    });
+    const positiveTestCases = [
+      { types: ['A', 'B'] },
+      { types: [1, 2, 5] },
+      { types: [1, '2', 18, '42', 'foo'] }
+    ];
+    positiveTestCases.forEach(testCase => {
+      it(`should initialize types using valid parameter: ${testCase.options}`,
+        () => {
+          // given
+          const vis = new Visualization(data, options);
+          // when
+          vis.initializeTypes(testCase.types);
+          // then
+          expect(vis.types).to.deep.equal(testCase.types);
+        });
+    });
+  });
   describe('isValidData', () => {
     it('should pass validation', () => {
       // given
