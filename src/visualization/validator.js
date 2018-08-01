@@ -17,12 +17,12 @@ export default class Validator {
     let result = false;
     if (!!data && Array.isArray(data) && data.length > 0) {
       result = data.every(d => {
-        if(!d) {
+        if (!d) {
           return false;
         }
         let keys = ['x', 'y'];
         let hasType = false;
-        if(!!types && Array.isArray(types) && types.length > 0) {
+        if (!!types && Array.isArray(types) && types.length > 0) {
           keys.push('type');
           hasType = true;
         }

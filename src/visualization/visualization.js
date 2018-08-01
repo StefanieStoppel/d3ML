@@ -8,7 +8,7 @@ export default class Visualization {
     this.initializeOptions(options);
     this.initializeTypes(types);
     this.initializeTypeColorMap(this.types);
-    this.initializeScales(data, options);
+    this.initializeScales(data, this.options);
     this.initializeData(data, types);
 
     this.createVisualization();
@@ -37,7 +37,7 @@ export default class Visualization {
       ])
       .range([0, options.width]);
 
-    this.yScale =  d3.scaleLinear()
+    this.yScale = d3.scaleLinear()
       .domain([
         d3.min(data, function (d) { return d.y; }) - options.padding,
         d3.max(data, function (d) { return d.y; }) + options.padding
