@@ -8,6 +8,7 @@ import Visualization from '../../../src/visualization/visualization';
 import Circle from '../../../src/visualization/circle';
 import { defaultType, defaultOptions } from '../../../src/visualization/defaults';
 import { scaleOrdinal, schemeSet1 } from 'd3';
+import {createEvent} from '../../test-helper';
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -172,12 +173,12 @@ describe('Visualization', () => {
   describe('initializeData', () => {
     const negativeTestCases = [
       { data: undefined, types: [] },
-      { data: [], types: []  },
-      { data: null, types: []  },
-      { data: [null], types: []  },
-      { data: 5, types: []  },
-      { data: '', types: []  },
-      { data: 'bla', types: []  },
+      { data: [], types: [] },
+      { data: null, types: [] },
+      { data: [null], types: [] },
+      { data: 5, types: [] },
+      { data: '', types: [] },
+      { data: 'bla', types: [] },
       { data: [{x: 2, y: 'foo'}] },
       { data: [{x: 2, y: 3, type: 1}], types: [] },
       { data: [{x: 2, y: 3, type: '1'}], types: [2, 3] }
@@ -195,7 +196,7 @@ describe('Visualization', () => {
     const positiveTestCases = [
       { data: [{x: 2, y: 3, type: 42}], types: [42] },
       { data: [{x: 2, y: 3, type: 'A'}], types: ['A', 2, 3] },
-      { data: [{x: 2, y: 3}], types: [] },
+      { data: [{x: 2, y: 3}], types: [] }
     ];
     positiveTestCases.forEach(testCase => {
       it(`should initialize data correctly when using valid parameters data: ${testCase.data} and types: ${testCase.types}`, () => { // eslint-disable-line
@@ -264,6 +265,35 @@ describe('Visualization', () => {
       expect(callback).calledOnce;
     });
   });
+  describe('inputChangeCallback', () => {
+    it('should not execute callback if event target is not set', () => {
+      // given
+      const event = {
+        target: null
+      };
+      const callbackSpy = sinon.spy();
+      const vis = new Visualization(data, options);
+      // when
+      vis.inputChangeCallback(event, null, [callbackSpy]);
+      // then
+      expect(callbackSpy).to.not.have.been.called;
+    });
+    const testCases = [
+      {inputType: 'checkbox', event: { target: {checked: true} }},
+      {inputType: 'range', event: { target: {value: 5} }},
+      {inputType: 'number', event: { target: {value: 42.3} }}
+    ];
+    testCases.forEach(testCase => {
+      it(`should execute callback correctly for input type: ${testCase.inputType}`, () => {
+        const callbackSpy = sinon.spy();
+        const vis = new Visualization(data, options);
+        // when
+        vis.inputChangeCallback(testCase.event, testCase.inputType, [callbackSpy]);
+        // then
+        expect(callbackSpy).to.have.been.calledOnce;
+      });
+    });
+  });
   describe('appendWrapperContainer', () => {
     it('should append div with correct attributes', () => {
       // given
@@ -309,6 +339,19 @@ describe('Visualization', () => {
         expect(circle).to.have.attr('cy', vis.yScale(givenData[idx].y).toString());
         expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
       });
+    });
+  });
+  describe('draw', () => {
+    it('should call drawCircles inside draw', () => {
+      // given
+      const drawCirclesSpy = sinon.spy(Visualization.prototype, 'drawCircles');
+      const vis = new Visualization(data, options);
+      // when
+      vis.draw();
+      // then
+      expect(drawCirclesSpy).to.have.been.calledOnce;
+
+      Visualization.prototype.drawCircles.restore();
     });
   });
   describe('initializeScales', () => {
@@ -392,6 +435,29 @@ describe('Visualization', () => {
         // then
         expect(color).to.equal(givenOptions.circleFill);
       });
+    });
+  });
+  describe('onChangeInput', () => {
+    it('should call callback correctly', () => {
+      // given
+      const id = 'foo';
+      const type = 'number';
+      const numberInput = document.createElement('input');
+      numberInput.setAttribute('type', type);
+      numberInput.setAttribute('value', 42);
+      numberInput.setAttribute('id', id);
+      document.body.appendChild(numberInput);
+
+      const callbackSpy = sinon.spy(Visualization.prototype, 'inputChangeCallback');
+      const vis = new Visualization(data, options);
+      vis.onChangeInput(id, type, [callbackSpy]);
+      // when
+      const { node, event } = createEvent(document.querySelector(`#${id}`), 'change');
+      node.dispatchEvent(event, true);
+      // then
+      expect(callbackSpy).to.have.been.calledWith(event, type, [callbackSpy]);
+
+      Visualization.prototype.inputChangeCallback.restore();
     });
   });
 });

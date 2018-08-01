@@ -110,12 +110,12 @@ export default class Visualization {
   }
   onChangeInput(inputId, inputType, callbacks) {
     document.querySelector(`#${inputId}`).addEventListener('change', (e) => {
-      this.inputChangeCallback(e, inputId, inputType, callbacks);
+      this.inputChangeCallback(e, inputType, callbacks);
     });
   }
-  inputChangeCallback(e, inputId, type, callbacks) {
+  inputChangeCallback(e, inputType, callbacks) {
     if (e.target) {
-      const value = type === 'checkbox' ? e.target.checked : e.target.value;
+      const value = inputType === 'checkbox' ? e.target.checked : e.target.value;
       callbacks.forEach(callback => {
         callback.call(this, value);
       });
