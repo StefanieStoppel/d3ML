@@ -6,11 +6,13 @@
     <script src="./lib/d3ml.js"></script>
 </head>
 <body>
+<div id="knn"></div>
+<div id="linear-regression"></div>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     function createKNNVisualization() {
       const options = {
-        rootNode: 'body',
+        rootNode: '#knn',
         backgroundColor: 'black',
         circleFill: 'grey',
         circleStroke: 'white'
@@ -32,7 +34,7 @@
     }
     function createLinearRegressionVisualization() {
       const options = {
-        rootNode: 'body',
+        rootNode: '#linear-regression',
         backgroundColor: 'black',
         circleFill: 'yellow',
         circleStroke: 'white',
@@ -48,6 +50,7 @@
       vis.draw();
     }
     createLinearRegressionVisualization();
+    createKNNVisualization();
   });
 </script>
 
