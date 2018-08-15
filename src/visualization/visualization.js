@@ -153,10 +153,7 @@ export default class Visualization {
   addCircle(circle) {
     this.data.push(circle);
   }
-  drawCircles() {
-    Painter.drawCircles(this.svg, this.data);
-  }
   draw() {
-    this.drawCircles();
+    Painter.drawCircles(this.svg, this.data);
   }
 }

@@ -57,20 +57,24 @@ describe('LinearRegressionVisualization', () => {
   describe('draw', () => {
     it('should draw circles and regression line correctly', () => {
       // given
-      const superSpy = sinon.spy(Visualization.prototype, 'drawCircles');
       const vis = new LinearRegressionVisualization(data, options, []);
+      const expectedRegressionLine = vis.getRegressionLine();
       // when
       vis.draw();
       // then
       expect(Array.from(document.querySelectorAll('circle')).length).to.equal(data.length);
-      expect(superSpy).to.have.been.calledOnce;
-
-      superSpy.restore();
+      const line = document.querySelector('line');
+      expect(line).to.have.attr('x1', expectedRegressionLine.x1.toString());
+      expect(line).to.have.attr('y1', expectedRegressionLine.y1.toString());
+      expect(line).to.have.attr('x2', expectedRegressionLine.x2.toString());
+      expect(line).to.have.attr('y2', expectedRegressionLine.y2.toString());
+      expect(line).to.have.attr('class', expectedRegressionLine.cssClass.toString());
+      expect(line).to.have.attr('stroke-width', expectedRegressionLine.strokeWidth.toString());
+      expect(line).to.have.style('stroke', expectedRegressionLine.stroke.toString());
     });
   });
-  // todo: fix
-  describe('drawRegressionLine', () => {
-    it('should draw regression line correctly', () => {
+  describe('getRegressionLine', () => {
+    it('should return regression line correctly', () => {
       // given
       const givenData = [
         {x: 0, y: 0},
@@ -83,23 +87,18 @@ describe('LinearRegressionVisualization', () => {
       const vis = new LinearRegressionVisualization(givenData, options, []);
       const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
       const expectedLine = {
-        x1: '0',
+        x1: 0,
         y1: intercept,
-        x2: options.width.toString(),
-        y2: options.width * slope + intercept
+        x2: options.width,
+        y2: options.width * slope + intercept,
+        stroke: 'white',
+        strokeWidth: '2',
+        cssClass: ''
       };
-
       // when
-      vis.drawRegressionLine();
+      const line = vis.getRegressionLine();
       // then
-      const line = document.querySelector('line');
-      expect(line).to.not.equal(null);
-      expect(line).to.have.attr('x1', expectedLine.x1);
-      // expect(line).to.have.attr('y1', vis.yScale.invert(expectedLine.y1));
-      expect(line).to.have.attr('x2', expectedLine.x2);
-      // expect(line).to.have.attr('y2', expectedLine.y2);
-      expect(line).to.have.attr('stroke-width', '2');
-      expect(line).to.have.style('stroke', 'white');
+      expect(line).to.deep.equal(expectedLine);
     });
   });
 });

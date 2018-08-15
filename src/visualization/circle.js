@@ -15,7 +15,7 @@ export default class Circle {
     this.stroke = stroke;
     this.type = type;
     this.distance = null;
-    this.cssClass = null;
+    this.cssClass = '';
   }
   setType(type) {
     this.type = type;

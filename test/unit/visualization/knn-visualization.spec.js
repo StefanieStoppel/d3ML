@@ -10,6 +10,7 @@ import sinonChai from 'sinon-chai';
 import {createEvent} from '../../test-helper';
 import D3TransitionTestUtils from '../d3-transition-test-helper';
 import Visualization from '../../../src/visualization/visualization';
+import Painter from '../../../src/visualization/painter';
 
 chai.use(chaiDom);
 chai.use(chaiStyle);
@@ -239,7 +240,7 @@ describe('KNNVisualization', () => {
       ];
       const types = ['A', 'B'];
       const vis = new KNNVisualization(data, options, types);
-      const parentSpy = sinon.spy(Visualization.prototype, 'drawCircles');
+      const painterSpy = sinon.spy(Painter, 'drawCircles');
       const newCircle = new Circle(2, 2);
       vis.addCircle(vis.getClassifiedCircle(newCircle));
       const expectedColor = vis.typeColorMap[types[0]];
@@ -248,9 +249,9 @@ describe('KNNVisualization', () => {
       // then
       const circle = document.querySelector('circle:last-of-type');
       expect(circle).to.have.style('fill', expectedColor);
-      expect(parentSpy).calledOnce;
+      expect(painterSpy).calledOnce;
 
-      Visualization.prototype.drawCircles.restore();
+      Painter.drawCircles.restore();
     });
     it('should add class .remove to bounding circle, but not to rest', () => {
       // given

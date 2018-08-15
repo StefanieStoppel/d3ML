@@ -9,6 +9,7 @@ import Circle from '../../../src/visualization/circle';
 import { defaultType, defaultOptions } from '../../../src/visualization/defaults';
 import { scaleOrdinal, schemeSet1 } from 'd3';
 import {createEvent} from '../../test-helper';
+import Painter from '../../../src/visualization/painter';
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -320,38 +321,17 @@ describe('Visualization', () => {
       expect(svg).to.have.attr('style', `background-color: ${options.backgroundColor};`);
     });
   });
-  describe('drawCircles', () => {
-    it('should draw circles with correct attributes', () => {
-      // given
-      const givenData = [
-        { x: 1, y: 3 },
-        { x: 2, y: 4 },
-        { x: 4, y: 6 }
-      ];
-      const vis = new Visualization(givenData, options);
-      // when
-      vis.drawCircles();
-      // then
-      const circles = Array.from(document.querySelectorAll('circle'));
-      circles.forEach((circle, idx) => {
-        expect(circle).to.have.attr('r', options.circleRadius.toString());
-        expect(circle).to.have.attr('cx', vis.xScale(givenData[idx].x).toString());
-        expect(circle).to.have.attr('cy', vis.yScale(givenData[idx].y).toString());
-        expect(circle).to.have.attr('style', `stroke: ${options.circleStroke}; fill: ${options.circleFill};`);
-      });
-    });
-  });
   describe('draw', () => {
-    it('should call drawCircles inside draw', () => {
+    it('should call Painter.drawCircles inside draw', () => {
       // given
-      const drawCirclesSpy = sinon.spy(Visualization.prototype, 'drawCircles');
+      const drawCirclesSpy = sinon.spy(Painter, 'drawCircles');
       const vis = new Visualization(data, options);
       // when
       vis.draw();
       // then
       expect(drawCirclesSpy).to.have.been.calledOnce;
 
-      Visualization.prototype.drawCircles.restore();
+      Painter.drawCircles.restore();
     });
   });
   describe('initializeScales', () => {

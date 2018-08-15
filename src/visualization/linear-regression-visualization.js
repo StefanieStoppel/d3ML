@@ -1,5 +1,6 @@
 import Visualization from './visualization';
 import LinearRegression from '../algorithms/linear-regression';
+import Painter from './painter';
 
 export default class LinearRegressionVisualization extends Visualization {
   constructor(data, options, types) {
@@ -7,25 +8,21 @@ export default class LinearRegressionVisualization extends Visualization {
     this.linearRegression = new LinearRegression();
   }
   draw() {
-    super.drawCircles();
-    this.drawRegressionLine();
+    super.draw();
+    const regressionLine = this.getRegressionLine();
+    Painter.drawLines(this.svg, [regressionLine]);
   }
-  drawRegressionLine() {
+  getRegressionLine() {
     const {slope, intercept} = this.linearRegression.performRegression(this.data);
-    const regressionLine = [{
+
+    return {
       x1: 0,
       y1: intercept,
       x2: this.options.width,
-      y2: this.options.width * slope + intercept
-    }];
-    this.svg.selectAll('line')
-      .data(regressionLine)
-      .enter().append('line')
-      .style('stroke', 'white')
-      .attr('stroke-width', 2)
-      .attr('x1', function (d) { return d.x1; })
-      .attr('y1', function (d) { return d.y1; })
-      .attr('x2', function (d) { return d.x2; })
-      .attr('y2', function (d) { return d.y2; });
+      y2: this.options.width * slope + intercept,
+      stroke: 'white',
+      strokeWidth: '2',
+      cssClass: ''
+    };
   }
 }

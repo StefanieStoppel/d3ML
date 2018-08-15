@@ -83,7 +83,6 @@ export default class KNNVisualization extends Visualization {
 
     this.updateIndexRangeKMaximum(this.data.length);
   }
-
   updateIndexRangeKMaximum(max) {// todo: test
     document.querySelector(`#${selectors.id.rangeK}`).setAttribute('max', max);
   }
@@ -126,7 +125,7 @@ export default class KNNVisualization extends Visualization {
     Painter.drawLines(this.svg, connectingLines);
   }
   drawCircles() {
-    super.drawCircles();
+    Painter.drawCircles(this.svg, this.data);
     const colorMap = this.typeColorMap;
     this.svg.selectAll('circle')
       .transition().duration(1500)
