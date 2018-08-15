@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Painter from '../../../src/visualization/painter';
 import * as d3 from 'd3';
+import D3TransitionTestUtils from '../d3-transition-test-helper';
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -73,4 +74,33 @@ describe('Painter', () => {
       });
     });
   });
+  describe('transitionLine', () => {
+    beforeEach(() => {
+      D3TransitionTestUtils.stubAndForceTransitions();
+    });
+    afterEach(() => {
+      D3TransitionTestUtils.restoreTransitions();
+    });
+    it('should transition line correctly to new coordinates', () => {
+      // given
+      const svg = d3.select('body')
+        .append('svg')
+        .attr('width', 500)
+        .attr('height', 130);
+      const givenLines = [
+        {x1: '2', y1: '100', x2: '123', y2: '42', stroke: 'red', strokeWidth: '3', cssClass: 'line'}
+      ];
+      Painter.drawLines(svg, givenLines);
+      const transitionedLine = {x1: '13', y1: '-4', x2: '53', y2: '7'};
+      // when
+      Painter.transitionLine(svg, transitionedLine, 200);
+      // then
+      const line = document.querySelector('line');
+      expect(line).to.have.attr('x1', transitionedLine.x1);
+      expect(line).to.have.attr('y1', transitionedLine.y1);
+      expect(line).to.have.attr('x2', transitionedLine.x2);
+      expect(line).to.have.attr('y2', transitionedLine.y2);
+    });
+  });
+
 });

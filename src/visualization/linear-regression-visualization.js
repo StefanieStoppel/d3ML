@@ -6,11 +6,20 @@ export default class LinearRegressionVisualization extends Visualization {
   constructor(data, options, types) {
     super(data, options, types);
     this.linearRegression = new LinearRegression();
+    this.addEventListeners();
+  }
+  addEventListeners() {
+    this.onClickSvg([this.svgClickCallback]);
+  }
+  svgClickCallback(circle) {
+    this.addCircle(circle);
+    super.draw();
+    Painter.transitionLine(this.svg, this.getRegressionLine(), 300);
   }
   draw() {
     super.draw();
-    const regressionLine = this.getRegressionLine();
-    Painter.drawLines(this.svg, [regressionLine]);
+    const regressionLines = [this.getRegressionLine()];
+    Painter.drawLines(this.svg, regressionLines);
   }
   getRegressionLine() {
     const {slope, intercept} = this.linearRegression.performRegression(this.data);

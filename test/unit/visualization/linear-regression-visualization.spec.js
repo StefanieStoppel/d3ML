@@ -101,4 +101,31 @@ describe('LinearRegressionVisualization', () => {
       expect(line).to.deep.equal(expectedLine);
     });
   });
+  describe('svgClickCallback', () => {
+    it('should add circle correctly', () => {
+      // given
+      const givenCircle = {
+        cx: '100',
+        cy: '200',
+        radius: '3',
+        stroke: 'yellow',
+        cssClass: 'c'
+      };
+      const spy = sinon.spy(LinearRegressionVisualization.prototype, 'getRegressionLine');
+      const vis = new LinearRegressionVisualization(data, options, []);
+      // when
+      vis.svgClickCallback(givenCircle);
+      // then
+      const circle = Array.from(document.querySelectorAll('circle'))[data.length];
+      expect(circle).to.have.attr('cx', givenCircle.cx);
+      expect(circle).to.have.attr('cy', givenCircle.cy);
+      expect(circle).to.have.attr('r', givenCircle.radius);
+      expect(circle).to.have.style('stroke', givenCircle.stroke);
+      expect(circle).to.have.attr('class', givenCircle.cssClass);
+
+      expect(spy).to.have.been.calledOnce;
+
+      LinearRegressionVisualization.prototype.getRegressionLine.restore();
+    });
+  });
 });
