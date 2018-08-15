@@ -13,7 +13,7 @@ export default class LinearRegression {
     return f.up / f.down;
   }
   calculateIntercept(slope, meanX, meanY) {
-    if (slope) {
+    if (slope || slope === 0) {
       return meanY - (slope * meanX);
     }
 

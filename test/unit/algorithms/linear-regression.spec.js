@@ -38,6 +38,24 @@ describe('LinearRegression', () => {
       const lr = new LinearRegression();
       const slope = 1;
       // when
+      const intercept = lr.calculateIntercept(slope, 2, 4);
+      // then
+      expect(intercept).to.equal(2);
+    });
+    it('should calculate intercept correctly if slope is 0', () => {
+      // given
+      const lr = new LinearRegression();
+      const slope = 0;
+      // when
+      const intercept = lr.calculateIntercept(slope, 2, 4);
+      // then
+      expect(intercept).to.equal(4);
+    });
+    it('should return 0 if slope is undefined', () => {
+      // given
+      const lr = new LinearRegression();
+      const slope = undefined;
+      // when
       const intercept = lr.calculateIntercept(slope, 2, 2);
       // then
       expect(intercept).to.equal(0);
