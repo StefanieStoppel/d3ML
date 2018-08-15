@@ -9,6 +9,7 @@ export default class LinearRegression {
         down: sum.down + Math.pow((d.cx - meanX), 2)
       };
     }, {up: 0, down: 0});
+
     return f.up / f.down;
   }
   calculateIntercept(slope, meanX, meanY) {
@@ -24,6 +25,7 @@ export default class LinearRegression {
 
     const slope = this.calculateSlope(circles, meanX, meanY);
     const intercept = this.calculateIntercept(slope, meanX, meanY);
+
     return {slope, intercept};
   }
 }

@@ -32,7 +32,7 @@ export default class Validator {
           let res;
           const val = d[key];
           if (key === 'x' || key === 'y') {
-            res = !!val && typeof val === 'number' && val !== Infinity && val !== -Infinity;
+            res = val !== undefined && val !== null && typeof val === 'number' && val !== Infinity && val !== -Infinity;
           } else if (key === 'type') {
             res = !!val && types.includes(val);
           }

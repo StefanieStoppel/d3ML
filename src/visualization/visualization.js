@@ -42,7 +42,7 @@ export default class Visualization {
         d3.min(data, function (d) { return d.y; }) - options.padding,
         d3.max(data, function (d) { return d.y; }) + options.padding
       ])
-      .range([0, options.height]);
+      .range([0, options.height]);// todo: switch
   }
   initializeData(data, types) {
     if (!isValidData(data, types)) {

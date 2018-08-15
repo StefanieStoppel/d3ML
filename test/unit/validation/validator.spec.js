@@ -72,6 +72,7 @@ describe('Validator', () => {
     const positiveTestCases = [
       { data: [{x: 6, y: 7, type: 'bla'}], types: ['bla', 'alb'] },
       { data: [{x: 1, y: 4, type: 'A'}], types: ['A'] },
+      { data: [{x: 1, y: 4}], types: [] },
       {
         data: [
           {x: 4, y: 7, type: 1},

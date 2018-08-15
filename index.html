@@ -8,26 +8,46 @@
 <body>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const options = {
-      rootNode: 'body',
-      backgroundColor: 'black',
-      circleFill: 'grey',
-      circleStroke: 'white'
-    };
-    const types = ['A', 'B'];
-    const data = [
-      { x: 25, y: 36, type: 'A' },
-      { x: 56, y: 73, type: 'A' },
-      { x: 65, y: 135, type: 'B' },
-      { x: 75, y: 103, type: 'A' },
-      { x: 173, y: 64, type: 'B' },
-      { x: 44, y: 122, type: 'A' },
-      { x: 47, y: 38, type: 'B' },
-      { x: 346, y: 10, type: 'B' }
-    ];
+    function createKNNVisualization() {
+      const options = {
+        rootNode: 'body',
+        backgroundColor: 'black',
+        circleFill: 'grey',
+        circleStroke: 'white'
+      };
+      const types = ['A', 'B'];
+      const data = [
+        { x: 25, y: 36, type: 'A' },
+        { x: 56, y: 73, type: 'A' },
+        { x: 65, y: 135, type: 'B' },
+        { x: 75, y: 103, type: 'A' },
+        { x: 173, y: 64, type: 'B' },
+        { x: 44, y: 122, type: 'A' },
+        { x: 47, y: 38, type: 'B' },
+        { x: 346, y: 10, type: 'B' }
+      ];
 
-    const vis = new d3ml.KNNVisualization(data, options, types);
-    vis.draw();
+      const vis = new d3ml.KNNVisualization(data, options, types);
+      vis.draw();
+    }
+    function createLinearRegressionVisualization() {
+      const options = {
+        rootNode: 'body',
+        backgroundColor: 'black',
+        circleFill: 'yellow',
+        circleStroke: 'white',
+        padding: 1
+      };
+      const types = [];
+      const data = [
+        { x: 0, y: 1 },
+        { x: 4, y: 2 }
+      ];
+
+      const vis = new d3ml.LinearRegressionVisualization(data, options, types);
+      vis.draw();
+    }
+    createLinearRegressionVisualization();
   });
 </script>
 
