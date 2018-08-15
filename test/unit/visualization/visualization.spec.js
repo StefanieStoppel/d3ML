@@ -360,8 +360,8 @@ describe('Visualization', () => {
         max: givenOptions.width
       };
       const expectedYRange = {
-        min: 0,
-        max: givenOptions.height
+        min: givenOptions.height,
+        max: 0
       };
       const vis = new Visualization(givenData, givenOptions);
       // when

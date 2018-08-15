@@ -146,8 +146,8 @@ describe('KNNVisualization', () => {
         { x: 324, y: 53, type: 'B' }
       ];
       const vis = new KNNVisualization(data, options, ['A', 'B'], 3);
-      const cx = 1;
-      const cy = 2;
+      const cx = vis.xScale(1);
+      const cy = vis.yScale(2);
       const circle = new Circle(cx, cy);
       vis.knn.classify(circle, vis.data);
       const furthestNeighbor = vis.data[2];
