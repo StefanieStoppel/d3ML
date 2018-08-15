@@ -7,18 +7,10 @@ import Circle from '../../../src/visualization/circle';
 const expect = chai.expect;
 
 describe('LinearRegression', () => {
-  let circles;
-  beforeEach(() => {
-    circles = [
-      new Circle(6,24),
-      new Circle(564,12),
-      new Circle(6,87)
-    ];
-  });
   describe('calculateMean', () => {
     it('should calculate mean correctly', () => {
       // given
-      const data = [1,4,42,6,8,2];
+      const data = [1, 4, 42, 6, 8, 2];
       const lr = new LinearRegression();
       // when
       const mean = lr.calculateMean(data);
@@ -43,10 +35,6 @@ describe('LinearRegression', () => {
   describe('calculateIntercept', () => {
     it('should calculate intercept correctly', () => {
       // given
-      const circles = [
-        new Circle(1, 1),
-        new Circle(3, 3)
-      ];
       const lr = new LinearRegression();
       const slope = 1;
       // when
@@ -70,5 +58,5 @@ describe('LinearRegression', () => {
       // then
       expect(result).to.deep.equal({slope, intercept});
     });
-  })
+  });
 });

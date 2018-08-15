@@ -5,9 +5,7 @@ import chaiDom from 'chai-dom';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import LinearRegressionVisualization from '../../../src/visualization/linear-regression-visualization';
-import Circle from '../../../src/visualization/circle';
 import LinearRegression from '../../../src/algorithms/linear-regression';
-import Visualization from "../../../src/visualization/visualization";
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -52,7 +50,7 @@ describe('LinearRegressionVisualization', () => {
       // then
       expect(vis.linearRegression instanceof LinearRegression).to.equal(true);
       expect(vis.linearRegression).to.not.equal(null);
-    })
+    });
   });
   describe('draw', () => {
     it('should draw circles and regression line correctly', () => {

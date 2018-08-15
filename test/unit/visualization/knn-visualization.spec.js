@@ -9,7 +9,6 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {createEvent} from '../../test-helper';
 import D3TransitionTestUtils from '../d3-transition-test-helper';
-import Visualization from '../../../src/visualization/visualization';
 import Painter from '../../../src/visualization/painter';
 
 chai.use(chaiDom);

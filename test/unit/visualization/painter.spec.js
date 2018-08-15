@@ -2,7 +2,6 @@
 
 import chai from 'chai';
 import chaiDom from 'chai-dom';
-import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Painter from '../../../src/visualization/painter';
 import * as d3 from 'd3';
@@ -31,7 +30,7 @@ describe('Painter', () => {
         {radius: '3', cx: '30', cy: '10', stroke: 'purple', fill: 'blue', cssClass: ''},
         {radius: '9', cx: '5', cy: '120', stroke: 'yellow', fill: 'green', cssClass: 'remove'},
         {radius: '3', cx: '423', cy: '9', stroke: 'purple', fill: 'blue', cssClass: ''},
-        {radius: '4', cx: '3', cy: '1', stroke: 'black', fill: 'magenta', cssClass: 'circle'},
+        {radius: '4', cx: '3', cy: '1', stroke: 'black', fill: 'magenta', cssClass: 'circle'}
       ];
       // when
       Painter.drawCircles(svg, givenCircles);
