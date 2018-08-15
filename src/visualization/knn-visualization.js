@@ -2,6 +2,7 @@ import Circle from './circle';
 import {defaultK, defaultType, defaultClassSelectors} from './defaults';
 import Visualization from './visualization';
 import KNN from '../algorithms/knn';
+import Painter from './painter';
 
 const selectors = {
   id: {
@@ -116,21 +117,13 @@ export default class KNNVisualization extends Visualization {
         y1: n.cy,
         y2: circle.cy,
         strokeWidth: 2,
-        stroke: 'rgba(230,230,230,0.5)'
+        stroke: 'rgba(230,230,230,0.5)',
+        cssClass: defaultClassSelectors.remove
       };
     });
   }
   drawConnectingLines(connectingLines) {
-    this.svg.selectAll('line')
-      .data(connectingLines)
-      .enter().append('line')
-      .style('stroke', function (d) { return d.stroke; })
-      .attr('stroke-width', function (d) { return d.strokeWidth; })
-      .attr('x1', function (d) { return d.x1; })
-      .attr('y1', function (d) { return d.y1; })
-      .attr('x2', function (d) { return d.x2; })
-      .attr('y2', function (d) { return d.y2; })
-      .attr('class', defaultClassSelectors.remove);
+    Painter.drawLines(this.svg, connectingLines);
   }
   drawCircles() {
     super.drawCircles();

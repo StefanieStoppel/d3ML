@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import Circle from './circle';
 import { defaultOptions, defaultType, defaultClassSelectors } from './defaults';
 import { isValidOptions, isValidTypes, isValidData } from '../validation/validator';
+import Painter from './painter';
 
 export default class Visualization {
   constructor(data, options, types = [defaultType]) {
@@ -153,15 +154,7 @@ export default class Visualization {
     this.data.push(circle);
   }
   drawCircles() {
-    this.svg.selectAll('circle')
-      .data(this.data)
-      .enter().append('circle')
-      .style('stroke', function (d) { return d.stroke; })
-      .style('fill', function (d) { return d.fill; })
-      .attr('r', function (d) { return d.radius; })
-      .attr('cx', function (d) { return d.cx; })
-      .attr('cy', function (d) { return d.cy; })
-      .attr('class', function (d) { return d.cssClass ? d.cssClass : ''; });
+    Painter.drawCircles(this.svg, this.data);
   }
   draw() {
     this.drawCircles();

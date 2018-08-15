@@ -7,7 +7,7 @@ export default class LinearRegressionVisualization extends Visualization {
     this.linearRegression = new LinearRegression();
   }
   draw() {
-    super.draw();
+    super.drawCircles();
     this.drawRegressionLine();
   }
   drawRegressionLine() {

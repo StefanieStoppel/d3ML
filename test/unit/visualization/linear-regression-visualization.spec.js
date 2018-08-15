@@ -39,6 +39,12 @@ describe('LinearRegressionVisualization', () => {
       circleStroke: 'yellow'
     };
   });
+  afterEach(() => {
+    const divs = Array.from(document.querySelectorAll('body > div'));
+    divs.forEach(div => {
+      div.remove();
+    });
+  });
   describe('constructor', () => {
     it('should instantiate LinearRegression correctly', () => {
       // when
@@ -51,13 +57,15 @@ describe('LinearRegressionVisualization', () => {
   describe('draw', () => {
     it('should draw circles and regression line correctly', () => {
       // given
-      const superSpy = sinon.spy(Visualization.prototype, 'draw');
+      const superSpy = sinon.spy(Visualization.prototype, 'drawCircles');
       const vis = new LinearRegressionVisualization(data, options, []);
       // when
       vis.draw();
       // then
       expect(Array.from(document.querySelectorAll('circle')).length).to.equal(data.length);
       expect(superSpy).to.have.been.calledOnce;
+
+      superSpy.restore();
     });
   });
   // todo: fix
