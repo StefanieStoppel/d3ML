@@ -83,7 +83,7 @@ export default class KNNVisualization extends Visualization {
 
     this.updateIndexRangeKMaximum(this.data.length);
   }
-  updateIndexRangeKMaximum(max) {// todo: test
+  updateIndexRangeKMaximum(max) {
     document.querySelector(`#${selectors.id.rangeK}`).setAttribute('max', max);
   }
   inputRangeKChangeCallback(k) {

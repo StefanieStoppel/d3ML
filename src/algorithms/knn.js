@@ -30,9 +30,8 @@ export default class KNN extends MachineLearningAlgorithm {
       })
       .sort((a, b) => this.compareDistance(a, b))
       .filter((n, i) => i < this.k);
-
   }
-  getCircleTypeWeighted(kClosestNeighbors) { // todo: test
+  getCircleTypeWeighted(kClosestNeighbors) {
     const typeDistance = this.types.reduce((res, type) => {
       res[type] = 0;
 
@@ -51,7 +50,7 @@ export default class KNN extends MachineLearningAlgorithm {
 
     return res.max.type;
   }
-  getCircleTypeUnweighted(kClosestNeighbors) { // todo: test
+  getCircleTypeUnweighted(kClosestNeighbors) {
     const counts = {};
     kClosestNeighbors.map(n => n.type)
       .forEach(type => {

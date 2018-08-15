@@ -220,8 +220,6 @@ describe('KNNVisualization', () => {
     });
   });
   describe('drawCircles', () => {
-    // TODO: add a test that doesn't stub the transitions
-    // TODO: check whether the circle has the right color before transitioning
     beforeEach(() => {
       D3TransitionTestUtils.stubAndForceTransitions();
     });
@@ -452,4 +450,15 @@ describe('KNNVisualization', () => {
       expect(settings.querySelectorAll('.d3ml__settings__group').length).to.equal(2);
     });
   });
+  describe('updateIndexRangeKMaximum', () => {
+    it('should update max correctly', () => {
+      // given
+      const expectedMax = 5;
+      const vis = new KNNVisualization(data, options, [], 4);
+      // when
+      vis.updateIndexRangeKMaximum(expectedMax);
+      // then
+      expect(document.querySelector('#range-k')).to.have.attr('max', expectedMax.toString());
+    });
+  })
 });
