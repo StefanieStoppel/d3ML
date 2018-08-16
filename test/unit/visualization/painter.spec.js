@@ -101,5 +101,44 @@ describe('Painter', () => {
       expect(line).to.have.attr('y2', transitionedLine.y2);
     });
   });
-
+  describe('transitionLine', () => {
+    beforeEach(() => {
+      D3TransitionTestUtils.stubAndForceTransitions();
+    });
+    afterEach(() => {
+      D3TransitionTestUtils.restoreTransitions();
+    });
+    it('should transition lines correctly to new coordinates', () => {
+      // given
+      const svg = d3.select('body')
+        .append('svg')
+        .attr('width', 500)
+        .attr('height', 130);
+      const givenLines = [
+        {x1: '2', y1: '100', x2: '123', y2: '42', stroke: 'red', strokeWidth: '3', cssClass: 'line'},
+        {x1: '2', y1: '100', x2: '123', y2: '42', stroke: 'red', strokeWidth: '3', cssClass: 'line'},
+        {x1: '2', y1: '100', x2: '123', y2: '42', stroke: 'red', strokeWidth: '3', cssClass: 'line'},
+        {x1: '2', y1: '100', x2: '123', y2: '42', stroke: 'red', strokeWidth: '3', cssClass: 'line'},
+        {x1: '2', y1: '100', x2: '123', y2: '42', stroke: 'red', strokeWidth: '3', cssClass: 'line'}
+      ];
+      const transitionedLines = [
+        {x1: '1', y1: '2', x2: '3', y2: '4'},
+        {x1: '5', y1: '6', x2: '7', y2: '8'},
+        {x1: '10', y1: '11', x2: '12', y2: '13'},
+        {x1: '14', y1: '15', x2: '16', y2: '17'},
+        {x1: '18', y1: '19', x2: '20', y2: '21'}
+      ];
+      Painter.drawLines(svg, givenLines);
+      // when
+      Painter.transitionLines(svg, transitionedLines, 200);
+      // then
+      const lines = Array.from(document.querySelectorAll('line'));
+      lines.forEach((line, idx) => {
+        expect(line).to.have.attr('x1', transitionedLines[idx].x1);
+        expect(line).to.have.attr('y1', transitionedLines[idx].y1);
+        expect(line).to.have.attr('x2', transitionedLines[idx].x2);
+        expect(line).to.have.attr('y2', transitionedLines[idx].y2);
+      });
+    });
+  });
 });

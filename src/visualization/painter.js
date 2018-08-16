@@ -19,6 +19,16 @@ export default class Painter {
       .attr('x2', line.x2)
       .attr('y2', line.y2);
   }
+  static transitionLines(svg, lines, transitionDuration) {
+    svg.selectAll('line')
+      .data(lines)
+      .transition()
+      .duration(transitionDuration)
+      .attr('x1', function (d) { return d.x1; })
+      .attr('y1', function (d) { return d.y1; })
+      .attr('x2', function (d) { return d.x2; })
+      .attr('y2', function (d) { return d.y2; });
+  }
   static drawCircles(svg, circles) {
     svg.selectAll('circle')
       .data(circles)
