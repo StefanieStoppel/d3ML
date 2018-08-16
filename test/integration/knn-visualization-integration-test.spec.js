@@ -181,7 +181,7 @@ describe('KNNVisualization Integration Test', () => {
       expectWeightedCheckboxChecked(weightedCheckBox, false);
 
       // simulate a click on the svg
-      const clickCoord = { x: 25, y: 60 };
+      const clickCoord = { x: vis.xScale(25), y: vis.yScale(65) };
       simulateSvgClick(svg, clickCoord.x, clickCoord.y);
 
       // check whether new circle was added to data
@@ -189,7 +189,12 @@ describe('KNNVisualization Integration Test', () => {
       expect(vis.data.length).to.equal(dataLength);
 
       const addedCircle = vis.data[dataLength - 1];
-      expectCircleToHaveCorrectAttributes(addedCircle, clickCoord.x, clickCoord.y, types[0].toString());
+      expectCircleToHaveCorrectAttributes(
+        addedCircle,
+        vis.xScale(vis.xScale.invert(clickCoord.x)),
+        vis.yScale(vis.yScale.invert(clickCoord.y)),
+        types[0].toString()
+      );
 
       // check whether added circle is displayed correctly
       const circle = document.querySelector('circle:nth-last-of-type(2)');
@@ -250,7 +255,12 @@ describe('KNNVisualization Integration Test', () => {
       expect(vis.data.length).to.equal(dataLength);
 
       const addedCircle = vis.data[dataLength - 1];
-      expectCircleToHaveCorrectAttributes(addedCircle, clickCoord.x, clickCoord.y, types[1]);
+      expectCircleToHaveCorrectAttributes(
+        addedCircle,
+        vis.xScale(vis.xScale.invert(clickCoord.x)),
+        vis.yScale(vis.yScale.invert(clickCoord.y)),
+        types[1]
+      );
 
       // check whether added circle is displayed correctly
       const circle = document.querySelector('circle:nth-last-of-type(2)');
@@ -295,7 +305,7 @@ describe('KNNVisualization Integration Test', () => {
       expectWeightedCheckboxChecked(weightedCheckBox, false);
 
       // simulate a click on the svg
-      let clickCoord = { x: 25, y: 60 };
+      let clickCoord = { x: vis.xScale(25), y: vis.yScale(60) };
       simulateSvgClick(svg, clickCoord.x, clickCoord.y);
 
       // check whether new circle was added to data
@@ -304,7 +314,12 @@ describe('KNNVisualization Integration Test', () => {
 
       // check whether circle was classified correctly unweighted
       const addedCircle = vis.data[dataLength - 1];
-      expectCircleToHaveCorrectAttributes(addedCircle, clickCoord.x, clickCoord.y, types[0].toString());
+      expectCircleToHaveCorrectAttributes(
+        addedCircle,
+        vis.xScale(vis.xScale.invert(clickCoord.x)),
+        vis.yScale(vis.yScale.invert(clickCoord.y)),
+        types[0].toString()
+      );
 
       // check whether added circle is displayed correctly
       const circle = document.querySelector('circle:nth-last-of-type(2)');
