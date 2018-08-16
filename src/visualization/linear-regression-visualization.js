@@ -26,7 +26,7 @@ export default class LinearRegressionVisualization extends Visualization {
     let newLine = linesCopy[linesCopy.length - 1];
     linesCopy[linesCopy.length - 1] = Object.assign({}, newLine, {y2: newLine.y1});
     Painter.drawLines(this.svg, linesCopy);
-    Painter.transitionLines(this.svg, lines, 300);
+    Painter.transitionLines(this.svg, lines, 1500);
   }
   draw() {
     Painter.drawCircles(this.svg, this.data);
