@@ -53,22 +53,48 @@ describe('LinearRegressionVisualization', () => {
     });
   });
   describe('draw', () => {
-    it('should draw circles and regression line correctly', () => {
+    it('should draw circles, regression line and connecting lines correctly', () => {
       // given
       const vis = new LinearRegressionVisualization(data, options, []);
-      const expectedRegressionLine = vis.getRegressionLine();
+      const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
+      const expectedLines = vis.getLinesToDraw();
       // when
       vis.draw();
       // then
       expect(Array.from(document.querySelectorAll('circle')).length).to.equal(data.length);
-      const line = document.querySelector('line');
-      expect(line).to.have.attr('x1', expectedRegressionLine.x1.toString());
-      expect(line).to.have.attr('y1', expectedRegressionLine.y1.toString());
-      expect(line).to.have.attr('x2', expectedRegressionLine.x2.toString());
-      expect(line).to.have.attr('y2', expectedRegressionLine.y2.toString());
-      expect(line).to.have.attr('class', expectedRegressionLine.cssClass.toString());
-      expect(line).to.have.attr('stroke-width', expectedRegressionLine.strokeWidth.toString());
-      expect(line).to.have.style('stroke', expectedRegressionLine.stroke.toString());
+      const lines = Array.from(document.querySelectorAll('line'));
+      expect(lines.length).to.equal(vis.data.length + 1);
+      lines.forEach((line , idx) => {
+        expect(line).to.have.attr('x1', expectedLines[idx].x1.toString());
+        expect(line).to.have.attr('y1', expectedLines[idx].y1.toString());
+        expect(line).to.have.attr('x2', expectedLines[idx].x2.toString());
+        expect(line).to.have.attr('y2', expectedLines[idx].y2.toString());
+        expect(line).to.have.attr('class', expectedLines[idx].cssClass.toString());
+        expect(line).to.have.attr('stroke-width', expectedLines[idx].strokeWidth.toString());
+        expect(line).to.have.style('stroke', expectedLines[idx].stroke.toString());
+      })
+    });
+  });
+  describe('getLinesToDraw', () => {
+    it('should return lines correctly', () => {
+      // given
+      const givenData = [
+        {x: 0, y: 0},
+        {x: 4, y: 2},
+        {x: 3, y: 5},
+        {x: 7, y: 19}
+      ];
+      options = {
+        width: 200,
+        height: 100
+      };
+      const vis = new LinearRegressionVisualization(givenData, options, []);
+      const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
+      // when
+      const lines = vis.getLinesToDraw();
+      // then
+      const expectedLines = [vis.getRegressionLine(slope, intercept)].concat(vis.getConnectingLines(slope, intercept));
+      expect(lines).to.deep.equal(expectedLines);
     });
   });
   describe('getRegressionLine', () => {
@@ -94,9 +120,36 @@ describe('LinearRegressionVisualization', () => {
         cssClass: ''
       };
       // when
-      const line = vis.getRegressionLine();
+      const line = vis.getRegressionLine(slope, intercept);
       // then
       expect(line).to.deep.equal(expectedLine);
+    });
+  });
+  describe('getConnectingLines', () => {
+    it('should return connecting lines correctly', () => {
+      // given
+
+      const givenData = [
+        {x: 0, y: 0},
+        {x: 4, y: 2},
+        {x: 3, y: 5},
+        {x: 7, y: 19}
+      ];
+      options = {
+        width: 200,
+        height: 100
+      };
+      const vis = new LinearRegressionVisualization(givenData, options, []);
+      const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
+      // when
+      const lines = vis.getConnectingLines(slope, intercept);
+      // then
+      lines.forEach((line, idx) => {
+        expect(line.x1).to.equal(vis.data[idx].cx);
+        expect(line.y1).to.equal(vis.data[idx].cy);
+        expect(line.x2).to.equal(vis.data[idx].cx);
+        expect(line.y2).to.equal(slope * vis.data[idx].cx + intercept);
+      });
     });
   });
   describe('svgClickCallback', () => {
