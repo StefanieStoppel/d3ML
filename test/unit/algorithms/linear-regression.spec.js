@@ -77,37 +77,37 @@ describe('LinearRegression', () => {
       expect(result).to.deep.equal({slope, intercept});
     });
   });
-  describe('calculateLoss', () => {
-    it('should calculate loss correctly', () => {
+  describe('calculateTotalSquaredError', () => {
+    it('should calculate total squared error correctly', () => {
       // given
       const expectedLoss = 3;
       const y = [1,2,3];
       const yPredicted = [2,3,4];
       const lr = new LinearRegression();
       // when
-      const result = lr.calculateLoss(y, yPredicted);
+      const result = lr.calculateTotalSquaredError(y, yPredicted);
       // then
       expect(result).to.equal(expectedLoss);
     });
-    it('should return NaN if calculateLoss is passed null as an argument', () => {
+    it('should return NaN if calculateTotalSquaredError is passed null as an argument', () => {
       // given
       const expectedResult = NaN;
       const y = null;
       const yPredicted = [2,3,4,5];
       const lr = new LinearRegression();
       // when
-      const result = lr.calculateLoss(y, yPredicted);
+      const result = lr.calculateTotalSquaredError(y, yPredicted);
       // then
       expect(isNaN(result)).to.equal(isNaN(expectedResult));
     });
-    it('should return NaN parameter yPredicted has fewer elements than y', () => {
+    it('should calculateTotalSquaredError return NaN when parameter yPredicted has fewer elements than y', () => {
       // given
       const expectedResult = NaN;
       const y = [1,2,3,4,5];
       const yPredicted = [2,3,4,5];
       const lr = new LinearRegression();
       // when
-      const result = lr.calculateLoss(y, yPredicted);
+      const result = lr.calculateTotalSquaredError(y, yPredicted);
       // then
       expect(isNaN(result)).to.equal(isNaN(expectedResult));
     });

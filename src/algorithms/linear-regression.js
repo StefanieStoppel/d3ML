@@ -29,7 +29,7 @@ export default class LinearRegression {
     return {slope, intercept};
   }
 
-  calculateLoss(y, yPredicted) {
+  calculateTotalSquaredError(y, yPredicted) {
     let result = NaN;
     if (y !== null && yPredicted !== null) {
       result = y.reduce((sum, val, idx) => {
