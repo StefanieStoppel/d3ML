@@ -8,6 +8,8 @@ export default class LinearRegressionVisualization extends Visualization {
     this.linearRegression = new LinearRegression();
     this.addEventListeners();
     this.lines = [];
+    this.slope = 0;
+    this.intercept = 0;
   }
   addEventListeners() {
     this.onClickSvg([this.svgClickCallback]);
@@ -35,17 +37,26 @@ export default class LinearRegressionVisualization extends Visualization {
   createLine(x1, y1, x2, y2, stroke, strokeWidth, cssClass) {
     return {x1, y1, x2, y2, stroke, strokeWidth, cssClass};
   }
-  getLinesToDraw() {
+  performRegression() {
     const {slope, intercept} = this.linearRegression.performRegression(this.data);
-    const regressionLine = this.getRegressionLine(slope, intercept);
-    const connectingLines = this.getConnectingLines(slope, intercept);
+    this.slope = slope;
+    this.intercept = intercept;
+  }
+  getLinesToDraw() {
+    this.performRegression();
+    const regressionLine = this.getRegressionLine();
+    const connectingLines = this.getConnectingLines();
 
     return [regressionLine].concat(connectingLines);
   }
-  getRegressionLine(slope, intercept) {
-    return this.createLine(0, intercept, this.options.width, this.options.width * slope + intercept, 'white', '2', '');
+  getRegressionLine() {
+    return this.createLine(0, this.intercept, this.options.width,
+      this.options.width * this.slope + this.intercept, 'white', '2', '');
   }
-  getConnectingLines(slope, intercept) {
-    return this.data.map(d => this.createLine(d.cx, d.cy, d.cx, slope * d.cx + intercept, 'white', '1', ''));
+  getConnectingLines() {
+    return this.data.map(d => this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', ''));
+  }
+  getTotalSquaredError() {
+    return this.data.reduce((sum, value) => sum + Math.pow(value.cy - (this.slope * value.cx + this.intercept), 2), 0);
   }
 }

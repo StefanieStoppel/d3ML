@@ -109,18 +109,18 @@ describe('LinearRegressionVisualization', () => {
         height: 100
       };
       const vis = new LinearRegressionVisualization(givenData, options, []);
-      const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
+      vis.performRegression();
       const expectedLine = {
         x1: 0,
-        y1: intercept,
+        y1: vis.intercept,
         x2: options.width,
-        y2: options.width * slope + intercept,
+        y2: options.width * vis.slope + vis.intercept,
         stroke: 'white',
         strokeWidth: '2',
         cssClass: ''
       };
       // when
-      const line = vis.getRegressionLine(slope, intercept);
+      const line = vis.getRegressionLine();
       // then
       expect(line).to.deep.equal(expectedLine);
     });
@@ -140,15 +140,15 @@ describe('LinearRegressionVisualization', () => {
         height: 100
       };
       const vis = new LinearRegressionVisualization(givenData, options, []);
-      const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
+      vis.performRegression();
       // when
-      const lines = vis.getConnectingLines(slope, intercept);
+      const lines = vis.getConnectingLines();
       // then
       lines.forEach((line, idx) => {
         expect(line.x1).to.equal(vis.data[idx].cx);
         expect(line.y1).to.equal(vis.data[idx].cy);
         expect(line.x2).to.equal(vis.data[idx].cx);
-        expect(line.y2).to.equal(slope * vis.data[idx].cx + intercept);
+        expect(line.y2).to.equal(vis.slope * vis.data[idx].cx + vis.intercept);
       });
     });
   });
@@ -178,5 +178,18 @@ describe('LinearRegressionVisualization', () => {
 
       LinearRegressionVisualization.prototype.getRegressionLine.restore();
     });
+  });
+  describe('getTotalSquaredError', () => {
+    it('should calculate total squared error correctly', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      vis.performRegression();
+      const expectedTotalSquaredError =
+        vis.data.reduce((sum, value) => sum + Math.pow(value.cy - (vis.slope * value.cx + vis.intercept), 2), 0);
+      // when
+      const totalSquaredError = vis.getTotalSquaredError(vis.data);
+      // then
+      expect(totalSquaredError).to.equal(expectedTotalSquaredError);
+    })
   });
 });
