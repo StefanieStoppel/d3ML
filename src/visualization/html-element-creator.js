@@ -37,6 +37,7 @@ export default class HTMLElementCreator {
   static createLabeledValue(label, value) {
     const labeledValue = HTMLElementCreator.createElement('span');
     labeledValue.innerHTML = `${label}: ${value}`;
+
     return labeledValue;
   }
 }

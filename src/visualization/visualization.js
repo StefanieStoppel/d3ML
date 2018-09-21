@@ -3,6 +3,7 @@ import Circle from './circle';
 import { defaultOptions, defaultType, defaultClassSelectors } from './defaults';
 import { isValidOptions, isValidTypes, isValidData } from '../validation/validator';
 import Painter from './painter';
+import HTMLElementCreator from './html-element-creator';
 
 export default class Visualization {
   constructor(data, options, types = [defaultType]) {
@@ -58,7 +59,10 @@ export default class Visualization {
     this.appendSVG();
   }
   appendWrapperContainer() {
-    const container = this.createElement('div', [['class', defaultClassSelectors.d3ml], ['id', this.containerId]]);
+    const container = HTMLElementCreator.createElement(
+      'div',
+      [['class', defaultClassSelectors.d3ml], ['id', this.containerId]]
+    );
     const rootNode = document.querySelector(this.options.rootNode);
     rootNode.appendChild(container);
   }
@@ -123,32 +127,22 @@ export default class Visualization {
     }
   }
   createElement(elementName, attributes = []) {
-    const el = document.createElement(elementName);
-    attributes.forEach(attr => {
-      el.setAttribute(attr[0], attr[1]);
-    });
-
-    return el;
+    return HTMLElementCreator.createElement(elementName, attributes);
   }
   createSettingsGroup(childElements) {
-    const settingsGroup = this.createElement('div', [['class', defaultClassSelectors.settingsGroup]]);
-    childElements.forEach(child => {
-      settingsGroup.append(child);
-    });
-
-    return settingsGroup;
+    return HTMLElementCreator.createSettingsGroup(childElements);
   }
   createLabeledInput(labelText, labelAttributes, displayedValue, inputAttributes) {
-    const span = this.createElement('span');
+    const span = HTMLElementCreator.createElement('span');
     span.innerHTML = displayedValue;
 
-    const inputLabel = this.createElement('label', labelAttributes);
-    inputLabel.textContent = labelText;
+    const label = HTMLElementCreator.createElement('label', labelAttributes);
+    label.textContent = labelText;
 
-    const input = this.createElement('input', inputAttributes);
-    inputLabel.appendChild(span);
+    const input = HTMLElementCreator.createElement('input', inputAttributes);
+    label.appendChild(span);
 
-    return {label: inputLabel, input};
+    return {label, input};
   }
   addCircle(circle) {
     this.data.push(circle);
@@ -156,4 +150,5 @@ export default class Visualization {
   draw() {
     Painter.drawCircles(this.svg, this.data);
   }
+
 }

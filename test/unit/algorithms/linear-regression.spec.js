@@ -81,8 +81,8 @@ describe('LinearRegression', () => {
     it('should calculate total squared error correctly', () => {
       // given
       const expectedLoss = 3;
-      const y = [1,2,3];
-      const yPredicted = [2,3,4];
+      const y = [1, 2, 3];
+      const yPredicted = [2, 3, 4];
       const lr = new LinearRegression();
       // when
       const result = lr.calculateTotalSquaredError(y, yPredicted);
@@ -93,7 +93,7 @@ describe('LinearRegression', () => {
       // given
       const expectedResult = NaN;
       const y = null;
-      const yPredicted = [2,3,4,5];
+      const yPredicted = [2, 3, 4, 5];
       const lr = new LinearRegression();
       // when
       const result = lr.calculateTotalSquaredError(y, yPredicted);
@@ -103,8 +103,8 @@ describe('LinearRegression', () => {
     it('should calculateTotalSquaredError return NaN when parameter yPredicted has fewer elements than y', () => {
       // given
       const expectedResult = NaN;
-      const y = [1,2,3,4,5];
-      const yPredicted = [2,3,4,5];
+      const y = [1, 2, 3, 4, 5];
+      const yPredicted = [2, 3, 4, 5];
       const lr = new LinearRegression();
       // when
       const result = lr.calculateTotalSquaredError(y, yPredicted);

@@ -460,5 +460,5 @@ describe('KNNVisualization', () => {
       // then
       expect(document.querySelector('#range-k')).to.have.attr('max', expectedMax.toString());
     });
-  })
+  });
 });

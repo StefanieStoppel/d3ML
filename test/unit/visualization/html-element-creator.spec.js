@@ -1,9 +1,9 @@
-/* global describe, it, beforeEach, afterEach */
+/* global describe, it */
 
 import chai from 'chai';
 import chaiDom from 'chai-dom';
 import sinonChai from 'sinon-chai';
-import { defaultType, defaultOptions, defaultClassSelectors } from '../../../src/visualization/defaults';
+import { defaultClassSelectors } from '../../../src/visualization/defaults';
 import HTMLElementCreator from '../../../src/visualization/html-element-creator';
 
 chai.use(chaiDom);
@@ -16,26 +16,24 @@ describe('HTMLElementCreator', () => {
       // given
       const type = 'input';
       const attributes = [['class', 'test'], ['name', 'height'], ['type', 'number']];
-      const creator = new HTMLElementCreator();
       // when
       const labeledInput = HTMLElementCreator.createElement(type, attributes);
       // then
       expect(labeledInput).to.match(type);
       attributes.forEach(([attrName, attrValue]) => {
-        expect(labeledInput, attrName).to.have.attr(attrName, attrValue)
+        expect(labeledInput, attrName).to.have.attr(attrName, attrValue);
       });
     });
     const testCases = [
       {childElements: [], childElementsText: '[]'},
       {childElements: null, childElementsText: 'null'},
-      {childElements: undefined, childElementsText: 'undefined'},
+      {childElements: undefined, childElementsText: 'undefined'}
     ];
     testCases.forEach(({testAttributes, testAttributesText}) => {
       it(`should return HTMLElement with correct type and no attributes when 
         attributes is ${testAttributesText}`, () => {
         // given
         const type = 'input'; // bla
-        const creator = new HTMLElementCreator();
         // when
         const labeledInput = HTMLElementCreator.createElement(type, testAttributes);
         // then
@@ -43,11 +41,10 @@ describe('HTMLElementCreator', () => {
       });
     });
   });
-  describe.only('createSettingsGroup', () => {
+  describe('createSettingsGroup', () => {
     it('should return div with correct CSS class', () => {
       // given
       const expectedClass = defaultClassSelectors.settingsGroup;
-      const creator = new HTMLElementCreator();
       // when
       const settingsGroup = HTMLElementCreator.createSettingsGroup();
       // then
@@ -57,26 +54,24 @@ describe('HTMLElementCreator', () => {
     const testCases = [
       {childElements: [], childElementsText: '[]'},
       {childElements: null, childElementsText: 'null'},
-      {childElements: undefined, childElementsText: 'undefined'},
+      {childElements: undefined, childElementsText: 'undefined'}
     ];
     testCases.forEach(({childElements, childElementsText}) => {
       it(`should return div with no childElements: ${childElementsText}`, () => {
         // given
-        const creator = new HTMLElementCreator();
         // when
         const settingsGroup = HTMLElementCreator.createSettingsGroup(childElements);
         // then
         expect(settingsGroup).to.match('div');
       });
     });
-    it(`should return div with correct childElements`, () => {
+    it('should return div with correct childElements', () => {
       // given
       const expectedChildElements = [
         {selector: 'input', attributes: [['class', 'some-class'], ['type', 'email']]},
         {selector: 'span', attributes: [['id', 'some-id'], ['title', 'this is a title']]},
         {selector: 'svg', attributes: [['width', '500'], ['height', '300']]}
       ];
-      const creator = new HTMLElementCreator();
       const childElements = expectedChildElements.map(({selector, attributes}) => {
         return HTMLElementCreator.createElement(selector, attributes);
       });
@@ -89,7 +84,7 @@ describe('HTMLElementCreator', () => {
         attributes.forEach(([attrName, attrValue]) => {
           expect(settingsGroup.querySelector(selector)).to.have.attr(attrName, attrValue);
         });
-      })
+      });
     });
   });
   describe('createLabeledInput', () => {
@@ -97,9 +92,7 @@ describe('HTMLElementCreator', () => {
       // given
       const labelText = 'ab';
       const labelAttributes = [];
-      const valueText = '5';
       const attr = [];
-      const creator = new HTMLElementCreator();
       // when
       const labeledInput = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, attr);
       // then
@@ -114,7 +107,6 @@ describe('HTMLElementCreator', () => {
       // given
       const expectedLabel = 'blup';
       const expectedValue = '6';
-      const creator = new HTMLElementCreator();
       // when
       const labeledValue = HTMLElementCreator.createLabeledValue(expectedLabel, expectedValue);
       // then

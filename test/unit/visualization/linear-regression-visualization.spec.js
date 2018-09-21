@@ -56,7 +56,7 @@ describe('LinearRegressionVisualization', () => {
     it('should draw circles, regression line and connecting lines correctly', () => {
       // given
       const vis = new LinearRegressionVisualization(data, options, []);
-      const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
+      const {slope, intercept} = vis.linearRegression.performRegression(vis.data); // eslint-disable-line
       const expectedLines = vis.getLinesToDraw();
       // when
       vis.draw();
@@ -64,7 +64,7 @@ describe('LinearRegressionVisualization', () => {
       expect(Array.from(document.querySelectorAll('circle')).length).to.equal(data.length);
       const lines = Array.from(document.querySelectorAll('line'));
       expect(lines.length).to.equal(vis.data.length + 1);
-      lines.forEach((line , idx) => {
+      lines.forEach((line, idx) => {
         expect(line).to.have.attr('x1', expectedLines[idx].x1.toString());
         expect(line).to.have.attr('y1', expectedLines[idx].y1.toString());
         expect(line).to.have.attr('x2', expectedLines[idx].x2.toString());
@@ -72,7 +72,7 @@ describe('LinearRegressionVisualization', () => {
         expect(line).to.have.attr('class', expectedLines[idx].cssClass.toString());
         expect(line).to.have.attr('stroke-width', expectedLines[idx].strokeWidth.toString());
         expect(line).to.have.style('stroke', expectedLines[idx].stroke.toString());
-      })
+      });
     });
   });
   describe('getLinesToDraw', () => {

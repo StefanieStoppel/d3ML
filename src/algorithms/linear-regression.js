@@ -33,9 +33,10 @@ export default class LinearRegression {
     let result = NaN;
     if (y !== null && yPredicted !== null) {
       result = y.reduce((sum, val, idx) => {
-        return sum + (val - yPredicted[idx])**2;
+        return sum + (val - yPredicted[idx]) ** 2;
       }, 0);
     }
+
     return result;
   }
 }

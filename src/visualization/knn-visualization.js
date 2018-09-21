@@ -3,6 +3,7 @@ import {defaultK, defaultType, defaultClassSelectors} from './defaults';
 import Visualization from './visualization';
 import KNN from '../algorithms/knn';
 import Painter from './painter';
+import HTMLElementCreator from './html-element-creator';
 
 const selectors = {
   id: {
@@ -25,7 +26,7 @@ export default class KNNVisualization extends Visualization {
     document.querySelector(`#${this.containerId}`).appendChild(this.createSettings());
   }
   createSettings() {
-    const settings = this.createElement('div', [['class', defaultClassSelectors.settings]]);
+    const settings = HTMLElementCreator.createElement('div', [['class', defaultClassSelectors.settings]]);
     settings.appendChild(this.createSettingsGroupForK());
     settings.appendChild(this.createSettingsGroupForWeighted());
 
