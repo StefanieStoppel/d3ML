@@ -441,26 +441,5 @@ describe('Visualization', () => {
       Visualization.prototype.inputChangeCallback.restore();
     });
   });
-  describe('createSettings', () => {
-    it('should create settings div without child elements', () => {
-      // given
-      const vis = new Visualization(data, options);
-      // when
-      const settings = vis.createSettings();
-      // then
-      expect(settings).to.have.attr('class', defaultClassSelectors.settings);
-      expect(settings).to.have.length(0);
-    });
-    it('should create settings div with correct child elements', () => {
-      // given
-      const vis = new Visualization(data, options);
-      const childSpan = HTMLElementCreator.createElement('span', [['class', 'child-span']]);
-
-      const childSettings = [childSpan];
-      // when
-      const settings = vis.createSettings(childSettings);
-      // then
-      expect(settings).to.not.equal(null);
-    });
-  });
+  ;
 });

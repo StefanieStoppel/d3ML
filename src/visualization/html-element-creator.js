@@ -49,4 +49,12 @@ export default class HTMLElementCreator {
 
     return wrapper;
   }
+  static createSettings(children = []) {
+    const settings = HTMLElementCreator.createElement('div', [['class', defaultClassSelectors.settings]]);
+    children.forEach(childSetting => {
+      settings.appendChild(childSetting);
+    });
+
+    return settings;
+  }
 }

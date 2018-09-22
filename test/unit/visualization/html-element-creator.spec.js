@@ -5,6 +5,7 @@ import chaiDom from 'chai-dom';
 import sinonChai from 'sinon-chai';
 import { defaultClassSelectors } from '../../../src/visualization/defaults';
 import HTMLElementCreator from '../../../src/visualization/html-element-creator';
+import Visualization from "../../../src/visualization/visualization";
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -121,4 +122,30 @@ describe('HTMLElementCreator', () => {
       expect(value).to.have.class('value');
     });
   });
+  describe('createSettings', () => {
+    it('should create settings div without child elements', () => {
+      // given
+      // when
+      const settings = HTMLElementCreator.createSettings();
+      // then
+      expect(settings).to.have.attr('class', defaultClassSelectors.settings);
+      expect(settings).to.have.length(0);
+    });
+    it('should create settings div with correct child elements', () => {
+      // given
+      const childSpan = HTMLElementCreator.createElement('span', [['class', 'child-span']]);
+      const label = 'my label';
+      const value = '12';
+      const childLabeledValue = HTMLElementCreator.createLabeledValue(label, value);
+      const childSettings = [childSpan, childLabeledValue];
+      // when
+      const settings = HTMLElementCreator.createSettings(childSettings);
+      // then
+      expect(settings).to.not.equal(null);
+      expect(settings).to.have.length(2);
+      expect(settings.querySelector('.child-span')).to.not.equal(null);
+      expect(settings.querySelector('div .label')).to.have.text(`${label}: `);
+      expect(settings.querySelector('div .value')).to.have.text(value);
+    });
+  })
 });

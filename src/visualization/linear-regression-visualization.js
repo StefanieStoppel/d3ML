@@ -74,7 +74,7 @@ export default class LinearRegressionVisualization extends Visualization {
     return errorDisplay;
   }
   appendSettings() {
-    const settings = super.createSettings([this.createTotalSquaredErrorDisplay()]);
+    const settings = HTMLElementCreator.createSettings([this.createTotalSquaredErrorDisplay()]);
     document.querySelector(`#${this.containerId}`).appendChild(settings);
   }
 }
