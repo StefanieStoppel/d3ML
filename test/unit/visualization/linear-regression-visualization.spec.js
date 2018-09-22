@@ -358,4 +358,46 @@ describe('LinearRegressionVisualization', () => {
       expect(userLine).to.deep.equal(expectedLine);
     });
   });
+  describe('createSettingsGroupForSlope', () => {
+    it('should create a settings group with range for changing the user line slope', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      // when
+      const settingsGroup = vis.createSettingsGroupForSlope();
+      // then
+      expect(settingsGroup).to.have.attr('class', defaultClassSelectors.settingsGroup);
+      const label = settingsGroup.querySelector('label');
+      expect(label).to.have.text('User line slope: 0');
+      expect(label).to.have.attr('for', 'range-slope');
+      expect(label).to.have.id('range-slope-label');
+      const checkbox = settingsGroup.querySelector('input');
+      expect(checkbox).to.have.id('range-slope');
+      expect(checkbox).to.have.attr('type', 'range');
+      expect(checkbox).to.have.attr('min', '-1');
+      expect(checkbox).to.have.attr('max', '1');
+      expect(checkbox).to.have.attr('step', '0.005');
+      expect(checkbox).to.have.attr('value', '0');
+    });
+  });
+  describe('createSettingsGroupForIntercept', () => {
+    it('should create a settings group with range for changing the user line intercept', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      // when
+      const settingsGroup = vis.createSettingsGroupForIntercept();
+      // then
+      expect(settingsGroup).to.have.attr('class', defaultClassSelectors.settingsGroup);
+      const label = settingsGroup.querySelector('label');
+      expect(label).to.have.text(`User line intercept: ${vis.options.height / 2}`);
+      expect(label).to.have.attr('for', 'range-intercept');
+      expect(label).to.have.id('range-intercept-label');
+      const checkbox = settingsGroup.querySelector('input');
+      expect(checkbox).to.have.id('range-intercept');
+      expect(checkbox).to.have.attr('type', 'range');
+      expect(checkbox).to.have.attr('min', '0');
+      expect(checkbox).to.have.attr('max', (vis.options.height * 2).toString());
+      expect(checkbox).to.have.attr('step', '1');
+      expect(checkbox).to.have.attr('value', (vis.options.height / 2).toString());
+    });
+  })
 });
