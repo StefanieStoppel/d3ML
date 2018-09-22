@@ -9,7 +9,8 @@ const selectors = {
     showRegressionLineLabel: 'show-rl-label'
   },
   class: {
-    line: 'line'
+    regressionLine: 'regression-line',
+    userLine: 'user-line'
   }
 };
 
@@ -40,7 +41,7 @@ export default class LinearRegressionVisualization extends Visualization {
     if (checked) {
       Painter.drawLines(this.svg, this.getLinesToDraw());
     } else {
-      this.svg.selectAll(`.${selectors.class.line}`).remove();
+      this.svg.selectAll(`.${selectors.class.regressionLine}`).remove();
     }
   }
   update() {
@@ -87,12 +88,23 @@ export default class LinearRegressionVisualization extends Visualization {
       this.options.width * this.slope + this.intercept,
       'white',
       '2',
-      selectors.class.line
+      selectors.class.regressionLine
+    );
+  }
+  getUserLine() {
+    return this.createLine(
+      0,
+      this.options.height / 2,
+      this.options.width,
+      this.options.height / 2,
+      'lightblue',
+      '2',
+      selectors.class.userLine
     );
   }
   getConnectingLines() {
     return this.data.map(d =>
-      this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', selectors.class.line)
+      this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', selectors.class.regressionLine)
     );
   }
   getTotalSquaredError() {

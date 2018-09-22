@@ -118,7 +118,7 @@ describe('LinearRegressionVisualization', () => {
         y2: options.width * vis.slope + vis.intercept,
         stroke: 'white',
         strokeWidth: '2',
-        cssClass: 'line'
+        cssClass: 'regression-line'
       };
       // when
       const line = vis.getRegressionLine();
@@ -252,25 +252,44 @@ describe('LinearRegressionVisualization', () => {
       // given
       const vis = new LinearRegressionVisualization(data, options, []);
       vis.draw();
-      expect(document.querySelector(`#${vis.containerId} .line`)).to.not.equal(null);
+      expect(document.querySelector(`#${vis.containerId} .regression-line`)).to.not.equal(null);
       // when
       vis.checkboxShowRegressionLineChangeCallback(false);
       // then
-      expect(document.querySelector(`#${vis.containerId} .line`)).to.equal(null);
+      expect(document.querySelector(`#${vis.containerId} .regression-line`)).to.equal(null);
     });
     it('should draw lines from data when checkbox checked', () => {
       // given
       const vis = new LinearRegressionVisualization(data, options, []);
       const expectedAmountOfLines = vis.data.length + 1;
       vis.draw();
-      expect(document.querySelector(`#${vis.containerId} .line`)).to.not.equal(null);
+      expect(document.querySelector(`#${vis.containerId} .regression-line`)).to.not.equal(null);
       vis.checkboxShowRegressionLineChangeCallback(false);
-      expect(document.querySelector(`#${vis.containerId} .line`)).to.equal(null);
+      expect(document.querySelector(`#${vis.containerId} .regression-line`)).to.equal(null);
       // when
       vis.checkboxShowRegressionLineChangeCallback(true);
       // then
-      const lines = Array.from(document.querySelectorAll(`#${vis.containerId} .line`));
+      const lines = Array.from(document.querySelectorAll(`#${vis.containerId} .regression-line`));
       expect(lines.length).to.equal(expectedAmountOfLines);
+    });
+  });
+  describe('getUserLine', () => {
+    it('should return correct user line', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      const expectedLine = {
+        x1: 0,
+        y1: vis.options.height / 2,
+        x2: vis.options.width,
+        y2: vis.options.height / 2,
+        stroke: 'lightblue',
+        strokeWidth: '2',
+        cssClass: 'user-line'
+      };
+      // when
+      const userLine = vis.getUserLine();
+      // then
+      expect(userLine).to.deep.equal(expectedLine);
     });
   });
 });
