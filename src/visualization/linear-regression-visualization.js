@@ -11,7 +11,7 @@ export default class LinearRegressionVisualization extends Visualization {
     this.lines = [];
     this.slope = 0;
     this.intercept = 0;
-    this.appendSettings();
+    super.appendSettings([this.createTotalSquaredErrorDisplay()]);
   }
   addEventListeners() {
     this.onClickSvg([this.svgClickCallback]);
@@ -72,9 +72,5 @@ export default class LinearRegressionVisualization extends Visualization {
     errorDisplay.setAttribute('class', 'error error--tse');
 
     return errorDisplay;
-  }
-  appendSettings() {
-    const settings = HTMLElementCreator.createSettings([this.createTotalSquaredErrorDisplay()]);
-    document.querySelector(`#${this.containerId}`).appendChild(settings);
   }
 }

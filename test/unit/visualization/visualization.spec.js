@@ -441,5 +441,14 @@ describe('Visualization', () => {
       Visualization.prototype.inputChangeCallback.restore();
     });
   });
-  ;
+  describe('appendSettings', () => {
+    it('should append settings div correctly', () => {
+      // given
+      const vis = new Visualization(data, options);
+      // when
+      vis.appendSettings();
+      // then
+      expect(document.querySelector(`#${vis.containerId} .${defaultClassSelectors.settings}`)).to.not.equal(null);
+    });
+  });
 });

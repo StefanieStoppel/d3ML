@@ -19,13 +19,8 @@ export default class KNNVisualization extends Visualization {
     super(data, options, types);
     this.knn = new KNN(this.data, types, k);
 
-    this.appendSettings();
+    super.appendSettings([this.createSettingsGroupForK(), this.createSettingsGroupForWeighted()]);
     this.addEventListeners();
-  }
-  appendSettings() {
-    const settings =
-      HTMLElementCreator.createSettings([this.createSettingsGroupForK(), this.createSettingsGroupForWeighted()]);
-    document.querySelector(`#${this.containerId}`).appendChild(settings);
   }
   createSettingsGroupForK() {
     const labelText = 'Amount of neighbors, k: ';

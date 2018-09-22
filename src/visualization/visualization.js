@@ -16,6 +16,10 @@ export default class Visualization {
     this.createVisualization();
     this.clickable = true;
   }
+  appendSettings(childElements = []) {
+    const settings = HTMLElementCreator.createSettings(childElements);
+    document.querySelector(`#${this.containerId}`).appendChild(settings);
+  }
   initializeOptions(options) {
     if (!isValidOptions(options)) {
       options = {};
