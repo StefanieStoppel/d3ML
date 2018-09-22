@@ -126,8 +126,17 @@ export default class Visualization {
       });
     }
   }
+  // todo: refactor
   createElement(elementName, attributes = []) {
     return HTMLElementCreator.createElement(elementName, attributes);
+  }
+  createSettings(children = []) {
+    const settings = HTMLElementCreator.createElement('div', [['class', defaultClassSelectors.settings]]);
+    children.forEach(childSetting => {
+      settings.appendChild(childSetting);
+    });
+
+    return settings;
   }
   createSettingsGroup(childElements) {
     return HTMLElementCreator.createSettingsGroup(childElements);
@@ -150,5 +159,4 @@ export default class Visualization {
   draw() {
     Painter.drawCircles(this.svg, this.data);
   }
-
 }

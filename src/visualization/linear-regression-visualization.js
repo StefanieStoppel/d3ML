@@ -1,6 +1,7 @@
 import Visualization from './visualization';
 import LinearRegression from '../algorithms/linear-regression';
 import Painter from './painter';
+import HTMLElementCreator from './html-element-creator';
 
 export default class LinearRegressionVisualization extends Visualization {
   constructor(data, options, types) {
@@ -10,6 +11,7 @@ export default class LinearRegressionVisualization extends Visualization {
     this.lines = [];
     this.slope = 0;
     this.intercept = 0;
+    this.appendSettings();
   }
   addEventListeners() {
     this.onClickSvg([this.svgClickCallback]);
@@ -58,5 +60,21 @@ export default class LinearRegressionVisualization extends Visualization {
   }
   getTotalSquaredError() {
     return this.data.reduce((sum, value) => sum + Math.pow(value.cy - (this.slope * value.cx + this.intercept), 2), 0);
+  }
+  updateTotalSquaredErrorDisplay(totalSquaredError) {
+    const tseValue = document.querySelector(`#${this.containerId} .error--tse .value`);
+    tseValue.innerHTML = totalSquaredError;
+  }
+  createTotalSquaredErrorDisplay() {
+    const label = 'Total squared error';
+    const value = this.getTotalSquaredError().toString();
+    const errorDisplay = HTMLElementCreator.createLabeledValue(label, value);
+    errorDisplay.setAttribute('class', 'error error--tse');
+
+    return errorDisplay;
+  }
+  appendSettings() {
+    const settings = super.createSettings([this.createTotalSquaredErrorDisplay()]);
+    document.querySelector(`#${this.containerId}`).appendChild(settings);
   }
 }

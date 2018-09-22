@@ -6,10 +6,11 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Visualization from '../../../src/visualization/visualization';
 import Circle from '../../../src/visualization/circle';
-import { defaultType, defaultOptions } from '../../../src/visualization/defaults';
+import {defaultType, defaultOptions, defaultClassSelectors} from '../../../src/visualization/defaults';
 import { scaleOrdinal, schemeSet1 } from 'd3';
 import {createEvent} from '../../test-helper';
 import Painter from '../../../src/visualization/painter';
+import HTMLElementCreator from "../../../src/visualization/html-element-creator";
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -438,6 +439,28 @@ describe('Visualization', () => {
       expect(callbackSpy).to.have.been.calledWith(event, type, [callbackSpy]);
 
       Visualization.prototype.inputChangeCallback.restore();
+    });
+  });
+  describe('createSettings', () => {
+    it('should create settings div without child elements', () => {
+      // given
+      const vis = new Visualization(data, options);
+      // when
+      const settings = vis.createSettings();
+      // then
+      expect(settings).to.have.attr('class', defaultClassSelectors.settings);
+      expect(settings).to.have.length(0);
+    });
+    it('should create settings div with correct child elements', () => {
+      // given
+      const vis = new Visualization(data, options);
+      const childSpan = HTMLElementCreator.createElement('span', [['class', 'child-span']]);
+
+      const childSettings = [childSpan];
+      // when
+      const settings = vis.createSettings(childSettings);
+      // then
+      expect(settings).to.not.equal(null);
     });
   });
 });

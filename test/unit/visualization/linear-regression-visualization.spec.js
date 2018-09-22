@@ -190,6 +190,17 @@ describe('LinearRegressionVisualization', () => {
       const totalSquaredError = vis.getTotalSquaredError(vis.data);
       // then
       expect(totalSquaredError).to.equal(expectedTotalSquaredError);
-    })
+    });
+  });
+  describe('updateTotalSquaredErrorDisplay', () => {
+    it('should update display of total squared error correctly', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      // when
+      vis.updateTotalSquaredErrorDisplay(0);
+      // then
+      const updatedTotalSquaredErrorValue = document.querySelector('.error--tse .value');
+      expect(updatedTotalSquaredErrorValue).to.have.text('0');
+    });
   });
 });

@@ -3,7 +3,6 @@ import {defaultK, defaultType, defaultClassSelectors} from './defaults';
 import Visualization from './visualization';
 import KNN from '../algorithms/knn';
 import Painter from './painter';
-import HTMLElementCreator from './html-element-creator';
 
 const selectors = {
   id: {
@@ -23,14 +22,8 @@ export default class KNNVisualization extends Visualization {
     this.addEventListeners();
   }
   appendSettings() {
-    document.querySelector(`#${this.containerId}`).appendChild(this.createSettings());
-  }
-  createSettings() {
-    const settings = HTMLElementCreator.createElement('div', [['class', defaultClassSelectors.settings]]);
-    settings.appendChild(this.createSettingsGroupForK());
-    settings.appendChild(this.createSettingsGroupForWeighted());
-
-    return settings;
+    const settings = super.createSettings([this.createSettingsGroupForK(), this.createSettingsGroupForWeighted()]);
+    document.querySelector(`#${this.containerId}`).appendChild(settings);
   }
   createSettingsGroupForK() {
     const labelText = 'Amount of neighbors, k: ';

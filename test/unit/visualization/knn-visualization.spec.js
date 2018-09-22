@@ -432,24 +432,7 @@ describe('KNNVisualization', () => {
       expect(kLabel).to.have.attr('for', 'range-k');
     });
   });
-  describe('createSettings', () => {
-    it('should create settings with two groups correctly', () => {
-      // given
-      const data = [
-        { x: 2, y: 3, type: 'A'},
-        { x: 1, y: 1, type: 'B'},
-        { x: 2, y: 4, type: 'A'},
-        { x: 75, y: 4, type: 'A'},
-        { x: 546, y: 424, type: 'B'}
-      ];
-      const vis = new KNNVisualization(data, options, ['A', 'B'], 4);
-      // when
-      const settings = vis.createSettings();
-      // then
-      expect(settings).to.have.attr('class', 'd3ml__settings');
-      expect(settings.querySelectorAll('.d3ml__settings__group').length).to.equal(2);
-    });
-  });
+  ;
   describe('updateIndexRangeKMaximum', () => {
     it('should update max correctly', () => {
       // given
