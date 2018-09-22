@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import LinearRegressionVisualization from '../../../src/visualization/linear-regression-visualization';
 import LinearRegression from '../../../src/algorithms/linear-regression';
+import {defaultClassSelectors} from '../../../src/visualization/defaults';
 
 chai.use(chaiDom);
 chai.use(sinonChai);
@@ -226,6 +227,24 @@ describe('LinearRegressionVisualization', () => {
       // cleanup
       LinearRegressionVisualization.prototype.performRegression.restore();
       LinearRegressionVisualization.prototype.updateTotalSquaredErrorDisplay.restore();
+    });
+  });
+  describe('createSettingsGroupShowRegressionLine', () => {
+    it('should create a settings group with checkbox for displaying the regression line', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      // when
+      const settingsGroup = vis.createSettingsGroupShowRegressionLine();
+      // then
+      expect(settingsGroup).to.have.attr('class', defaultClassSelectors.settingsGroup);
+      const label = settingsGroup.querySelector('label');
+      expect(label).to.have.text('Show regression line: ');
+      expect(label).to.have.attr('for', 'show-rl');
+      expect(label).to.have.id('show-rl-label');
+      const checkbox = settingsGroup.querySelector('input');
+      expect(checkbox).to.have.id('show-rl');
+      expect(checkbox).to.have.attr('type', 'checkbox');
+
     });
   });
 });

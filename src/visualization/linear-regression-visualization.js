@@ -3,6 +3,13 @@ import LinearRegression from '../algorithms/linear-regression';
 import Painter from './painter';
 import HTMLElementCreator from './html-element-creator';
 
+const selectors = {
+  id: {
+    showRegressionLineCheckbox: 'show-rl',
+    showRegressionLineLabel: 'show-rl-label'
+  }
+};
+
 export default class LinearRegressionVisualization extends Visualization {
   constructor(data, options, types) {
     super(data, options, types);
@@ -11,7 +18,7 @@ export default class LinearRegressionVisualization extends Visualization {
     this.lines = [];
     this.slope = 0;
     this.intercept = 0;
-    super.appendSettings([this.createTotalSquaredErrorDisplay()]);
+    super.appendSettings([this.createTotalSquaredErrorDisplay(), this.createSettingsGroupShowRegressionLine()]);
   }
   addEventListeners() {
     this.onClickSvg([this.svgClickCallback]);
@@ -78,5 +85,19 @@ export default class LinearRegressionVisualization extends Visualization {
     errorDisplay.setAttribute('class', 'error error--tse');
 
     return errorDisplay;
+  }
+  createSettingsGroupShowRegressionLine() {
+    const labelText = 'Show regression line: ';
+    const labelAttributes = [
+      ['for', selectors.id.showRegressionLineCheckbox],
+      ['id', selectors.id.showRegressionLineLabel]
+    ];
+    const inputAttributes = [
+      ['id', selectors.id.showRegressionLineCheckbox],
+      ['type', 'checkbox']
+    ];
+    const labeledCheckbox = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
+
+    return HTMLElementCreator.createSettingsGroup([labeledCheckbox]);
   }
 }
