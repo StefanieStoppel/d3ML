@@ -58,7 +58,7 @@ describe('LinearRegressionVisualization', () => {
       // given
       const vis = new LinearRegressionVisualization(data, options, []);
       const {slope, intercept} = vis.linearRegression.performRegression(vis.data); // eslint-disable-line
-      const expectedLines = vis.getLinesToDraw();
+      const expectedLines = vis.getRegressionLines();
       // when
       vis.draw();
       // then
@@ -76,7 +76,7 @@ describe('LinearRegressionVisualization', () => {
       });
     });
   });
-  describe('getLinesToDraw', () => {
+  describe('getRegressionLines', () => {
     it('should return lines correctly', () => {
       // given
       const givenData = [
@@ -92,9 +92,9 @@ describe('LinearRegressionVisualization', () => {
       const vis = new LinearRegressionVisualization(givenData, options, []);
       const {slope, intercept} = vis.linearRegression.performRegression(vis.data);
       // when
-      const lines = vis.getLinesToDraw();
+      const lines = vis.getRegressionLines();
       // then
-      const expectedLines = [vis.getRegressionLine(slope, intercept)].concat(vis.getConnectingLines(slope, intercept));
+      const expectedLines = [vis.getRegressionLine(slope, intercept)].concat(vis.getRegressionConnectingLines(slope, intercept));
       expect(lines).to.deep.equal(expectedLines);
     });
   });
@@ -126,10 +126,9 @@ describe('LinearRegressionVisualization', () => {
       expect(line).to.deep.equal(expectedLine);
     });
   });
-  describe('getConnectingLines', () => {
+  describe('getRegressionConnectingLines', () => {
     it('should return connecting lines correctly', () => {
       // given
-
       const givenData = [
         {x: 0, y: 0},
         {x: 4, y: 2},
@@ -143,13 +142,39 @@ describe('LinearRegressionVisualization', () => {
       const vis = new LinearRegressionVisualization(givenData, options, []);
       vis.performRegression();
       // when
-      const lines = vis.getConnectingLines();
+      const lines = vis.getRegressionConnectingLines();
       // then
       lines.forEach((line, idx) => {
         expect(line.x1).to.equal(vis.data[idx].cx);
         expect(line.y1).to.equal(vis.data[idx].cy);
         expect(line.x2).to.equal(vis.data[idx].cx);
         expect(line.y2).to.equal(vis.slope * vis.data[idx].cx + vis.intercept);
+      });
+    });
+  });
+  describe('getUserConnectingLines', () => {
+    it('should return correct connecting lines for user line', () => {
+      // given
+      const givenData = [
+        {x: 0, y: 0},
+        {x: 4, y: 2},
+        {x: 3, y: 5},
+        {x: 7, y: 19}
+      ];
+      options = {
+        width: 200,
+        height: 100
+      };
+      const vis = new LinearRegressionVisualization(givenData, options, []);
+      vis.performRegression();
+      // when
+      const lines = vis.getUserConnectingLines();
+      // then
+      lines.forEach((line, idx) => {
+        expect(line.x1).to.equal(vis.data[idx].cx);
+        expect(line.y1).to.equal(vis.data[idx].cy);
+        expect(line.x2).to.equal(vis.data[idx].cx);
+        expect(line.y2).to.equal(vis.userSlope * vis.data[idx].cx + vis.userIntercept);
       });
     });
   });

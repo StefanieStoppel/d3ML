@@ -21,6 +21,8 @@ export default class LinearRegressionVisualization extends Visualization {
     this.lines = [];
     this.slope = 0;
     this.intercept = 0;
+    this.userSlope = 0;
+    this.userIntercept = 0;
     super.appendSettings([this.createTotalSquaredErrorDisplay(), this.createSettingsGroupShowRegressionLine()]);
     this.addEventListeners();
   }
@@ -39,7 +41,7 @@ export default class LinearRegressionVisualization extends Visualization {
   }
   checkboxShowRegressionLineChangeCallback(checked) {
     if (checked) {
-      Painter.drawLines(this.svg, this.getLinesToDraw());
+      Painter.drawLines(this.svg, this.getRegressionLines());
     } else {
       this.svg.selectAll(`.${selectors.class.regressionLine}`).remove();
     }
@@ -53,7 +55,7 @@ export default class LinearRegressionVisualization extends Visualization {
     this.transitionLines();
   }
   transitionLines() {
-    const lines = this.getLinesToDraw();
+    const lines = this.getRegressionLines();
     const linesCopy = Array.from(lines);
     let newLine = linesCopy[linesCopy.length - 1];
     linesCopy[linesCopy.length - 1] = Object.assign({}, newLine, {y2: newLine.y1});
@@ -63,7 +65,7 @@ export default class LinearRegressionVisualization extends Visualization {
   draw() {
     this.update();
     Painter.drawCircles(this.svg, this.data);
-    Painter.drawLines(this.svg, this.getLinesToDraw());
+    Painter.drawLines(this.svg, this.getRegressionLines());
   }
   createLine(x1, y1, x2, y2, stroke, strokeWidth, cssClass) {
     return {x1, y1, x2, y2, stroke, strokeWidth, cssClass};
@@ -73,10 +75,10 @@ export default class LinearRegressionVisualization extends Visualization {
     this.slope = slope;
     this.intercept = intercept;
   }
-  getLinesToDraw() {
+  getRegressionLines() {
     this.performRegression();
     const regressionLine = this.getRegressionLine();
-    const connectingLines = this.getConnectingLines();
+    const connectingLines = this.getRegressionConnectingLines();
 
     return [regressionLine].concat(connectingLines);
   }
@@ -91,6 +93,11 @@ export default class LinearRegressionVisualization extends Visualization {
       selectors.class.regressionLine
     );
   }
+  getRegressionConnectingLines() {
+    return this.data.map(d =>
+      this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', selectors.class.regressionLine)
+    );
+  }
   getUserLine() {
     return this.createLine(
       0,
@@ -102,9 +109,16 @@ export default class LinearRegressionVisualization extends Visualization {
       selectors.class.userLine
     );
   }
-  getConnectingLines() {
+  getUserConnectingLines() {
     return this.data.map(d =>
-      this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', selectors.class.regressionLine)
+      this.createLine(
+        d.cx,
+        d.cy,
+        d.cx,
+        this.userSlope * d.cx + this.userIntercept,
+        'lightblue',
+        '1',
+        selectors.class.userLine)
     );
   }
   getTotalSquaredError() {
