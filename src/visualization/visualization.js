@@ -126,25 +126,6 @@ export default class Visualization {
       });
     }
   }
-  // todo: refactor
-  createElement(elementName, attributes = []) {
-    return HTMLElementCreator.createElement(elementName, attributes);
-  }
-  createSettingsGroup(childElements) {
-    return HTMLElementCreator.createSettingsGroup(childElements);
-  }
-  createLabeledInput(labelText, labelAttributes, displayedValue, inputAttributes) {
-    const span = HTMLElementCreator.createElement('span');
-    span.innerHTML = displayedValue;
-
-    const label = HTMLElementCreator.createElement('label', labelAttributes);
-    label.textContent = labelText;
-
-    const input = HTMLElementCreator.createElement('input', inputAttributes);
-    label.appendChild(span);
-
-    return {label, input};
-  }
   addCircle(circle) {
     this.data.push(circle);
   }

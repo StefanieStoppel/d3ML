@@ -21,11 +21,15 @@ export default class HTMLElementCreator {
 
     return settingsGroup;
   }
-  static createLabeledInput(labelText, labelAttributes, inputAttributes) {
+  static createLabeledInput(labelText, labelAttributes, displayedValue, inputAttributes) {
     const div = HTMLElementCreator.createElement('div');
+
+    const valueSpan = HTMLElementCreator.createElement('span');
+    valueSpan.innerHTML = displayedValue;
 
     const label = HTMLElementCreator.createElement('label', labelAttributes);
     label.textContent = labelText;
+    label.appendChild(valueSpan);
 
     const input = HTMLElementCreator.createElement('input', inputAttributes);
 

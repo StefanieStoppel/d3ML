@@ -40,9 +40,10 @@ export default class KNNVisualization extends Visualization {
       ['max', this.data.length],
       ['value', this.knn.k]
     ];
-    const { label, input } = this.createLabeledInput(labelText, labelAttributes, this.knn.k, inputAttributes);
+    const labeledInputK =
+      HTMLElementCreator.createLabeledInput(labelText, labelAttributes, this.knn.k, inputAttributes);
 
-    return this.createSettingsGroup([label, input]);
+    return HTMLElementCreator.createSettingsGroup([labeledInputK]);
   }
   createSettingsGroupForWeighted() {
     const labelText = 'Use weighted algorithm: ';
@@ -54,9 +55,9 @@ export default class KNNVisualization extends Visualization {
       ['id', selectors.id.weightedCheckbox],
       ['type', 'checkbox']
     ];
-    const { label, input } = this.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
+    const labeledInputWeighted = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
 
-    return this.createSettingsGroup([label, input]);
+    return HTMLElementCreator.createSettingsGroup([labeledInputWeighted]);
   }
   addEventListeners() {
     this.onClickSvg([this.svgClickCallback]);
