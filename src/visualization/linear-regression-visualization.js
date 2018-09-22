@@ -17,8 +17,13 @@ export default class LinearRegressionVisualization extends Visualization {
     this.onClickSvg([this.svgClickCallback]);
   }
   svgClickCallback(circle) {
-    this.addCircle(circle);
+    super.addCircle(circle);
+    this.update();
     this.redraw();
+  }
+  update() {
+    this.performRegression();
+    this.updateTotalSquaredErrorDisplay(this.getTotalSquaredError());
   }
   redraw() {
     Painter.drawCircles(this.svg, this.data);
@@ -33,6 +38,7 @@ export default class LinearRegressionVisualization extends Visualization {
     Painter.transitionLines(this.svg, lines, 1500);
   }
   draw() {
+    this.update();
     Painter.drawCircles(this.svg, this.data);
     Painter.drawLines(this.svg, this.getLinesToDraw());
   }

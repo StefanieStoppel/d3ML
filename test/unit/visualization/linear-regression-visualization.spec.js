@@ -203,4 +203,29 @@ describe('LinearRegressionVisualization', () => {
       expect(updatedTotalSquaredErrorValue).to.have.text('0');
     });
   });
+  describe('update', () => {
+    it('should perform regression and update display of error', () => {
+      // given
+      const givenCircle = {
+        cx: '100',
+        cy: '200',
+        radius: '3',
+        stroke: 'yellow',
+        cssClass: 'c'
+      };
+      const regressionSpy = sinon.spy(LinearRegressionVisualization.prototype, 'performRegression');
+      const totalSquaredErrorSpy = sinon.spy(LinearRegressionVisualization.prototype, 'updateTotalSquaredErrorDisplay');
+      const vis = new LinearRegressionVisualization(data, options, []);
+      vis.addCircle(givenCircle);
+      // when
+      vis.update();
+      // then
+      expect(regressionSpy).to.have.been.calledOnce;
+      expect(totalSquaredErrorSpy).to.have.been.calledWith(vis.getTotalSquaredError());
+
+      // cleanup
+      LinearRegressionVisualization.prototype.performRegression.restore();
+      LinearRegressionVisualization.prototype.updateTotalSquaredErrorDisplay.restore();
+    });
+  });
 });
