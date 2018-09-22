@@ -108,10 +108,17 @@ describe('HTMLElementCreator', () => {
       const expectedLabel = 'blup';
       const expectedValue = '6';
       // when
-      const labeledValue = HTMLElementCreator.createLabeledValue(expectedLabel, expectedValue);
+      const labeledValueWrapper = HTMLElementCreator.createLabeledValue(expectedLabel, expectedValue);
       // then
-      expect(labeledValue).to.match('span');
-      expect(labeledValue).to.have.text(`${expectedLabel}: ${expectedValue}`);
+      expect(labeledValueWrapper).to.match('div');
+      expect(labeledValueWrapper).to.have.length(2);
+
+      const label = labeledValueWrapper.querySelector('.label');
+      const value = labeledValueWrapper.querySelector('.value');
+      expect(label).to.have.text(`${expectedLabel}: `);
+      expect(label).to.have.class('label');
+      expect(value).to.have.text(`${expectedValue}`);
+      expect(value).to.have.class('value');
     });
   });
 });

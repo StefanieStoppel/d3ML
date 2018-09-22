@@ -35,9 +35,18 @@ export default class HTMLElementCreator {
     return div;
   }
   static createLabeledValue(label, value) {
-    const labeledValue = HTMLElementCreator.createElement('span');
-    labeledValue.innerHTML = `${label}: ${value}`;
+    const labelElement = HTMLElementCreator.createElement('span');
+    labelElement.innerHTML = `${label}: `;
+    labelElement.setAttribute('class', 'label');
 
-    return labeledValue;
+    const valueElement = HTMLElementCreator.createElement('span');
+    valueElement.innerHTML = value;
+    valueElement.setAttribute('class', 'value');
+
+    const wrapper = HTMLElementCreator.createElement('div');
+    wrapper.appendChild(labelElement);
+    wrapper.appendChild(valueElement);
+
+    return wrapper;
   }
 }
