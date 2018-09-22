@@ -22,6 +22,27 @@ export default class KNNVisualization extends Visualization {
     super.appendSettings([this.createSettingsGroupForK(), this.createSettingsGroupForWeighted()]);
     this.addEventListeners();
   }
+  addEventListeners() {
+    super.onClickSvg([this.svgClickCallback]);
+    super.onChangeInput(selectors.id.rangeK, 'range', [this.inputRangeKChangeCallback]);
+    super.onChangeInput(selectors.id.weightedCheckbox, 'checkbox', [this.checkboxWeightedChangeCallback]);
+  }
+  svgClickCallback(circle) {
+    this.clickable = false;
+
+    const classifiedCircle = this.getClassifiedCircle(circle);
+    this.addCircle(classifiedCircle);
+    const boundingCircle = this.getBoundingCircle(classifiedCircle);
+    this.addCircle(boundingCircle);
+
+    this.drawCircles();
+    this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
+
+    this.data = this.data.filter(c => c !== boundingCircle);
+    this.removeElementsAfterTransition(`.${defaultClassSelectors.remove}`);
+
+    this.updateIndexRangeKMaximum(this.data.length);
+  }
   createSettingsGroupForK() {
     const labelText = 'Amount of neighbors, k: ';
     const labelAttributes = [
@@ -53,27 +74,6 @@ export default class KNNVisualization extends Visualization {
     const labeledInputWeighted = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
 
     return HTMLElementCreator.createSettingsGroup([labeledInputWeighted]);
-  }
-  addEventListeners() {
-    this.onClickSvg([this.svgClickCallback]);
-    this.onChangeInput(selectors.id.rangeK, 'range', [this.inputRangeKChangeCallback]);
-    this.onChangeInput(selectors.id.weightedCheckbox, 'checkbox', [this.checkboxWeightedChangeCallback]);
-  }
-  svgClickCallback(circle) {
-    this.clickable = false;
-
-    const classifiedCircle = this.getClassifiedCircle(circle);
-    this.addCircle(classifiedCircle);
-    const boundingCircle = this.getBoundingCircle(classifiedCircle);
-    this.addCircle(boundingCircle);
-
-    this.drawCircles();
-    this.drawConnectingLines(this.mapClosestNeighborsToConnectingLines(classifiedCircle));
-
-    this.data = this.data.filter(c => c !== boundingCircle);
-    this.removeElementsAfterTransition(`.${defaultClassSelectors.remove}`);
-
-    this.updateIndexRangeKMaximum(this.data.length);
   }
   updateIndexRangeKMaximum(max) {
     document.querySelector(`#${selectors.id.rangeK}`).setAttribute('max', max);

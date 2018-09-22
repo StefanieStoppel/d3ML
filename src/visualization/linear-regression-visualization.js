@@ -7,6 +7,9 @@ const selectors = {
   id: {
     showRegressionLineCheckbox: 'show-rl',
     showRegressionLineLabel: 'show-rl-label'
+  },
+  class: {
+    line: 'line'
   }
 };
 
@@ -14,19 +17,31 @@ export default class LinearRegressionVisualization extends Visualization {
   constructor(data, options, types) {
     super(data, options, types);
     this.linearRegression = new LinearRegression();
-    this.addEventListeners();
     this.lines = [];
     this.slope = 0;
     this.intercept = 0;
     super.appendSettings([this.createTotalSquaredErrorDisplay(), this.createSettingsGroupShowRegressionLine()]);
+    this.addEventListeners();
   }
   addEventListeners() {
-    this.onClickSvg([this.svgClickCallback]);
+    super.onClickSvg([this.svgClickCallback]);
+    super.onChangeInput(
+      selectors.id.showRegressionLineCheckbox,
+      'checkbox',
+      [this.checkboxShowRegressionLineChangeCallback]
+    );
   }
   svgClickCallback(circle) {
     super.addCircle(circle);
     this.update();
     this.redraw();
+  }
+  checkboxShowRegressionLineChangeCallback(checked) {
+    if (checked) {
+      Painter.drawLines(this.svg, this.getLinesToDraw());
+    } else {
+      this.svg.selectAll(`.${selectors.class.line}`).remove();
+    }
   }
   update() {
     this.performRegression();
@@ -65,11 +80,20 @@ export default class LinearRegressionVisualization extends Visualization {
     return [regressionLine].concat(connectingLines);
   }
   getRegressionLine() {
-    return this.createLine(0, this.intercept, this.options.width,
-      this.options.width * this.slope + this.intercept, 'white', '2', '');
+    return this.createLine(
+      0,
+      this.intercept,
+      this.options.width,
+      this.options.width * this.slope + this.intercept,
+      'white',
+      '2',
+      selectors.class.line
+    );
   }
   getConnectingLines() {
-    return this.data.map(d => this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', ''));
+    return this.data.map(d =>
+      this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', selectors.class.line)
+    );
   }
   getTotalSquaredError() {
     return this.data.reduce((sum, value) => sum + Math.pow(value.cy - (this.slope * value.cx + this.intercept), 2), 0);
@@ -94,7 +118,8 @@ export default class LinearRegressionVisualization extends Visualization {
     ];
     const inputAttributes = [
       ['id', selectors.id.showRegressionLineCheckbox],
-      ['type', 'checkbox']
+      ['type', 'checkbox'],
+      ['checked', 'checked']
     ];
     const labeledCheckbox = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
 

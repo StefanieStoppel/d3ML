@@ -118,7 +118,7 @@ describe('LinearRegressionVisualization', () => {
         y2: options.width * vis.slope + vis.intercept,
         stroke: 'white',
         strokeWidth: '2',
-        cssClass: ''
+        cssClass: 'line'
       };
       // when
       const line = vis.getRegressionLine();
@@ -244,7 +244,33 @@ describe('LinearRegressionVisualization', () => {
       const checkbox = settingsGroup.querySelector('input');
       expect(checkbox).to.have.id('show-rl');
       expect(checkbox).to.have.attr('type', 'checkbox');
-
+      expect(checkbox).to.have.attr('checked', 'checked');
+    });
+  });
+  describe('checkboxShowRegressionLineChangeCallback', () => {
+    it('should remove lines when unchecked', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      vis.draw();
+      expect(document.querySelector(`#${vis.containerId} .line`)).to.not.equal(null);
+      // when
+      vis.checkboxShowRegressionLineChangeCallback(false);
+      // then
+      expect(document.querySelector(`#${vis.containerId} .line`)).to.equal(null);
+    });
+    it('should draw lines from data when checkbox checked', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      const expectedAmountOfLines = vis.data.length + 1;
+      vis.draw();
+      expect(document.querySelector(`#${vis.containerId} .line`)).to.not.equal(null);
+      vis.checkboxShowRegressionLineChangeCallback(false);
+      expect(document.querySelector(`#${vis.containerId} .line`)).to.equal(null);
+      // when
+      vis.checkboxShowRegressionLineChangeCallback(true);
+      // then
+      const lines = Array.from(document.querySelectorAll(`#${vis.containerId} .line`));
+      expect(lines.length).to.equal(expectedAmountOfLines);
     });
   });
 });
