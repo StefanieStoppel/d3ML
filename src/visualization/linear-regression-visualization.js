@@ -6,7 +6,9 @@ import HTMLElementCreator from './html-element-creator';
 const selectors = {
   id: {
     showRegressionLineCheckbox: 'show-rl',
-    showRegressionLineLabel: 'show-rl-label'
+    showRegressionLineLabel: 'show-rl-label',
+    showUserLineCheckbox: 'show-cl',
+    showUserLineLabel: 'show-cl-label'
   },
   class: {
     regressionLine: 'regression-line',
@@ -22,8 +24,15 @@ export default class LinearRegressionVisualization extends Visualization {
     this.slope = 0;
     this.intercept = 0;
     this.userSlope = 0;
-    this.userIntercept = 0;
-    super.appendSettings([this.createTotalSquaredErrorDisplay(), this.createSettingsGroupShowRegressionLine()]);
+    this.userIntercept = this.options.height / 2;
+    this.showRegressionLines = true;
+    this.showUserLines = false;
+
+    super.appendSettings([
+      this.createTotalSquaredErrorDisplay(),
+      this.createSettingsGroupShowRegressionLine(),
+      this.createSettingsGroupShowUserLine()
+    ]);
     this.addEventListeners();
   }
   addEventListeners() {
@@ -33,6 +42,11 @@ export default class LinearRegressionVisualization extends Visualization {
       'checkbox',
       [this.checkboxShowRegressionLineChangeCallback]
     );
+    super.onChangeInput(
+      selectors.id.showUserLineCheckbox,
+      'checkbox',
+      [this.checkboxShowUserLineChangeCallback]
+    );
   }
   svgClickCallback(circle) {
     super.addCircle(circle);
@@ -40,11 +54,16 @@ export default class LinearRegressionVisualization extends Visualization {
     this.redraw();
   }
   checkboxShowRegressionLineChangeCallback(checked) {
-    if (checked) {
-      Painter.drawLines(this.svg, this.getRegressionLines());
-    } else {
-      this.svg.selectAll(`.${selectors.class.regressionLine}`).remove();
-    }
+    this.showRegressionLines = checked;
+    this.redrawLines();
+  }
+  checkboxShowUserLineChangeCallback(checked) {
+    this.showUserLines = checked;
+    this.redrawLines();
+  }
+  draw() {
+    this.update();
+    this.redraw();
   }
   update() {
     this.performRegression();
@@ -52,20 +71,22 @@ export default class LinearRegressionVisualization extends Visualization {
   }
   redraw() {
     Painter.drawCircles(this.svg, this.data);
-    this.transitionLines();
+    this.redrawLines();
   }
-  transitionLines() {
-    const lines = this.getRegressionLines();
-    const linesCopy = Array.from(lines);
-    let newLine = linesCopy[linesCopy.length - 1];
-    linesCopy[linesCopy.length - 1] = Object.assign({}, newLine, {y2: newLine.y1});
-    Painter.drawLines(this.svg, linesCopy);
-    Painter.transitionLines(this.svg, lines, 1500);
+  redrawLines() {
+    this.svg.selectAll('line').remove();
+    Painter.drawLines(this.svg, this.getLines());
   }
-  draw() {
-    this.update();
-    Painter.drawCircles(this.svg, this.data);
-    Painter.drawLines(this.svg, this.getRegressionLines());
+  getLines() {
+    let lines = [];
+    if (this.showUserLines) {
+      lines = lines.concat(this.getUserLines());
+    }
+    if (this.showRegressionLines) {
+      lines = lines.concat(this.getRegressionLines());
+    }
+
+    return lines;
   }
   createLine(x1, y1, x2, y2, stroke, strokeWidth, cssClass) {
     return {x1, y1, x2, y2, stroke, strokeWidth, cssClass};
@@ -77,10 +98,8 @@ export default class LinearRegressionVisualization extends Visualization {
   }
   getRegressionLines() {
     this.performRegression();
-    const regressionLine = this.getRegressionLine();
-    const connectingLines = this.getRegressionConnectingLines();
 
-    return [regressionLine].concat(connectingLines);
+    return [this.getRegressionLine()].concat(this.getRegressionConnectingLines());
   }
   getRegressionLine() {
     return this.createLine(
@@ -95,8 +114,19 @@ export default class LinearRegressionVisualization extends Visualization {
   }
   getRegressionConnectingLines() {
     return this.data.map(d =>
-      this.createLine(d.cx, d.cy, d.cx, this.slope * d.cx + this.intercept, 'white', '1', selectors.class.regressionLine)
+      this.createLine(
+        d.cx,
+        d.cy,
+        d.cx,
+        this.slope * d.cx + this.intercept,
+        'white',
+        '2',
+        selectors.class.regressionLine
+      )
     );
+  }
+  getUserLines() {
+    return [this.getUserLine()].concat(this.getUserConnectingLines());
   }
   getUserLine() {
     return this.createLine(
@@ -104,7 +134,7 @@ export default class LinearRegressionVisualization extends Visualization {
       this.options.height / 2,
       this.options.width,
       this.options.height / 2,
-      'lightblue',
+      'blue',
       '2',
       selectors.class.userLine
     );
@@ -116,8 +146,8 @@ export default class LinearRegressionVisualization extends Visualization {
         d.cy,
         d.cx,
         this.userSlope * d.cx + this.userIntercept,
-        'lightblue',
-        '1',
+        'blue',
+        '3',
         selectors.class.userLine)
     );
   }
@@ -146,6 +176,20 @@ export default class LinearRegressionVisualization extends Visualization {
       ['id', selectors.id.showRegressionLineCheckbox],
       ['type', 'checkbox'],
       ['checked', 'checked']
+    ];
+    const labeledCheckbox = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
+
+    return HTMLElementCreator.createSettingsGroup([labeledCheckbox]);
+  }
+  createSettingsGroupShowUserLine() {
+    const labelText = 'Show custom line: ';
+    const labelAttributes = [
+      ['for', selectors.id.showUserLineCheckbox],
+      ['id', selectors.id.showUserLineLabel]
+    ];
+    const inputAttributes = [
+      ['id', selectors.id.showUserLineCheckbox],
+      ['type', 'checkbox']
     ];
     const labeledCheckbox = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
 

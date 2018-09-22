@@ -272,6 +272,23 @@ describe('LinearRegressionVisualization', () => {
       expect(checkbox).to.have.attr('checked', 'checked');
     });
   });
+  describe('createSettingsGroupShowUserLine', () => {
+    it('should create a settings group with checkbox for displaying the user line', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      // when
+      const settingsGroup = vis.createSettingsGroupShowUserLine();
+      // then
+      expect(settingsGroup).to.have.attr('class', defaultClassSelectors.settingsGroup);
+      const label = settingsGroup.querySelector('label');
+      expect(label).to.have.text('Show custom line: ');
+      expect(label).to.have.attr('for', 'show-cl');
+      expect(label).to.have.id('show-cl-label');
+      const checkbox = settingsGroup.querySelector('input');
+      expect(checkbox).to.have.id('show-cl');
+      expect(checkbox).to.have.attr('type', 'checkbox');
+    });
+  });
   describe('checkboxShowRegressionLineChangeCallback', () => {
     it('should remove lines when unchecked', () => {
       // given
@@ -298,6 +315,30 @@ describe('LinearRegressionVisualization', () => {
       expect(lines.length).to.equal(expectedAmountOfLines);
     });
   });
+  describe('checkboxShowUserLineChangeCallback', () => {
+    it('should have no user lines by default (unchecked)', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      vis.draw();
+      // when
+      vis.checkboxShowUserLineChangeCallback(false);
+      // then
+      expect(document.querySelector(`#${vis.containerId} .user-line`)).to.equal(null);
+    });
+    it('should draw lines from data when checkbox checked', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      const expectedAmountOfLines = vis.data.length + 1;
+      vis.draw();
+
+      expect(document.querySelector(`#${vis.containerId} .user-line`)).to.equal(null);
+      // when
+      vis.checkboxShowUserLineChangeCallback(true);
+      // then
+      const lines = Array.from(document.querySelectorAll(`#${vis.containerId} .user-line`));
+      expect(lines.length).to.equal(expectedAmountOfLines);
+    });
+  });
   describe('getUserLine', () => {
     it('should return correct user line', () => {
       // given
@@ -307,7 +348,7 @@ describe('LinearRegressionVisualization', () => {
         y1: vis.options.height / 2,
         x2: vis.options.width,
         y2: vis.options.height / 2,
-        stroke: 'lightblue',
+        stroke: 'blue',
         strokeWidth: '2',
         cssClass: 'user-line'
       };
