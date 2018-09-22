@@ -221,7 +221,6 @@ export default class LinearRegressionVisualization extends Visualization {
 
     return HTMLElementCreator.createSettingsGroup([labeledCheckbox]);
   }
-  // todo: test
   createSettingsGroupForSlope() {
     const labelText = 'User line slope: ';
     const labelAttributes = [

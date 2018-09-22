@@ -399,5 +399,39 @@ describe('LinearRegressionVisualization', () => {
       expect(checkbox).to.have.attr('step', '1');
       expect(checkbox).to.have.attr('value', (vis.options.height / 2).toString());
     });
-  })
+  });
+  describe('rangeSlopeChangeCallback', () => {
+    it('should update slope display and redraw lines', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      const spy = sinon.spy(LinearRegressionVisualization.prototype, 'redrawLines');
+      const slope = '2';
+      // when
+      vis.rangeSlopeChangeCallback(slope);
+      // then
+      expect(vis.userSlope).to.equal(parseFloat(slope));
+      expect(document.querySelector(`#${vis.containerId} #range-slope-label > span`)).to.have.text(slope);
+      expect(spy).to.have.been.calledOnce;
+
+      // cleanup
+      LinearRegressionVisualization.prototype.redrawLines.restore();
+    });
+  });
+  describe('rangeInterceptChangeCallback', () => {
+    it('should update intercept display and redraw lines', () => {
+      // given
+      const vis = new LinearRegressionVisualization(data, options, []);
+      const spy = sinon.spy(LinearRegressionVisualization.prototype, 'redrawLines');
+      const intercept = '14.56';
+      // when
+      vis.rangeInterceptChangeCallback(intercept);
+      // then
+      expect(vis.userIntercept).to.equal(parseFloat(intercept));
+      expect(document.querySelector(`#${vis.containerId} #range-intercept-label > span`)).to.have.text(intercept);
+      expect(spy).to.have.been.calledOnce;
+
+      // cleanup
+      LinearRegressionVisualization.prototype.redrawLines.restore();
+    });
+  });
 });
