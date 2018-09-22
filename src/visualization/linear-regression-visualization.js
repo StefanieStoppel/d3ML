@@ -8,7 +8,11 @@ const selectors = {
     showRegressionLineCheckbox: 'show-rl',
     showRegressionLineLabel: 'show-rl-label',
     showUserLineCheckbox: 'show-cl',
-    showUserLineLabel: 'show-cl-label'
+    showUserLineLabel: 'show-cl-label',
+    rangeSlope: 'range-slope',
+    rangeSlopeLabel: 'range-slope-label',
+    rangeIntercept: 'range-intercept',
+    rangeInterceptLabel: 'range-intercept-label'
   },
   class: {
     regressionLine: 'regression-line',
@@ -31,7 +35,9 @@ export default class LinearRegressionVisualization extends Visualization {
     super.appendSettings([
       this.createTotalSquaredErrorDisplay(),
       this.createSettingsGroupShowRegressionLine(),
-      this.createSettingsGroupShowUserLine()
+      this.createSettingsGroupShowUserLine(),
+      this.createSettingsGroupForSlope(),
+      this.createSettingsGroupForIntercept()
     ]);
     this.addEventListeners();
   }
@@ -47,6 +53,16 @@ export default class LinearRegressionVisualization extends Visualization {
       'checkbox',
       [this.checkboxShowUserLineChangeCallback]
     );
+    super.onChangeInput(
+      selectors.id.rangeSlope,
+      'range',
+      [this.rangeSlopeChangeCallback]
+    );
+    super.onChangeInput(
+      selectors.id.rangeIntercept,
+      'range',
+      [this.rangeInterceptChangeCallback]
+    );
   }
   svgClickCallback(circle) {
     super.addCircle(circle);
@@ -59,6 +75,16 @@ export default class LinearRegressionVisualization extends Visualization {
   }
   checkboxShowUserLineChangeCallback(checked) {
     this.showUserLines = checked;
+    this.redrawLines();
+  }
+  rangeSlopeChangeCallback(slope) {
+    this.userSlope = parseFloat(slope);
+    document.querySelector(`#${selectors.id.rangeSlopeLabel} > span`).innerHTML = slope;
+    this.redrawLines();
+  }
+  rangeInterceptChangeCallback(intercept) {
+    this.userIntercept = parseFloat(intercept);
+    document.querySelector(`#${selectors.id.rangeInterceptLabel} > span`).innerHTML = intercept;
     this.redrawLines();
   }
   draw() {
@@ -131,9 +157,9 @@ export default class LinearRegressionVisualization extends Visualization {
   getUserLine() {
     return this.createLine(
       0,
-      this.options.height / 2,
+      this.userIntercept,
       this.options.width,
-      this.options.height / 2,
+      this.userSlope * this.options.width + this.userIntercept,
       'blue',
       '2',
       selectors.class.userLine
@@ -194,5 +220,44 @@ export default class LinearRegressionVisualization extends Visualization {
     const labeledCheckbox = HTMLElementCreator.createLabeledInput(labelText, labelAttributes, '', inputAttributes);
 
     return HTMLElementCreator.createSettingsGroup([labeledCheckbox]);
+  }
+  // todo: test
+  createSettingsGroupForSlope() {
+    const labelText = 'User line slope: ';
+    const labelAttributes = [
+      ['for', selectors.id.rangeSlope],
+      ['id', selectors.id.rangeSlopeLabel]
+    ];
+    const inputAttributes = [
+      ['id', selectors.id.rangeSlope],
+      ['type', 'range'],
+      ['min', '-1'],
+      ['max', '1'],
+      ['step', '0.005'],
+      ['value', this.userSlope]
+    ];
+    const labeledInputSlope =
+      HTMLElementCreator.createLabeledInput(labelText, labelAttributes, this.userSlope, inputAttributes);
+
+    return HTMLElementCreator.createSettingsGroup([labeledInputSlope]);
+  }
+  createSettingsGroupForIntercept() {
+    const labelText = 'User line intercept: ';
+    const labelAttributes = [
+      ['for', selectors.id.rangeIntercept],
+      ['id', selectors.id.rangeInterceptLabel]
+    ];
+    const inputAttributes = [
+      ['id', selectors.id.rangeIntercept],
+      ['type', 'range'],
+      ['min', '0'],
+      ['max', this.options.height * 2],
+      ['step', '1'],
+      ['value', this.userIntercept]
+    ];
+    const labeledInputIntercept =
+      HTMLElementCreator.createLabeledInput(labelText, labelAttributes, this.userIntercept, inputAttributes);
+
+    return HTMLElementCreator.createSettingsGroup([labeledInputIntercept]);
   }
 }
